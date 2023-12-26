@@ -5,149 +5,166 @@
 @tailwind utilities;
 
 .logo-neon-green {
-	font-family: "Neonderthaw", cursive;
-	font-size: 32px;
-	color: #ffffff;
-	text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #49ff18,
-		0 0 30px #49ff18, 0 0 40px #49ff18, 0 0 55px #49ff18, 0 0 75px #49ff18;
-	animation: flicker 1s infinite;
+  font-family: "Neonderthaw", cursive;
+  font-size: 32px;
+  color: #ffffff;
+  text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #49ff18,
+    0 0 30px #49ff18, 0 0 40px #49ff18, 0 0 55px #49ff18, 0 0 75px #49ff18;
+  animation: flicker 1s infinite;
 }
 .logo-neon-red {
-	font-family: "Neonderthaw", cursive;
-	font-size: 32px;
-	color: #ffffff;
-	text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #ff3131,
-		0 0 30px #ff3131, 0 0 40px #ff3131, 0 0 55px #ff3131, 0 0 75px #ff3131;
-	animation: flicker1 1s infinite;
+  font-family: "Neonderthaw", cursive;
+  font-size: 32px;
+  color: #ffffff;
+  text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #ff3131,
+    0 0 30px #ff3131, 0 0 40px #ff3131, 0 0 55px #ff3131, 0 0 75px #ff3131;
+  animation: flicker1 1s infinite;
 }
 .logo-neon-blue {
-	font-family: "Neonderthaw", cursive;
-	font-size: 32px;
-	color: #ffffff;
-	text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #5765e7,
-		0 0 30px #5765e7, 0 0 40px #5765e7, 0 0 55px #5765e7, 0 0 75px #5765e7;
-	animation: flicker2 1s infinite;
+  font-family: "Neonderthaw", cursive;
+  font-size: 32px;
+  color: #ffffff;
+  text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #5765e7,
+    0 0 30px #5765e7, 0 0 40px #5765e7, 0 0 55px #5765e7, 0 0 75px #5765e7;
+  animation: flicker2 1s infinite;
 }
 
 @keyframes flicker {
-	0% {
-		text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #49ff18,
-			0 0 30px #49ff18, 0 0 40px #49ff18, 0 0 55px #49ff18, 0 0 75px #49ff18;
-	}
+  0% {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #49ff18,
+      0 0 30px #49ff18, 0 0 40px #49ff18, 0 0 55px #49ff18, 0 0 75px #49ff18;
+  }
 
-	20% {
-		text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #49ff18,
-			0 0 30px #49ff18;
-	}
+  20% {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #49ff18,
+      0 0 30px #49ff18;
+  }
 
-	40% {
-		text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #49ff18,
-			0 0 30px #49ff18, 0 0 40px #49ff18, 0 0 55px #49ff18, 0 0 75px #49ff18;
-	}
+  40% {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #49ff18,
+      0 0 30px #49ff18, 0 0 40px #49ff18, 0 0 55px #49ff18, 0 0 75px #49ff18;
+  }
 
-	50% {
-		text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #49ff18,
-			0 0 30px #49ff18, 0 0 40px #49ff18, 0 0 55px #49ff18, 0 0 75px #49ff18;
-	}
+  50% {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #49ff18,
+      0 0 30px #49ff18, 0 0 40px #49ff18, 0 0 55px #49ff18, 0 0 75px #49ff18;
+  }
 
-	80% {
-		text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #49ff18,
-			0 0 30px #49ff18, 0 0 40px #49ff18;
-	}
+  80% {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #49ff18,
+      0 0 30px #49ff18, 0 0 40px #49ff18;
+  }
 
-	100% {
-		text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #49ff18,
-			0 0 30px #49ff18, 0 0 40px #49ff18, 0 0 55px #49ff18, 0 0 75px #49ff18;
-	}
+  100% {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #49ff18,
+      0 0 30px #49ff18, 0 0 40px #49ff18, 0 0 55px #49ff18, 0 0 75px #49ff18;
+  }
 }
 @keyframes flicker1 {
-	0% {
-		text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #ff3131,
-			0 0 30px #ff3131, 0 0 40px #ff3131, 0 0 55px #ff3131, 0 0 75px #ff3131;
-	}
+  0% {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #ff3131,
+      0 0 30px #ff3131, 0 0 40px #ff3131, 0 0 55px #ff3131, 0 0 75px #ff3131;
+  }
 
-	20% {
-		text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #ff3131,
-			0 0 30px #ff3131;
-	}
+  20% {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #ff3131,
+      0 0 30px #ff3131;
+  }
 
-	40% {
-		text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #ff3131,
-			0 0 30px #ff3131, 0 0 40px #ff3131, 0 0 55px #ff3131, 0 0 75px #ff3131;
-	}
+  40% {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #ff3131,
+      0 0 30px #ff3131, 0 0 40px #ff3131, 0 0 55px #ff3131, 0 0 75px #ff3131;
+  }
 
-	50% {
-		text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #ff3131,
-			0 0 30px #ff3131, 0 0 40px #ff3131, 0 0 55px #ff3131, 0 0 75px #ff3131;
-	}
+  50% {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #ff3131,
+      0 0 30px #ff3131, 0 0 40px #ff3131, 0 0 55px #ff3131, 0 0 75px #ff3131;
+  }
 
-	80% {
-		text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #ff3131,
-			0 0 30px #ff3131, 0 0 40px #ff3131;
-	}
+  80% {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #ff3131,
+      0 0 30px #ff3131, 0 0 40px #ff3131;
+  }
 
-	100% {
-		text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #ff3131,
-			0 0 30px #ff3131, 0 0 40px #ff3131, 0 0 55px #ff3131, 0 0 75px #ff3131;
-	}
+  100% {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #ff3131,
+      0 0 30px #ff3131, 0 0 40px #ff3131, 0 0 55px #ff3131, 0 0 75px #ff3131;
+  }
 }
 @keyframes flicker2 {
-	0% {
-		text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #5765e7,
-			0 0 30px #5765e7, 0 0 40px #5765e7, 0 0 55px #5765e7, 0 0 75px #5765e7;
-	}
+  0% {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #5765e7,
+      0 0 30px #5765e7, 0 0 40px #5765e7, 0 0 55px #5765e7, 0 0 75px #5765e7;
+  }
 
-	20% {
-		text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #5765e7,
-			0 0 30px #5765e7;
-	}
+  20% {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #5765e7,
+      0 0 30px #5765e7;
+  }
 
-	40% {
-		text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #5765e7,
-			0 0 30px #5765e7, 0 0 40px #5765e7, 0 0 55px #5765e7, 0 0 75px #5765e7;
-	}
+  40% {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #5765e7,
+      0 0 30px #5765e7, 0 0 40px #5765e7, 0 0 55px #5765e7, 0 0 75px #5765e7;
+  }
 
-	50% {
-		text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #5765e7,
-			0 0 30px #5765e7, 0 0 40px #5765e7, 0 0 55px #5765e7, 0 0 75px #5765e7;
-	}
+  50% {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #5765e7,
+      0 0 30px #5765e7, 0 0 40px #5765e7, 0 0 55px #5765e7, 0 0 75px #5765e7;
+  }
 
-	80% {
-		text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #5765e7,
-			0 0 30px #5765e7, 0 0 40px #5765e7;
-	}
+  80% {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #5765e7,
+      0 0 30px #5765e7, 0 0 40px #5765e7;
+  }
 
-	100% {
-		text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #5765e7,
-			0 0 30px #5765e7, 0 0 40px #5765e7, 0 0 55px #5765e7, 0 0 75px #5765e7;
-	}
+  100% {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #5765e7,
+      0 0 30px #5765e7, 0 0 40px #5765e7, 0 0 55px #5765e7, 0 0 75px #5765e7;
+  }
 }
 
 .text-gradient-gray {
-	background: linear-gradient(95deg, #fff 79.99%, #21242f 102.65%);
-	background-clip: text;
-	-webkit-background-clip: text;
-	-webkit-text-fill-color: transparent;
+  background: linear-gradient(95deg, #fff 79.99%, #21242f 102.65%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .input-primary:focus ~ .span-placeholder {
-	color: transparent !important;
+  color: transparent !important;
 }
 
 .input-primary:focus + .label-primary {
-	display: block;
-	padding-left: 6px;
-	padding-right: 6px;
+  display: block;
+  padding-left: 6px;
+  padding-right: 6px;
 }
 
 .input-primary:required:focus + .label-primary {
-	padding-left: 6px;
-	padding-right: 18px;
+  padding-left: 6px;
+  padding-right: 18px;
 }
 
 .input-primary:required + .label-primary::after {
-	content: "*";
-	position: absolute;
-	color: #e60000;
-	margin-left: 2px;
+  content: "*";
+  position: absolute;
+  color: #e60000;
+  margin-left: 2px;
 }
+
+.icon-eye-password {
+  filter: invert(100%) sepia(0%) saturate(7500%) hue-rotate(179deg)
+    brightness(105%) contrast(104%);
+}
+
+aside {
+  min-width: 120px !important;
+  width: 100%;
+  max-width: 280px !important;
+  flex: 0 0 280px !important;
+}
+
+/* .ant-menu-item svg {
+  filter: invert(100%) sepia(0%) saturate(7500%) hue-rotate(179deg)
+    brightness(105%) contrast(104%);
+} */

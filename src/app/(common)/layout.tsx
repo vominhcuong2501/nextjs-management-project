@@ -1,16 +1,19 @@
+"use client";
 import { type ReactNode } from "react";
 import Header from "../component/Header";
+import Sidebar from "../component/Sidebar";
 
 interface CommonLayoutProps {
-	children: ReactNode;
+  children: ReactNode;
 }
-export default async function AuthLayout({ children }: CommonLayoutProps) {
-	return (
-		<section className="relative">
-			<div className="fixed top-0 lg:top-10 left-1/2 -translate-x-1/2 w-full lg:min-w-[992px] max-w-[992px] z-10">
-				<Header />
-			</div>
-			{children}
-		</section>
-	);
+export default function AuthLayout({ children }: CommonLayoutProps) {
+  return (
+    <section
+      className="flex gap-5 p-3 h-screen"
+      style={{ backgroundImage: "url(./bg-dashboard.jpg)" }}
+    >
+      <Sidebar />
+      <div className="flex-1 z-10">{children}</div>
+    </section>
+  );
 }
