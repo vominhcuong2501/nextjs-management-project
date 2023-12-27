@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { type ReactNode } from "react";
 import Logo from "../component/Logo";
+import Link from "next/link";
 
 interface CommonLayoutProps {
 	children: ReactNode;
@@ -9,7 +10,9 @@ export default async function AuthLayout({ children }: CommonLayoutProps) {
 	return (
 		<section className="relative bg-background-9">
 			<div className="fixed top-10 left-10 z-10 border border-neutral-1 shadow-primary backdrop-blur-lg px-5 py-3 rounded-2xl">
-				<Logo />
+				<Link href={"/"} target="_self" title="Homepage">
+					<Logo />
+				</Link>
 			</div>
 			<div className="grid  lg:grid-cols-2 items-center">
 				<div className="relative hidden lg:block">
