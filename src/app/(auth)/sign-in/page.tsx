@@ -1,38 +1,51 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
 import Input from "@/app/component/Input";
 import Link from "next/link";
-import { Switch } from "antd";
+import { Switch, notification } from "antd";
 import { MouseEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { signInSchema } from "@/lib/utils/rules";
 import Button from "@/app/component/Button";
+import { FormSignIn } from "@/app/types/sign-in";
+import { submitSignIn } from "@/app/api/submitSignIn";
+import { deleteCookie, setCookie, getCookie } from "cookies-next";
+import {
+	useModifyObject,
+	useReverseModifyObject,
+} from "@/lib/utils/modifyContent";
+import { useRouter } from "next/navigation";
+import useDataUser from "@/lib/store/client/infomationUser";
 
-export interface FormDataLogin {
-	email: string;
-	password: string;
-}
 export default function SignIn() {
+	const [remember, setRemeber] = useState(false);
+
 	const handleRemember = (checked: boolean) => {
-		console.log(`switch to ${checked}`);
+		setRemeber(checked);
 	};
 
 	const [_, setIsFormValid] = useState(false);
 
 	const [isLoading, setIsLoading] = useState(false);
 
-	const defaultValues: FormDataLogin = {
+	const router = useRouter();
+
+	const defaultValues: FormSignIn = {
 		email: "",
 		password: "",
 	};
+
+	const { updateUser } = useDataUser();
 
 	const {
 		handleSubmit,
 		register,
 		setError,
+		setValue,
 		formState: { errors, isValid },
-	} = useForm<FormDataLogin>({
+	} = useForm<FormSignIn>({
 		mode: "all",
 		defaultValues,
 		resolver: yupResolver(signInSchema()),
@@ -43,9 +56,64 @@ export default function SignIn() {
 		setIsFormValid(isValid);
 	}, [isValid]);
 
-	const onSubmit = handleSubmit(async (formDataLogin: FormDataLogin) => {
+	const dataRememberGetCookie = getCookie("__remember");
+
+	useEffect(() => {
+		if (dataRememberGetCookie) {
+			const dataRememberConvert = useReverseModifyObject(
+				JSON.parse(dataRememberGetCookie),
+				false
+			);
+			setValue("email", dataRememberConvert?.email);
+			setValue("password", dataRememberConvert?.password);
+		} else {
+			setValue("email", "");
+			setValue("password", "");
+		}
+	}, []);
+
+	const onSubmit = handleSubmit(async (formDataLogin: FormSignIn) => {
+		const dataRememberCookie = useModifyObject(formDataLogin, false);
+
+		remember
+			? setCookie("__remember", dataRememberCookie)
+			: deleteCookie("__remember");
+
 		setIsLoading(true);
-		console.log("formDataLogin", formDataLogin);
+		try {
+			const responseSignIn = await submitSignIn(formDataLogin);
+
+			if (responseSignIn?.statusCode === 200) {
+				setIsLoading(false);
+
+				const currentTime = new Date();
+
+				const expirationTime = new Date(
+					currentTime.getTime() + 7 * 24 * 60 * 60 * 1000
+				);
+
+				setCookie("__token", responseSignIn?.content.accessToken, {
+					maxAge: Number(expirationTime),
+				});
+
+				const infoUserModify = useModifyObject(responseSignIn?.content, false);
+
+				updateUser(infoUserModify);
+
+				notification.success({
+					message: "Successfully!",
+				});
+
+				router.push("/dashboard");
+			} else {
+				setError("email", {
+					message: responseSignIn?.response.data.message,
+				});
+				setIsLoading(false);
+			}
+		} catch (error) {
+			console.error(error);
+		}
 	});
 
 	const handleFormSubmit = (e: MouseEvent<HTMLButtonElement>) => {
@@ -86,6 +154,7 @@ export default function SignIn() {
 						required
 						maxLength={20}
 						minLength={6}
+						autocomplete=""
 					/>
 					<div className="flex items-center gap-2">
 						<Switch

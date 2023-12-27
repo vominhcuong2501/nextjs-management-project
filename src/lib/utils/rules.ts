@@ -25,13 +25,12 @@ export const signInSchema = () => {
 
 export const signUpSchema = () =>
 	yup.object({
-		phone_number: yup
+		phoneNumber: yup
 			.string()
-			.typeError("Phone Number is invalid")
 			.required("Phone Number is required")
 			.min(6, "Phone Number is invalid")
-			.matches(/^\+\d{1,3}\d{5,19}$/, "Phone Number is invalid"),
-		full_name: yup
+			.matches(/^\d{1,3}\d{5,19}$/, "Phone Number is invalid"),
+		name: yup
 			.string()
 			.trim()
 			.required("Full Name is required")
