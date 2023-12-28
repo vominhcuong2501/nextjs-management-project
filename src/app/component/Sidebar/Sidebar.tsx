@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import Logo from "../Logo";
 import { Layout, Menu } from "antd";
 import { deleteCookie } from "cookies-next";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import PATH_NAME from "@/app/constans/pathname";
 
 export default function Sidebar() {
 	const { Sider } = Layout;
@@ -20,6 +21,20 @@ export default function Sidebar() {
 	}
 
 	const router = useRouter();
+
+	const pathname = usePathname();
+
+	const dataPathname = [
+		{ path: PATH_NAME.DASHBOARD, key: "1" },
+		{ path: PATH_NAME.TABLE_PROJECT, key: "2" },
+		{ path: PATH_NAME.TABLE_USER, key: "3" },
+		{ path: PATH_NAME.CREATE_PROJECT, key: "4" },
+		{ path: PATH_NAME.PROFILE, key: "5" },
+	];
+
+	const currentPath = dataPathname.find((item) => item.path === pathname);
+
+	const activePath = currentPath ? currentPath.key : "1";
 
 	const handleLogOut = () => {
 		deleteCookie("__token");
@@ -240,8 +255,7 @@ export default function Sidebar() {
 		<Sider
 			className="p-4 min-w-100px rounded-2xl"
 			style={{
-				background:
-					"linear-gradient(112deg, rgba(6, 11, 38, 0.94) 59.3%, rgba(26, 31, 55, 0.00) 100%)",
+				background: "rgba(0, 0, 0, 0.5)",
 			}}
 		>
 			<Link
@@ -277,7 +291,7 @@ export default function Sidebar() {
 				</defs>
 			</svg>
 			<Menu
-				defaultSelectedKeys={["1"]}
+				defaultSelectedKeys={[activePath]}
 				mode="inline"
 				items={items}
 				style={{

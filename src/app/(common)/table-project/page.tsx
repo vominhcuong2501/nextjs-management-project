@@ -24,7 +24,7 @@ import Link from "next/link";
 export default function TableProject() {
 	const columns: any = [
 		{
-			title: <p className="text-red-1">ID & Creator</p>,
+			title: <p>ID & Creator</p>,
 			render: (record: any) => (
 				<>
 					{record.id}
@@ -236,12 +236,10 @@ export default function TableProject() {
 		},
 	];
 
-	const { data }: any = useQuery({
+	const { data, isLoading }: any = useQuery({
 		queryKey: ["get-project-list"],
 		queryFn: () => getProjectList(),
 	});
-
-	console.log(data?.content);
 
 	return (
 		<div className="text-center">
@@ -251,7 +249,7 @@ export default function TableProject() {
 				columns={columns}
 				dataSource={data?.content}
 				// rowSelection={{ ...rowSelection }}
-				// loading={isLoading}
+				loading={isLoading}
 				className="overflow-x-auto scrollbar-input  w-full"
 			/>
 		</div>

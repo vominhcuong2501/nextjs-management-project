@@ -18,6 +18,7 @@ import {
 } from "@/lib/utils/modifyContent";
 import { useRouter } from "next/navigation";
 import useDataUser from "@/lib/store/client/infomationUser";
+import PATH_NAME from "@/app/constans/pathname";
 
 export default function SignIn() {
 	const [remember, setRemeber] = useState(false);
@@ -104,7 +105,7 @@ export default function SignIn() {
 					message: "Successfully!",
 				});
 
-				router.push("/dashboard");
+				router.push(PATH_NAME.DASHBOARD);
 			} else {
 				setError("email", {
 					message: responseSignIn?.response.data.message,
@@ -180,7 +181,7 @@ export default function SignIn() {
 
 				<div className="mt-4 text-center">
 					<Link
-						href={`/sign-up`}
+						href={PATH_NAME.SIGN_UP}
 						className="text-gray-1 text-14 lg:text-16 leading-1-4 font-normal "
 						title="Do not have an account? Sign up"
 						target="_self"

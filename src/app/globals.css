@@ -181,7 +181,7 @@ aside {
 }
 
 .ant-menu-item-selected svg,
-.ant-menu-item:hover svg {
+.ant-menu-item svg {
 	filter: brightness(0) saturate(100%) invert(100%) sepia(78%) saturate(0%)
 		hue-rotate(314deg) brightness(110%) contrast(101%);
 }
@@ -206,11 +206,36 @@ aside {
 }
 
 .ant-table {
-	background: linear-gradient(
-		112deg,
-		rgba(6, 11, 38, 0.94) 59.3%,
-		rgba(26, 31, 55, 0) 100%
-	) !important;
+	background-color: rgba(0, 0, 0, 0.5) !important;
 	color: #fff !important;
 	backdrop-filter: blur(4px);
+}
+
+.ant-table-cell-row-hover,
+.ant-table-column-sort {
+	background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.ant-table-thead th {
+	background-color: rgba(0, 0, 0, 0.1) !important;
+	color: #fff !important;
+	font-weight: bold !important;
+}
+
+:where(
+		.css-dev-only-do-not-override-gzal6t
+	).ant-menu-light.ant-menu-root.ant-menu-inline,
+:where(.css-dev-only-do-not-override-gzal6t).ant-menu-light
+	> .ant-menu.ant-menu-root.ant-menu-inline,
+:where(
+		.css-dev-only-do-not-override-gzal6t
+	).ant-menu-light.ant-menu-root.ant-menu-vertical,
+:where(.css-dev-only-do-not-override-gzal6t).ant-menu-light
+	> .ant-menu.ant-menu-root.ant-menu-vertical {
+	border-inline-end: none !important;
+}
+
+:where(.css-dev-only-do-not-override-gzal6t).ant-table-wrapper
+	.ant-table-column-sorter {
+	color: #fff !important;
 }

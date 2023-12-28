@@ -11,6 +11,7 @@ import { submitSignUp } from "@/app/api/submitSignUp";
 import { FormSignUp } from "@/app/types/sign-up";
 import { notification } from "antd";
 import { useRouter } from "next/navigation";
+import PATH_NAME from "@/app/constans/pathname";
 
 export default function SignUp() {
 	const [_, setIsFormValid] = useState(false);
@@ -55,7 +56,7 @@ export default function SignUp() {
 					message: "Successfully!",
 				});
 
-				router.push("/sign-in");
+				router.push(PATH_NAME.SIGN_IN);
 			} else {
 				setError("email", {
 					message: responseSignUp?.response.data.message,
@@ -146,7 +147,7 @@ export default function SignUp() {
 
 				<div className="mt-4 text-center">
 					<Link
-						href={`/sign-in`}
+						href={PATH_NAME.SIGN_IN}
 						className="text-gray-1 text-14 lg:text-16 leading-1-4 font-normal "
 						title="Already have an account? Sign in"
 						target="_self"

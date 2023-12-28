@@ -2,7 +2,8 @@ import Image from "next/image";
 import Logo from "../Logo";
 import Link from "next/link";
 
-import PATH_NAME from "./../../constans/pathname";
+import PATH_NAME from "../../constans/pathname";
+import { getCookie } from "cookies-next";
 
 export default function Header() {
 	return (
@@ -62,22 +63,45 @@ export default function Header() {
 					</Link>
 				</li>
 			</ul>
-			<Link
-				href={PATH_NAME.SIGN_IN}
-				title="Sign In"
-				target="_self"
-				className="bg-blue-12 px-4 py-2 rounded-xl text-neutral-1 font-medium text-16  items-center gap-2 border border-neutral-1 lg:border-blue-12  hidden lg:flex"
-			>
-				<Image
-					src={"/icon-sign-in.svg"}
-					alt="Sign In"
+			{getCookie("__token") ? (
+				<Link
+					href={PATH_NAME.PROFILE}
 					title="Sign In"
-					width={11}
-					height={11}
-					className="w-4 h-4 hidden ms:block"
-				/>
-				<p className="text-16 font-bold text-neutral-1 leading-1-4">SIGN IN</p>
-			</Link>
+					target="_self"
+					className="bg-blue-12 px-4 py-2 rounded-xl text-neutral-1 font-medium text-16  items-center gap-2 border border-neutral-1 lg:border-blue-12  hidden lg:flex"
+				>
+					<Image
+						src={"/icon-sign-in.svg"}
+						alt="Sign In"
+						title="Sign In"
+						width={11}
+						height={11}
+						className="w-4 h-4 hidden ms:block"
+					/>
+					<p className="text-16 font-bold text-neutral-1 leading-1-4">
+						SIGN IN
+					</p>
+				</Link>
+			) : (
+				<Link
+					href={PATH_NAME.SIGN_IN}
+					title="Sign In"
+					target="_self"
+					className="bg-blue-12 px-4 py-2 rounded-xl text-neutral-1 font-medium text-16  items-center gap-2 border border-neutral-1 lg:border-blue-12  hidden lg:flex"
+				>
+					<Image
+						src={"/icon-sign-in.svg"}
+						alt="Sign In"
+						title="Sign In"
+						width={11}
+						height={11}
+						className="w-4 h-4 hidden ms:block"
+					/>
+					<p className="text-16 font-bold text-neutral-1 leading-1-4">
+						SIGN IN
+					</p>
+				</Link>
+			)}
 			<Image
 				src={"/icon-burger.svg"}
 				alt="Sign In"

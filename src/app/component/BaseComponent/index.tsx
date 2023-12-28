@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
+import PATH_NAME from "@/app/constans/pathname";
 import useDataUser from "@/lib/store/client/infomationUser";
 import { _isEmpty } from "@/lib/utils/utilsFunc";
 import { getCookie } from "cookies-next";
@@ -16,33 +17,33 @@ const BaseComponent = () => {
 	const tokenUser = getCookie("__token") as string;
 
 	const listIsRequiredAuth = [
-		"/profile",
-		"/table-project",
-		"/table-user",
-		"/create-project",
-		"/dashboard",
+		PATH_NAME.PROFILE,
+		PATH_NAME.CREATE_PROJECT,
+		PATH_NAME.TABLE_PROJECT,
+		PATH_NAME.TABLE_USER,
+		PATH_NAME.DASHBOARD,
 	];
 
-	const listNotRequiredAuth = ["/sign-in", "/sign-up"];
+	const listNotRequiredAuth = [PATH_NAME.SIGN_IN, PATH_NAME.SIGN_UP];
 
 	const pageIsAuth = listIsRequiredAuth.includes(pathname as string);
 
 	const pageIsNotAuth = listNotRequiredAuth.includes(pathname as string);
 
-	if (!getCookie("__token") && pageIsAuth) {
+	if (typeof window !== "undefined" && !getCookie("__token") && pageIsAuth) {
 		// router.push("/sign-in");
-		window.location.href = "/sign-in";
+		window.location.href = PATH_NAME.SIGN_IN;
 	}
 
-	if (getCookie("__token") && pageIsNotAuth) {
+	if (typeof window !== "undefined" && getCookie("__token") && pageIsNotAuth) {
 		// router.push("/dashboard");
-		window.location.href = "/dashboard";
+		window.location.href = PATH_NAME.DASHBOARD;
 	}
 
 	const fetchData = async (tokenUser: string) => {
 		if (!getCookie("__token")) {
 			updateUser(undefined);
-			router.push("/sign-in");
+			router.push(PATH_NAME.SIGN_IN);
 		}
 
 		try {
