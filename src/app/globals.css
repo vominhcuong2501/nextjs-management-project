@@ -243,7 +243,13 @@ aside {
 }
 
 .text-gradient-oneibc {
-  background: linear-gradient(225deg, #ff6a00 0%, #ee0979 100%);
+  /* background: linear-gradient(225deg, #ff6a00 0%, #ee0979 100%); */
+  background: linear-gradient(
+    90deg,
+    rgba(161, 156, 247, 1) 0%,
+    rgba(12, 223, 232, 1) 100%,
+    rgba(0, 212, 255, 1) 100%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }

@@ -3,19 +3,22 @@ import { getProjectList } from "@/app/api/getProjectList.ts";
 import ButtonProfile from "@/app/component/ButtonProfile";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
-import { Avatar, Input, Space, Table, Tag, Popover } from "antd";
+import { Avatar, Input, Space, Table, Tag, Popover, Breakpoint } from "antd";
+import { SortOrder } from "antd/es/table/interface";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { ColumnsProps } from "../../types/table";
+import { MemberProject } from "@/app/types/project";
 
 export default function TableProject() {
-  const columns: any = [
+  const columns: ColumnsProps[] = [
     {
       title: <p className="text-18 md:text-20 text-gradient-oneibc">ID</p>,
       dataIndex: "id",
       key: "id",
       sortDirections: ["descend"],
-      sorter: (item2: any, item1: any) => item2.id - +item1.id,
+      sorter: (item2, item1) => +item2.id - +item1.id,
     },
     {
       title: (
@@ -24,21 +27,27 @@ export default function TableProject() {
       dataIndex: "projectName",
       key: "projectName",
       sortDirections: ["descend"],
-      sorter: (item2: any, item1: any) => {
-        let projectName1 = item1.projectName?.trim().toLowerCase();
-        let projectName2 = item2.projectName?.trim().toLowerCase();
+      sorter: (item2, item1) => {
+        let projectName1 = item1.projectName
+          ?.toLocaleString()
+          .trim()
+          .toLowerCase();
+        let projectName2 = item2.projectName
+          ?.toLocaleString()
+          .trim()
+          .toLowerCase();
         if (projectName2 < projectName1) {
           return -1;
         } else {
           return 1;
         }
       },
-      render: (text: any, record: any, _: any) => {
+      render: (text, record, _) => {
         return (
           <Link
             target="_self"
             title={text}
-            href={`/project-detail/${record.id}`}
+            href={`/project-detail/${record?.id}`}
             className="text-not-long"
           >
             <p className="text-14 mg:text-16 font-bold leading-1-4 text-neutral-1 hover:text-red-1">
@@ -55,9 +64,15 @@ export default function TableProject() {
       dataIndex: "categoryName",
       key: "categoryName",
       sortDirections: ["descend"],
-      sorter: (item2: any, item1: any) => {
-        let categoryName1 = item1.categoryName?.trim().toLowerCase();
-        let categoryName2 = item2.categoryName?.trim().toLowerCase();
+      sorter: (item2, item1) => {
+        let categoryName1 = item1.categoryName
+          ?.toLocaleString()
+          .trim()
+          .toLowerCase();
+        let categoryName2 = item2.categoryName
+          ?.toLocaleString()
+          .trim()
+          .toLowerCase();
         if (categoryName1 < categoryName2) {
           return -1;
         } else {
@@ -70,76 +85,84 @@ export default function TableProject() {
       title: <p className="text-18 md:text-20 text-gradient-oneibc">Creator</p>,
       key: "creator",
       sortDirections: ["descend"],
-      sorter: (item2: any, item1: any) => {
-        let creator1 = item1.creator?.name.trim().toLowerCase();
-        let creator2 = item2.creator?.name.trim().toLowerCase();
+      sorter: (item2, item1) => {
+        let creator1 = item1.creator?.name
+          .toLocaleString()
+          .trim()
+          .toLowerCase();
+        let creator2 = item2.creator?.name
+          .toLocaleString()
+          .trim()
+          .toLowerCase();
         if (creator1 < creator2) {
           return -1;
         } else {
           return 1;
         }
       },
-      render: (_: any, record: any) => (
-        <Tag color="green">{record.creator?.name}</Tag>
-      ),
+      render: (_, record) => <Tag color="green">{record.creator?.name}</Tag>,
       responsive: ["lg"],
     },
     {
       title: <p className="text-18 md:text-20 text-gradient-oneibc">Members</p>,
       dataIndex: "members",
       key: "members",
-      render: (_: any, record: any) => {
+      render: (_, record) => {
         return (
           <div>
-            {record.members?.slice(0, 3).map((ele: any, index: any) => {
-              return (
-                <Popover
-                  key={index}
-                  placement="top"
-                  title={"Members"}
-                  content={() => {
-                    return (
-                      <table className="table">
-                        <thead>
-                          <tr>
-                            <th>UserId</th>
-                            <th>Avatar</th>
-                            <th>Name</th>
-                            <th></th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {record.members?.map((ele: any, index: any) => {
-                            return (
-                              <tr key={index}>
-                                <td>{ele.userId}</td>
-                                <td>
-                                  <Image
-                                    src={ele.avatar}
-                                    alt={ele.avatar}
-                                    width={30}
-                                    height={30}
-                                    title={ele.name}
-                                  />
-                                </td>
-                                <td>{ele.name}</td>
-                                <td>
-                                  <a title="Delete" className="text-danger">
-                                    <DeleteOutlined />
-                                  </a>
-                                </td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                    );
-                  }}
-                >
-                  <Avatar src={ele.avatar} />
-                </Popover>
-              );
-            })}
+            {record.members
+              ?.slice(0, 3)
+              .map((ele: MemberProject, index: number) => {
+                return (
+                  <Popover
+                    key={index}
+                    placement="top"
+                    title={"Members"}
+                    content={() => {
+                      return (
+                        <table className="table">
+                          <thead>
+                            <tr>
+                              <th>UserId</th>
+                              <th>Avatar</th>
+                              <th>Name</th>
+                              <th></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {record.members?.map(
+                              (ele: MemberProject, index: number) => {
+                                return (
+                                  <tr key={index}>
+                                    <td>{ele.userId}</td>
+                                    <td>
+                                      <Image
+                                        src={ele.avatar}
+                                        alt={ele.avatar}
+                                        width={30}
+                                        height={30}
+                                        title={ele.name}
+                                      />
+                                    </td>
+                                    <td>{ele.name}</td>
+                                    <td>
+                                      <a title="Delete" className="text-danger">
+                                        <DeleteOutlined />
+                                      </a>
+                                    </td>
+                                  </tr>
+                                );
+                              }
+                            )}
+                          </tbody>
+                        </table>
+                      );
+                    }}
+                  >
+                    <Avatar src={ele.avatar} />
+                  </Popover>
+                );
+              })}
             {record.members?.length > 3 ? <Avatar>...</Avatar> : ""}
             {/* <Popover
 							placement="topLeft"
@@ -197,12 +220,12 @@ export default function TableProject() {
       title: <p className="text-18 md:text-20 text-gradient-oneibc">Action</p>,
       dataIndex: "action",
       key: "action",
-      render: (_: any, record: any) => (
+      render: () => (
         <Space size="middle">
-          <a title="Edit" className="text-success" style={{ fontSize: 20 }}>
+          <a title="Edit" className="text-green-1" style={{ fontSize: 20 }}>
             <EditOutlined />
           </a>
-          <a title="Delete" className="text-danger" style={{ fontSize: 20 }}>
+          <a title="Delete" className="text-red-1" style={{ fontSize: 20 }}>
             <DeleteOutlined />
           </a>
         </Space>

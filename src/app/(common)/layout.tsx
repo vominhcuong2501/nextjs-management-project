@@ -16,10 +16,14 @@ export default function AuthLayout({ children }: CommonLayoutProps) {
   const handleCloseSidebarMobi = () => {
     setIsShow(false);
   };
+  // bg-gradient-to-r from-[#7fe2f3] to-[#5f88c9]
   return (
     <section
-      className="flex gap-3 lg:gap-5 p-3 lg:p-5 min-h-screen bg-gradient-to-r from-[#7fe2f3] to-[#5f88c9] "
-      // style={{ backgroundImage: "url(./bg-dashboard.jpg)" }}
+      className="flex gap-3 lg:gap-5 p-3 lg:p-5 min-h-screen "
+      style={{
+        background:
+          "radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(185,47,227,1) 100%);",
+      }}
     >
       <div className="hidden md:block">
         <div className="sticky top-0 !z-20">
