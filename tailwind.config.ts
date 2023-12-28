@@ -67,6 +67,7 @@ const config: Config = {
 					11: "#2B3481",
 					12: "#802dff",
 					13: "#0075FF",
+					14: "#7fe2f3",
 				},
 				orange: {
 					1: "#FFC20E",
