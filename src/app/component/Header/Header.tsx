@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Logo from "../Logo";
 import Link from "next/link";
-
 import PATH_NAME from "./../../constans/pathname";
 
 export default function Header() {

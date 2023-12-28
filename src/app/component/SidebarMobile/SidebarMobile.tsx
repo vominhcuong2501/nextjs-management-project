@@ -1,13 +1,22 @@
 "use client";
 
 import Link from "next/link";
+import React, { useEffect, useState } from "react";
 import Logo from "../Logo";
 import { Layout, Menu } from "antd";
 import { deleteCookie } from "cookies-next";
 import { usePathname, useRouter } from "next/navigation";
 import PATH_NAME from "@/app/constans/pathname";
+import useDataUser from "@/lib/store/client/infomationUser";
+import { useReverseModifyObject } from "@/lib/utils/modifyContent";
 
-export default function Sidebar() {
+interface SidebarMobileProps {
+  handleCloseSidebarMobi: () => void;
+}
+
+export default function SidebarMobile({
+  handleCloseSidebarMobi,
+}: SidebarMobileProps) {
   const { Sider } = Layout;
 
   function getItem(label?: any, key?: any, icon?: any, children?: any) {
@@ -40,15 +49,48 @@ export default function Sidebar() {
     router.push("/sign-in");
   };
 
+  const { userInfo } = useDataUser();
+
+  const convertUserInfo = useReverseModifyObject(userInfo, false);
+
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   const items = [
     getItem(
-      <p className="text-neutral-1">
-        <Link
-          href="/dashboard"
-          title="Dashboard"
-          target="_self"
-          className="text-neutral-1"
+      <p className="text-neutral-1" onClick={handleCloseSidebarMobi}>
+        {isClient && (
+          <Link href="/profile" title="Profile" target="_self">
+            Hi {convertUserInfo?.name} !!!
+          </Link>
+        )}
+      </p>,
+      "5",
+      <div className="bg-background-10  shadow-black6 text-center p-2 rounded-xl">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
         >
+          <path
+            d="M10.2453 2.39175C9.67522 1.77622 8.87893 1.43726 8.00003 1.43726C7.11643 1.43726 6.31751 1.77417 5.75003 2.38589C5.1764 3.00435 4.8969 3.84487 4.96253 4.75249C5.09261 6.54311 6.4552 7.99975 8.00003 7.99975C9.54485 7.99975 10.9051 6.54341 11.0372 4.75307C11.1037 3.85366 10.8225 3.01489 10.2453 2.39175Z"
+            fill="#0075FF"
+          />
+          <path
+            d="M13.1564 14.5616H2.84392C2.70894 14.5634 2.57526 14.535 2.45262 14.4786C2.32997 14.4222 2.22145 14.3392 2.13493 14.2355C1.9445 14.0079 1.86775 13.6971 1.92458 13.3827C2.17185 12.011 2.94353 10.8588 4.15642 10.0499C5.23396 9.33183 6.5989 8.93661 8.00016 8.93661C9.40143 8.93661 10.7664 9.33212 11.8439 10.0499C13.0568 10.8585 13.8285 12.0107 14.0757 13.3824C14.1326 13.6968 14.0558 14.0076 13.8654 14.2352C13.7789 14.3389 13.6704 14.422 13.5478 14.4785C13.4251 14.5349 13.2914 14.5633 13.1564 14.5616Z"
+            fill="#0075FF"
+          />
+        </svg>
+      </div>
+    ),
+    getItem(
+      <p className="text-neutral-1" onClick={handleCloseSidebarMobi}>
+        <Link href="/dashboard" title="Dashboard" target="_self">
           Dashboard
         </Link>
       </p>,
@@ -85,7 +127,7 @@ export default function Sidebar() {
       </div>
     ),
     getItem(
-      <p className="text-neutral-1">
+      <p className="text-neutral-1" onClick={handleCloseSidebarMobi}>
         <Link href="/table-project" title="Project Management" target="_self">
           Project Management
         </Link>
@@ -131,13 +173,8 @@ export default function Sidebar() {
       </div>
     ),
     getItem(
-      <p className="text-neutral-1">
-        <Link
-          href="/table-user"
-          title="User Management"
-          target="_self"
-          className="text-neutral-1"
-        >
+      <p className="text-neutral-1" onClick={handleCloseSidebarMobi}>
+        <Link href="/table-user" title="User Management" target="_self">
           User Management
         </Link>
       </p>,
@@ -162,13 +199,8 @@ export default function Sidebar() {
       </div>
     ),
     getItem(
-      <p className="text-neutral-1">
-        <Link
-          href="/create-project"
-          title="Create Project"
-          target="_self"
-          className="text-neutral-1"
-        >
+      <p className="text-neutral-1" onClick={handleCloseSidebarMobi}>
+        <Link href="/create-project" title="Create Project" target="_self">
           Create Project
         </Link>
       </p>,
@@ -192,39 +224,15 @@ export default function Sidebar() {
         </svg>
       </div>
     ),
+
     getItem(
-      <p className="text-neutral-1">
-        <Link
-          href="/profile"
-          title="Profile"
-          target="_self"
-          className="text-neutral-1"
-        >
-          My Profile
-        </Link>
-      </p>,
-      "5",
-      <div className="bg-background-10  shadow-black6 text-center p-2 rounded-xl">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 16 16"
-          fill="none"
-        >
-          <path
-            d="M10.2453 2.39175C9.67522 1.77622 8.87893 1.43726 8.00003 1.43726C7.11643 1.43726 6.31751 1.77417 5.75003 2.38589C5.1764 3.00435 4.8969 3.84487 4.96253 4.75249C5.09261 6.54311 6.4552 7.99975 8.00003 7.99975C9.54485 7.99975 10.9051 6.54341 11.0372 4.75307C11.1037 3.85366 10.8225 3.01489 10.2453 2.39175Z"
-            fill="#0075FF"
-          />
-          <path
-            d="M13.1564 14.5616H2.84392C2.70894 14.5634 2.57526 14.535 2.45262 14.4786C2.32997 14.4222 2.22145 14.3392 2.13493 14.2355C1.9445 14.0079 1.86775 13.6971 1.92458 13.3827C2.17185 12.011 2.94353 10.8588 4.15642 10.0499C5.23396 9.33183 6.5989 8.93661 8.00016 8.93661C9.40143 8.93661 10.7664 9.33212 11.8439 10.0499C13.0568 10.8585 13.8285 12.0107 14.0757 13.3824C14.1326 13.6968 14.0558 14.0076 13.8654 14.2352C13.7789 14.3389 13.6704 14.422 13.5478 14.4785C13.4251 14.5349 13.2914 14.5633 13.1564 14.5616Z"
-            fill="#0075FF"
-          />
-        </svg>
-      </div>
-    ),
-    getItem(
-      <p className="text-neutral-1" onClick={handleLogOut}>
+      <p
+        className="text-neutral-1"
+        onClick={() => {
+          handleLogOut();
+          handleCloseSidebarMobi();
+        }}
+      >
         Sign Out
       </p>,
       "6",
@@ -252,19 +260,36 @@ export default function Sidebar() {
 
   return (
     <Sider
-      className="p-2 lg:p-4 min-w-100px rounded-2xl "
+      className="p-2 lg:p-4 min-w-100px h-screen !w-screen"
       style={{
         background: "rgba(0, 0, 0, 0.5)",
       }}
     >
-      <Link
-        href="/"
-        target="_self"
-        title="Homepage"
-        className="text-center py-6 block border-b border-dashed border-neutral-1"
-      >
-        <Logo />
-      </Link>
+      <div className="flex items-center justify-between border-b border-dashed border-neutral-1 py-2">
+        <Link
+          href="/"
+          target="_self"
+          title="Homepage"
+          className="block pl-2"
+          onClick={handleCloseSidebarMobi}
+        >
+          <Logo />
+        </Link>
+        <svg
+          onClick={handleCloseSidebarMobi}
+          width="44"
+          height="44"
+          viewBox="0 0 44 44"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="icon-burger cursor-pointer"
+        >
+          <path
+            d="M27.9952 17.3475C28.366 16.9767 28.366 16.3755 27.9952 16.0047C27.6243 15.6339 27.0231 15.6339 26.6523 16.0047L21.9999 20.6571L17.3475 16.0047C16.9767 15.6339 16.3755 15.6339 16.0047 16.0047C15.6339 16.3755 15.6339 16.9767 16.0047 17.3475L20.6571 21.9999L16.0047 26.6523C15.6339 27.0231 15.6339 27.6243 16.0047 27.9952C16.3755 28.366 16.9767 28.366 17.3475 27.9952L21.9999 23.3428L26.6523 27.9952C27.0231 28.366 27.6243 28.366 27.9952 27.9952C28.366 27.6243 28.366 27.0231 27.9952 26.6523L23.3428 21.9999L27.9952 17.3475Z"
+            fill="#262626"
+          />
+        </svg>
+      </div>
 
       <Menu
         defaultSelectedKeys={[activePath]}
