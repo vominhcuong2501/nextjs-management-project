@@ -21,7 +21,7 @@ export default function Button(props: ButtonProps) {
 		<>
 			{disabled && customDisabled ? (
 				<div
-					className={`border text-neutral-6 bg-neutral-4 px-10 md:px-10 h-11 md:h-14 md:mt-8 mt-5 rounded-full text-14 md:text-16 font-semibold gap-2 max-w-fit mx-auto flex items-center cursor-not-allowed text-center ${
+					className={`border text-neutral-6 bg-neutral-4 px-10 md:px-10 h-11 md:h-14 md:mt-8 mt-5 rounded-full text-14 md:text-16 font-semibold gap-2 max-w-fit mx-auto flex items-center cursor-not-allowed text-center  ${
 						buttonDisableAdditionalClass ? buttonDisableAdditionalClass : ""
 					}`}
 				>

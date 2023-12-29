@@ -24,7 +24,7 @@ export default function Input({
 	name,
 	register,
 	rules,
-	classNameInput = "w-full md:h-12 h-11 rounded-[10px] px-3 outline-none transition-colors text-14 lg:text-16 border-[2px] border-[#6a448b] text-neutral-1 focus:border-blue-6 leading-1-4 bg-transparent drop-shadow-2xl",
+	classNameInput = "w-full md:h-12 h-11 rounded-[10px] px-3 outline-none transition-colors text-14 lg:text-16 border-[2px] border-blue-15 text-neutral-1 focus:border-neutral-1 leading-1-4 bg-transparent drop-shadow-2xl",
 	classNameError = "mt-1 lg:min-h-[1.25rem] text-12 lg:text-14 text-red-1 ",
 	id,
 	nameLabel,
