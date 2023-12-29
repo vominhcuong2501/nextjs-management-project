@@ -18,3 +18,8 @@ export interface ProjectItem {
 	alias: string;
 	deleted: boolean;
 }
+
+export interface CreateProject {
+	projectName: string;
+	description: string;
+}

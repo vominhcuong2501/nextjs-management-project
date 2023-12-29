@@ -4,7 +4,7 @@ const PATH_NAME = {
   SIGN_UP: '/sign-up',
   DASHBOARD: '/dashboard',
   PROFILE: '/profile',
-  CREATE_PROJECT: '/create-project',
+  CREATE_PROJECT: '/project/add',
   TABLE_PROJECT: '/table-project',
   TABLE_USER: '/table-user',
 }

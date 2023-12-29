@@ -46,7 +46,7 @@ export default function SidebarMobile({
 
 	const handleLogOut = () => {
 		deleteCookie("__token");
-		router.push("/sign-in");
+		router.push(PATH_NAME.SIGN_IN);
 	};
 
 	const { userInfo } = useDataUser();
@@ -63,7 +63,7 @@ export default function SidebarMobile({
 		getItem(
 			<p className="text-neutral-8" onClick={handleCloseSidebarMobi}>
 				{isClient && (
-					<Link href="/profile" title="Profile" target="_self">
+					<Link href={PATH_NAME.PROFILE} title="Profile" target="_self">
 						Hi {convertUserInfo?.name} !!!
 					</Link>
 				)}
@@ -90,7 +90,7 @@ export default function SidebarMobile({
 		),
 		getItem(
 			<p className="text-neutral-8" onClick={handleCloseSidebarMobi}>
-				<Link href="/dashboard" title="Dashboard" target="_self">
+				<Link href={PATH_NAME.DASHBOARD} title="Dashboard" target="_self">
 					Dashboard
 				</Link>
 			</p>,
@@ -128,7 +128,11 @@ export default function SidebarMobile({
 		),
 		getItem(
 			<p className="text-neutral-8" onClick={handleCloseSidebarMobi}>
-				<Link href="/table-project" title="Project Management" target="_self">
+				<Link
+					href={PATH_NAME.TABLE_PROJECT}
+					title="Project Management"
+					target="_self"
+				>
 					Project Management
 				</Link>
 			</p>,
@@ -174,7 +178,11 @@ export default function SidebarMobile({
 		),
 		getItem(
 			<p className="text-neutral-8" onClick={handleCloseSidebarMobi}>
-				<Link href="/table-user" title="User Management" target="_self">
+				<Link
+					href={PATH_NAME.TABLE_USER}
+					title="User Management"
+					target="_self"
+				>
 					User Management
 				</Link>
 			</p>,
@@ -200,7 +208,11 @@ export default function SidebarMobile({
 		),
 		getItem(
 			<p className="text-neutral-8" onClick={handleCloseSidebarMobi}>
-				<Link href="/create-project" title="Create Project" target="_self">
+				<Link
+					href={PATH_NAME.CREATE_PROJECT}
+					title="Create Project"
+					target="_self"
+				>
 					Create Project
 				</Link>
 			</p>,

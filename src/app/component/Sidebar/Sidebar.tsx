@@ -41,7 +41,7 @@ export default function Sidebar() {
 
 	const handleLogOut = () => {
 		deleteCookie("__token");
-		router.push("/sign-in");
+		router.push(PATH_NAME.SIGN_IN);
 	};
 
 	const { userInfo } = useDataUser();
@@ -58,7 +58,7 @@ export default function Sidebar() {
 		getItem(
 			<p className="text-neutral-8">
 				{isClient && (
-					<Link href="/profile" title="Profile" target="_self">
+					<Link href={PATH_NAME.PROFILE} title="Profile" target="_self">
 						Hi {convertUserInfo?.name} !!!
 					</Link>
 				)}
@@ -86,7 +86,7 @@ export default function Sidebar() {
 		getItem(
 			<p className="text-neutral-8">
 				<Link
-					href="/dashboard"
+					href={PATH_NAME.DASHBOARD}
 					title="Dashboard"
 					target="_self"
 					className="text-neutral-8"
@@ -128,7 +128,11 @@ export default function Sidebar() {
 		),
 		getItem(
 			<p className="text-neutral-8">
-				<Link href="/table-project" title="Project Management" target="_self">
+				<Link
+					href={PATH_NAME.TABLE_PROJECT}
+					title="Project Management"
+					target="_self"
+				>
 					Project Management
 				</Link>
 			</p>,
@@ -175,7 +179,7 @@ export default function Sidebar() {
 		getItem(
 			<p className="text-neutral-8">
 				<Link
-					href="/table-user"
+					href={PATH_NAME.TABLE_USER}
 					title="User Management"
 					target="_self"
 					className="text-neutral-8"
@@ -206,7 +210,7 @@ export default function Sidebar() {
 		getItem(
 			<p className="text-neutral-8">
 				<Link
-					href="/create-project"
+					href={PATH_NAME.CREATE_PROJECT}
 					title="Create Project"
 					target="_self"
 					className="text-neutral-8"
@@ -241,7 +245,6 @@ export default function Sidebar() {
 			</p>,
 			"6",
 			<div className="bg-background-10  shadow-black6 text-center p-2 rounded-xl">
-				{" "}
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					width="16"
@@ -266,7 +269,7 @@ export default function Sidebar() {
 		<Sider className="p-2 min-w-100px rounded-lg bg-white bg-opacity-50">
 			<>
 				<Link
-					href="/"
+					href={PATH_NAME.HOME}
 					target="_self"
 					title="Homepage"
 					className="text-center py-6 block border-b border-dashed border-neutral-4"

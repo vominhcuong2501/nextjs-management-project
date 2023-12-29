@@ -55,3 +55,17 @@ export const signUpSchema = () =>
 				"Password is invalid"
 			),
 	});
+
+export const createProjectSchema = () =>
+	yup.object({
+		projectName: yup
+			.string()
+			.trim()
+			.required("Project Name is required")
+			.max(255, "Project Name is invalid"),
+		description: yup
+			.string()
+			.trim()
+			.required("Description is required")
+			.max(255, "Description is invalid"),
+	});
