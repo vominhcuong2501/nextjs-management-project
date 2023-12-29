@@ -104,7 +104,7 @@ export default function SignIn() {
 					message: "Successfully!",
 				});
 
-				router.push(PATH_NAME.DASHBOARD);
+				router.push(PATH_NAME.PROFILE);
 			} else {
 				setError("email", {
 					message: responseSignIn?.response.data.message,

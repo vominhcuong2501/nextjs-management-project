@@ -180,6 +180,12 @@ aside {
 	border-radius: 15px !important;
 }
 
+.ant-menu-item-selected a,
+.ant-menu-item:hover a,
+.ant-menu-item:hover p {
+	color: #fff !important;
+}
+
 .ant-menu-item-selected div,
 .ant-menu-item:hover div {
 	background-color: #0075ff;
@@ -213,19 +219,18 @@ aside {
 }
 
 .ant-table {
-	background-color: rgba(0, 0, 0, 0.5) !important;
-	color: #fff !important;
+	background: rgba(255, 255, 255, 0.5) !important;
+	color: #363636 !important;
 	backdrop-filter: blur(4px);
 }
 
 .ant-table-cell-row-hover,
 .ant-table-column-sort {
-	background-color: rgba(0, 0, 0, 0.5) !important;
+	background-color: rgba(255, 255, 255, 0.5) !important;
 }
 
 .ant-table-thead th {
-	background-color: rgba(0, 0, 0, 0.1) !important;
-	color: #fff !important;
+	background-color: rgba(255, 255, 255, 0.5) !important;
 	font-weight: bold !important;
 }
 
@@ -247,19 +252,18 @@ aside {
 	color: #fff !important;
 }
 
-.text-gradient-oneibc {
-	/* background: linear-gradient(225deg, #ff6a00 0%, #ee0979 100%); */
-	/* background: linear-gradient(
-    90deg,
-    rgba(161, 156, 247, 1) 0%,
-    rgba(12, 223, 232, 1) 100%,
-    rgba(0, 212, 255, 1) 100%
-  ); */
+.text-gradient-blue {
 	background: linear-gradient(
 		0deg,
 		rgba(34, 193, 195, 1) 25%,
 		rgba(45, 122, 253, 1) 100%
 	);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
+.text-gradient-red {
+	background: linear-gradient(225deg, #ff6a00 0%, #ee0979 100%);
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
 }
@@ -278,5 +282,10 @@ aside {
 		width: 100% !important;
 		max-width: 100% !important;
 		flex: 0 0 100% !important;
+	}
+}
+@media (max-width: 767.98px) {
+	.ant-table-cell {
+		padding: 8px 12px !important;
 	}
 }

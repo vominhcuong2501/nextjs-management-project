@@ -31,13 +31,11 @@ const BaseComponent = () => {
 	const pageIsNotAuth = listNotRequiredAuth.includes(pathname as string);
 
 	if (typeof window !== "undefined" && !getCookie("__token") && pageIsAuth) {
-		// router.push("/sign-in");
 		window.location.href = PATH_NAME.SIGN_IN;
 	}
 
 	if (typeof window !== "undefined" && getCookie("__token") && pageIsNotAuth) {
-		// router.push("/dashboard");
-		window.location.href = PATH_NAME.DASHBOARD;
+		window.location.href = PATH_NAME.PROFILE;
 	}
 
 	const fetchData = async (tokenUser: string) => {
@@ -47,7 +45,7 @@ const BaseComponent = () => {
 		}
 
 		try {
-			router.push("/dashboard");
+			router.push(PATH_NAME.PROFILE);
 			updateStatusAuth(true);
 			// const userInfo = await onSubmitGetUser(tokenUser);
 
