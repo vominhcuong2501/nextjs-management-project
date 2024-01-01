@@ -2,12 +2,12 @@
 import { getProjectCategory } from "@/app/api/getProjectCategory";
 import Button from "@/app/component/Button";
 import Input from "@/app/component/Input";
-import { CreateProject } from "@/app/types/project";
+import { CreateProject, ProjectItem } from "@/app/types/project";
 import { createProjectSchema } from "@/lib/utils/rules";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { notification } from "antd";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { MouseEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Editor } from "primereact/editor";
@@ -15,11 +15,23 @@ import SelectController from "@/app/component/SelectController";
 import { createProject } from "@/app/api/createProject";
 import { getCookie } from "cookies-next";
 import PATH_NAME from "@/app/constans/pathname";
+import { getProjectIdDetail } from "@/app/api/getProjectIdDetail";
+import { updateProjectId } from "@/app/api/updateProjectId";
 
-export default function CreateProject() {
+export default function CreateProjectPage() {
+  const defaultValues: CreateProject = {
+    projectName: "",
+    categoryId: 0,
+    description: "",
+  };
+
+  const [formState, setFormState] = useState<CreateProject>(defaultValues);
+
   const [_, setIsFormValid] = useState(false);
 
   const [text, setText] = useState("");
+
+  const [nameProject, setNameProject] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -27,10 +39,7 @@ export default function CreateProject() {
 
   const router = useRouter();
 
-  const defaultValues: CreateProject = {
-    projectName: "",
-    categoryId: 0,
-  };
+  const params = useParams();
 
   const { data } = useQuery({
     queryKey: ["get-categories"],
@@ -43,14 +52,69 @@ export default function CreateProject() {
     }
   );
 
+  // const queryClient = useQueryClient();
+
+  // const addProjectMutation = useMutation({
+  //   mutationFn: (body: CreateProject) => {
+  //     return createProject(
+  //       {
+  //         ...body,
+  //         projectName: nameProject,
+  //         description: text,
+  //       },
+  //       tokenUser
+  //     );
+  //   },
+  //   onSuccess: (data) => {
+  //     queryClient.setQueryData(["get-project-list"], data);
+  //   },
+  // });
+
+  const projectQuery = useQuery({
+    queryKey: ["get-project-detail-id", params?.slug],
+
+    queryFn: () => getProjectIdDetail(params?.slug as string, tokenUser),
+
+    enabled: params?.slug !== undefined,
+
+    staleTime: 1000 * 10,
+  });
+
+  useEffect(() => {
+    if (projectQuery?.data?.statusCode === 200) {
+      setFormState(projectQuery?.data?.content);
+      setNameProject(projectQuery?.data?.content.projectName);
+    }
+  }, [projectQuery?.data?.content]);
+
+  // const updateProjectMutation = useMutation({
+  //   mutationFn: () => {
+  //     return updateProjectId(
+  //       params?.slug as string,
+  //       {
+  //         projectName: nameProject,
+  //         description: text,
+  //         categoryId: 0,
+  //       },
+  //       tokenUser
+  //     );
+  //   },
+  //   onSuccess: (data) => {
+  //     queryClient.setQueryData(
+  //       ["get-project-detail-id", params?.slug],
+  //       data?.data.content
+  //     );
+  //   },
+  // });
+
   const {
     handleSubmit,
     register,
-    setError,
+    // setError,
     setValue,
     control,
     formState: { errors, isValid },
-  } = useForm<CreateProject>({
+  } = useForm<any>({
     mode: "all",
     defaultValues,
     resolver: yupResolver(createProjectSchema()),
@@ -61,45 +125,100 @@ export default function CreateProject() {
     setIsFormValid(isValid);
   }, [isValid]);
 
-  const handleChange = (value: string) => {
-    console.log(`selected ${value}`);
-  };
-
-  const onSubmit = handleSubmit(async (formDataLogin: CreateProject) => {
+  const onSubmit = handleSubmit(async (formProject: CreateProject) => {
     setIsLoading(true);
-    console.log(formDataLogin);
+    // if (params?.slug === "add") {
+    //   addProjectMutation.mutate(formState, {
+    //     onSuccess: () => {
+    //       setFormState(defaultValues);
+    //       notification.success({
+    //         message: "Successfully!",
+    //       });
 
-    try {
-      const responseSignIn = await createProject(
-        {
-          ...formDataLogin,
-          description: text,
-        },
-        tokenUser
-      );
+    //       setIsLoading(false);
 
-      if (responseSignIn?.statusCode === 200) {
-        setIsLoading(false);
+    //       setNameProject("");
 
-        notification.success({
-          message: "Successfully!",
-        });
-        setIsLoading(false);
+    //       setValue("categoryId", 0);
 
-        setValue("projectName", "");
-        setValue("categoryId", 0);
-        setText("");
+    //       setText("");
+    //     },
+    //   });
+    // } else {
+    //   updateProjectMutation.mutate(undefined, {
+    //     onSuccess: (_) => {
+    //       notification.success({
+    //         message: "Successfully!",
+    //       });
 
-        // router.push(PATH_NAME.PROFILE);
-      } else {
-        notification.success({
-          message: responseSignIn?.response.data.message,
-        });
+    //       setIsLoading(false);
+    //     },
+    //   });
+    // }
 
-        setIsLoading(false);
+    if (params?.slug === "add") {
+      try {
+        const responseCreateProject = await createProject(
+          {
+            ...formProject,
+            description: text,
+          },
+          tokenUser
+        );
+
+        if (responseCreateProject?.statusCode === 200) {
+          notification.success({
+            message: "Successfully!",
+          });
+
+          setIsLoading(false);
+
+          setNameProject("");
+
+          setValue("categoryId", 0);
+
+          setText("");
+        } else {
+          notification.error({
+            message: responseCreateProject?.response.data.message,
+          });
+
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error(error);
       }
-    } catch (error) {
-      console.error(error);
+    } else {
+      try {
+        const responseUpdateProject = await updateProjectId(
+          +params?.slug,
+          {
+            ...formProject,
+            id: formState?.id,
+            creator: formState?.creator?.id,
+            description: text,
+          },
+          tokenUser
+        );
+
+        if (responseUpdateProject?.statusCode === 200) {
+          notification.success({
+            message: "Successfully!",
+          });
+
+          setIsLoading(false);
+
+          router.push(PATH_NAME.TABLE_PROJECT);
+        } else {
+          notification.error({
+            message: responseUpdateProject?.response.data.message,
+          });
+
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error(error);
+      }
     }
   });
 
@@ -111,11 +230,26 @@ export default function CreateProject() {
     <>
       <div className="rounded-lg bg-white bg-opacity-50 backdrop-blur-lg p-4">
         <h1 className="text-24 lg:text-32 text-gradient-red font-bold leading-1-4 ">
-          Create Project
+          {params.slug === "add" ? "Create" : "Update"} Project
         </h1>
       </div>
       <div className="rounded-lg bg-white bg-opacity-50 backdrop-blur-lg p-4 mt-4">
         <form className="grid grid-cols-1 gap-5">
+          {formState?.id && (
+            <Input
+              classNameLabel="text-neutral-8"
+              nameLabel="Project ID"
+              required
+              name="projectId"
+              type="text"
+              id="projectID"
+              className="relative group "
+              classNameInput="!bg-neutral-1 mt-2 text-neutral-8 cursor-no-drop"
+              disabled={true}
+              value={formState?.id}
+            />
+          )}
+
           <Input
             classNameLabel="text-neutral-8"
             nameLabel="Project Name"
@@ -128,6 +262,8 @@ export default function CreateProject() {
             register={register}
             maxLength={255}
             classNameInput="!bg-neutral-1 mt-2 text-neutral-8"
+            value={nameProject}
+            onChange={(e) => setNameProject(e.target.value)}
           />
 
           <div>
@@ -137,17 +273,15 @@ export default function CreateProject() {
             >
               Project Category <span className="text-red-1">*</span>
             </label>
-            {/* <Select
-              onChange={handleChange}
-              options={dataOption}
-              className="w-full mt-2 md:h-12 h-11 rounded-lg  outline-none transition-colors text-14 lg:text-16 border-[2px] border-blue-15 text-neutral-1 focus:border-blue-7 leading-1-4"
-            /> */}
-
             <SelectController
               name="categoryId"
               control={control}
               options={dataOption}
-              optionDefault="Choose Project Category"
+              optionDefault={
+                formState?.projectCategory?.name
+                  ? formState?.projectCategory?.name
+                  : "Choose Project Category"
+              }
               errorMessage={errors.categoryId?.message}
             />
           </div>
@@ -160,7 +294,7 @@ export default function CreateProject() {
               Description <span className="text-red-1">*</span>
             </label>
             <Editor
-              value={text}
+              value={formState?.description ? formState?.description : text}
               onTextChange={(e: any) => setText(e.htmlValue)}
               className="min-h-[35vh]  border-[2px] border-blue-15 rounded-lg overflow-hidden mt-2"
             />

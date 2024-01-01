@@ -14,7 +14,7 @@ interface SelectControllerProps {
   errors?: Record<string, any>;
   optionDefault?: string;
   classNameError?: string;
-  errorMessage?: string;
+  errorMessage?: any;
   classNameSelect?: string;
 }
 
