@@ -25,20 +25,22 @@ import { getCookie } from "cookies-next";
 import { getUserList } from "@/app/api/getUserList";
 import { addMemberProject } from "@/app/api/addMemberProject";
 import { getUserKeyword } from "@/app/api/getUserKeyword";
+import { deleteMemberProject } from "@/app/api/deleteMemberProject";
 
 export default function TableProject() {
 	const [valuePopupMember, setValuePopupMember] = useState("");
-
-	const tokenUser = getCookie("__token") as string;
 
 	const [searchTerm, setSearchTerm] = useState("");
 
 	const [userData, setUserData] = useState([]);
 
-	const queryClient = useQueryClient();
-
 	const [projectData, setProjectData] = useState();
 
+	const tokenUser = getCookie("__token") as string;
+
+	const queryClient = useQueryClient();
+
+	// search project name
 	const handleInputChange = (e: any) => {
 		setSearchTerm(e.target.value);
 		const filteredData = data?.content.filter((item: any) =>
@@ -47,27 +49,31 @@ export default function TableProject() {
 		searchTerm.length > 0 && setProjectData(filteredData);
 	};
 
+	// call api get project list
 	const { data, isLoading, status }: any = useQuery({
 		queryKey: ["get-project-list"],
 		queryFn: () => getProjectList(),
 	});
 
+	// call api get user list
 	const dataUser = useQuery({
 		queryKey: ["get-user-list"],
 		queryFn: () => getUserList(tokenUser),
 	});
 
+	// sau khi call api set vao state render UI
 	useEffect(() => {
 		status && setProjectData(data?.content);
 		dataUser?.status && setUserData(dataUser?.data?.content);
 	}, [data?.content]);
 
-	const deleteStudentMutation = useMutation({
+	// delete project;
+	const deleteProjectMutation = useMutation({
 		mutationFn: (id: number | string) => deleteProject(id, tokenUser),
 
 		onSuccess: (_, id) => {
 			notification.success({
-				message: `Deleta successfully with ID: ${id}`,
+				message: `Delete successfully with ID: ${id} !`,
 			});
 
 			queryClient.invalidateQueries({
@@ -77,10 +83,11 @@ export default function TableProject() {
 		},
 	});
 
-	const handleDelete = (id: number) => {
-		deleteStudentMutation.mutate(id);
+	const handleDeleteProject = async (id: number) => {
+		deleteProjectMutation.mutate(id);
 	};
 
+	// add member project
 	const addMemberMutation = useMutation({
 		mutationFn: (data: AddMemberProjectProps) =>
 			addMemberProject(data, tokenUser),
@@ -101,8 +108,33 @@ export default function TableProject() {
 		addMemberMutation.mutate(data);
 	};
 
+	// remove member project
+	const deleteMemberMutation = useMutation({
+		mutationFn: (data: AddMemberProjectProps) =>
+			deleteMemberProject(data, tokenUser),
+
+		onSuccess: () => {
+			notification.success({
+				message: `Remove member successfully !`,
+			});
+
+			queryClient.invalidateQueries({
+				queryKey: ["get-project-list"],
+				exact: true,
+			});
+		},
+	});
+
+	const handleDeleteMember = (data: AddMemberProjectProps) => {
+		deleteMemberMutation.mutate(data);
+	};
+
+	// search member to add project
 	const dataSearchMemberMutation = useMutation({
 		mutationFn: (keyword: string) => getUserKeyword(keyword, tokenUser),
+		onSuccess: (data) => {
+			setUserData(data?.content);
+		},
 	});
 
 	const handleSearchMemberAdd = (keyword: string) => {
@@ -224,6 +256,12 @@ export default function TableProject() {
 																			<p
 																				title="Delete member"
 																				className="text-red-1 hover:text-blue-4 cursor-pointer"
+																				onClick={() =>
+																					handleDeleteMember({
+																						projectId: record.id,
+																						userId: Number(ele.userId),
+																					})
+																				}
 																			>
 																				<DeleteOutlined />
 																			</p>
@@ -302,7 +340,7 @@ export default function TableProject() {
 					<p
 						title="Delete Project"
 						className="text-red-1 text-20 cursor-pointer"
-						onClick={() => handleDelete(record?.id)}
+						onClick={() => handleDeleteProject(record?.id)}
 					>
 						<DeleteOutlined />
 					</p>
