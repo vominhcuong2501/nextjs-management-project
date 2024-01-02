@@ -1,16 +1,16 @@
 import HttpStatusCode from "@/lib/utils/httpStatusCode.enum";
 import { BASE_URL_API } from "../constans/common";
 import { request } from "./axios";
-import { CreateProject } from "../types/project";
+import { AddMemberProjectProps } from "../types/project";
 
-export const createProject = async (
-	dataCreate: CreateProject,
+export const addMemberProject = async (
+	dataMember: AddMemberProjectProps,
 	tokenUser: string
 ) => {
 	try {
 		const response = await request.post(
-			`${BASE_URL_API}/Project/createProjectAuthorize`,
-			dataCreate,
+			`${BASE_URL_API}/Project/assignUserProject`,
+			dataMember,
 			{
 				headers: {
 					Authorization: `Bearer ${tokenUser}`,

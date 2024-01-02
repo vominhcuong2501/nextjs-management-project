@@ -1,16 +1,14 @@
 import HttpStatusCode from "@/lib/utils/httpStatusCode.enum";
 import { BASE_URL_API } from "../constans/common";
 import { request } from "./axios";
-import { CreateProject } from "../types/project";
 
-export const createProject = async (
-	dataCreate: CreateProject,
+export const deleteProject = async (
+	projectId: number | string,
 	tokenUser: string
 ) => {
 	try {
-		const response = await request.post(
-			`${BASE_URL_API}/Project/createProjectAuthorize`,
-			dataCreate,
+		const response = await request.delete(
+			`${BASE_URL_API}/Project/deleteProject?projectId=${projectId}`,
 			{
 				headers: {
 					Authorization: `Bearer ${tokenUser}`,

@@ -176,7 +176,7 @@ aside {
 
 .ant-menu-item-selected,
 .ant-menu-item:hover {
-	background-color: #777b91 !important;
+	background-color: rgba(255, 255, 255, 0.3) !important;
 	border-radius: 15px !important;
 }
 
@@ -247,11 +247,6 @@ aside {
 	border-inline-end: none !important;
 }
 
-:where(.css-dev-only-do-not-override-gzal6t).ant-table-wrapper
-	.ant-table-column-sorter {
-	color: #fff !important;
-}
-
 .text-gradient-blue {
 	background: linear-gradient(
 		0deg,
@@ -288,4 +283,13 @@ aside {
 	.ant-table-cell {
 		padding: 8px 12px !important;
 	}
+}
+
+/* EDITOR  */
+.ql-toolbar.ql-snow {
+	border: none !important;
+	border-bottom: 2px solid #22c1c3 !important;
+}
+.p-editor-content {
+	border: none !important;
 }
