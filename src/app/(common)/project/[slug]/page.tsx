@@ -1,11 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import { getProjectCategory } from "@/app/api/getProjectCategory";
 import Button from "@/app/component/Button";
 import Input from "@/app/component/Input";
-import { CreateProject, ProjectItem } from "@/app/types/project";
+import { ProjectItem } from "@/app/types/project";
 import { createProjectSchema } from "@/lib/utils/rules";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { notification } from "antd";
 import { useParams, useRouter } from "next/navigation";
 import { MouseEvent, useEffect, useState } from "react";
@@ -17,17 +18,18 @@ import { getCookie } from "cookies-next";
 import PATH_NAME from "@/app/constans/pathname";
 import { getProjectIdDetail } from "@/app/api/getProjectIdDetail";
 import { updateProjectId } from "@/app/api/updateProjectId";
+import { Option } from "@/app/component/SelectController/SelectController";
 
 export default function CreateProjectPage() {
-	const defaultValues: CreateProject = {
+	const defaultValues: ProjectItem = {
 		projectName: "",
 		categoryId: 0,
 		description: "",
 	};
 
-	const [formState, setFormState] = useState<CreateProject>(defaultValues);
+	const [formState, setFormState] = useState<ProjectItem>(defaultValues);
 
-	const [_, setIsFormValid] = useState(false);
+	const [valueCategoryId, setValueCategoryId] = useState(0);
 
 	const [text, setText] = useState("");
 
@@ -52,24 +54,6 @@ export default function CreateProjectPage() {
 		}
 	);
 
-	// const queryClient = useQueryClient();
-
-	// const addProjectMutation = useMutation({
-	//   mutationFn: (body: CreateProject) => {
-	//     return createProject(
-	//       {
-	//         ...body,
-	//         projectName: nameProject,
-	//         description: text,
-	//       },
-	//       tokenUser
-	//     );
-	//   },
-	//   onSuccess: (data) => {
-	//     queryClient.setQueryData(["get-project-list"], data);
-	//   },
-	// });
-
 	const projectQuery = useQuery({
 		queryKey: ["get-project-detail-id", params?.slug],
 
@@ -84,16 +68,23 @@ export default function CreateProjectPage() {
 
 	useEffect(() => {
 		if (projectQuery?.data?.statusCode === 200) {
+			//  hiển thị UI
 			setFormState(projectQuery?.data?.content);
 			setNameProject(projectQuery?.data?.content.projectName);
 			setText(projectQuery?.data?.content.description);
+
+			// set giá trị cho các field
+			setValue("categoryId", projectQuery?.data?.content.projectCategory?.id);
+			setValue("projectName", projectQuery?.data?.content.projectName);
+			setValue("description", projectQuery?.data?.content.description);
+
+			setValueCategoryId(projectQuery?.data?.content.projectCategory?.id);
 		}
 	}, [projectQuery?.data]);
 
 	const {
 		handleSubmit,
 		register,
-		// setError,
 		setValue,
 		control,
 		formState: { errors, isValid },
@@ -104,41 +95,28 @@ export default function CreateProjectPage() {
 		shouldFocusError: false,
 	});
 
+	// validate form
+	const [isFormChange, setIsFormChange] = useState(isValid);
+
+	const getProjectDetail = {
+		projectName: formState?.projectName,
+		categoryId: formState?.projectCategory?.id,
+		description: formState?.description,
+	};
+	const currentProjectDetail = {
+		projectName: nameProject,
+		categoryId: valueCategoryId,
+		description: text,
+	};
+
 	useEffect(() => {
-		setIsFormValid(isValid);
-	}, [isValid]);
+		const formHasChanged =
+			JSON.stringify(currentProjectDetail) !== JSON.stringify(getProjectDetail);
+		setIsFormChange(formHasChanged);
+	}, [nameProject, text, valueCategoryId, currentProjectDetail]);
 
-	const onSubmit = handleSubmit(async (formProject: CreateProject) => {
+	const onSubmit = handleSubmit(async (formProject: ProjectItem) => {
 		setIsLoading(true);
-		// if (params?.slug === "add") {
-		//   addProjectMutation.mutate(formState, {
-		//     onSuccess: () => {
-		//       setFormState(defaultValues);
-		//       notification.success({
-		//         message: "Successfully!",
-		//       });
-
-		//       setIsLoading(false);
-
-		//       setNameProject("");
-
-		//       setValue("categoryId", 0);
-
-		//       setText("");
-		//     },
-		//   });
-		// } else {
-		//   updateProjectMutation.mutate(undefined, {
-		//     onSuccess: (_) => {
-		//       notification.success({
-		//         message: "Successfully!",
-		//       });
-
-		//       setIsLoading(false);
-		//     },
-		//   });
-		// }
-
 		if (params?.slug === "add") {
 			try {
 				const responseCreateProject = await createProject(
@@ -197,6 +175,8 @@ export default function CreateProjectPage() {
 					});
 
 					setIsLoading(false);
+
+					router.push(PATH_NAME.TABLE_PROJECT);
 				}
 			} catch (error) {
 				console.error(error);
@@ -208,6 +188,7 @@ export default function CreateProjectPage() {
 		e.preventDefault();
 		onSubmit();
 	};
+
 	return (
 		<>
 			<div className="rounded-lg bg-white bg-opacity-50 backdrop-blur-lg p-4">
@@ -259,12 +240,9 @@ export default function CreateProjectPage() {
 							name="categoryId"
 							control={control}
 							options={dataOption}
-							optionDefault={
-								formState?.projectCategory?.name
-									? formState?.projectCategory?.name
-									: "Choose Project Category"
-							}
 							errorMessage={errors.categoryId?.message}
+							optionDefault={formState?.projectCategory?.name}
+							onChange={(selected) => setValueCategoryId(+selected)}
 						/>
 					</div>
 
@@ -279,18 +257,17 @@ export default function CreateProjectPage() {
 							value={text}
 							onTextChange={(e: any) => setText(e.htmlValue)}
 							className="min-h-[35vh] border-[2px] border-blue-15 rounded-lg overflow-hidden mt-2"
+							name="description"
 						/>
 					</div>
 
 					<Button
 						isLoading={isLoading}
-						disabled={!isValid}
 						onClick={(e) => handleFormSubmit(e)}
-						className={`${
-							isValid ? "opacity-100" : "opacity-75"
-						} bg-gradient-to-r from-green-400 via-cyan-400 to-indigo-400 lg:h-14 h-8 rounded-lg text-14 lg:text-16 font-semibold w-full leading-1-4 text-neutral-1 border-0`}
+						disabled={!isFormChange}
+						className={`bg-gradient-to-r from-green-400 via-cyan-400 to-indigo-400 lg:h-14 h-8 rounded-lg text-14 lg:text-16 font-semibold w-full leading-1-4 text-neutral-1 border-0`}
 					>
-						Sign In
+						{params?.slug ? "Create" : "Update"} Project
 					</Button>
 				</form>
 			</div>

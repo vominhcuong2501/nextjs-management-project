@@ -8,8 +8,6 @@ export const updateProjectId = async (
 	dataUpdate: ProjectItem,
 	tokenUser: string
 ) => {
-	console.log("dataUpdate", dataUpdate);
-
 	try {
 		const response = await request.put(
 			`${BASE_URL_API}/Project/updateProject?projectId=${projectId}`,

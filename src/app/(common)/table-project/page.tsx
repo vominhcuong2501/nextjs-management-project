@@ -71,8 +71,6 @@ export default function TableProject() {
 	const deleteProjectMutation = useMutation({
 		mutationFn: (id: number | string) => deleteProject(id, tokenUser),
 		onSuccess: (data, id) => {
-			console.log(data, id);
-
 			if (data?.statusCode === 200) {
 				notification.success({
 					message: `Delete successfully with ID: ${id} !`,

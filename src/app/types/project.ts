@@ -13,28 +13,13 @@ export interface ProjectItem {
 	id?: number;
 	projectName?: string;
 	description?: string;
-	categoryId?: number;
+	categoryId?: number | undefined;
 	categoryName?: string;
 	alias?: string;
 	deleted?: boolean;
 	projectCategory?: {
 		name?: string;
 		id?: number;
-	};
-}
-
-export interface CreateProject {
-	projectName: string;
-	description?: string;
-	categoryId: number;
-	id?: number;
-	projectCategory?: {
-		name?: string;
-		id?: number;
-	};
-	creator?: {
-		id?: number;
-		name?: string;
 	};
 }
 
