@@ -8,70 +8,76 @@ import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
 
 const BaseComponent = () => {
-	const pathname = usePathname();
+  const pathname = usePathname();
 
-	const router = useRouter();
+  const router = useRouter();
 
-	const { updateUser, updateStatusAuth, userInfo } = useDataUser();
+  const { updateUser, updateStatusAuth, userInfo } = useDataUser();
 
-	const tokenUser = getCookie("__token") as string;
+  const tokenUser = getCookie("__token") as string;
 
-	const listIsRequiredAuth = [
-		PATH_NAME.PROFILE,
-		PATH_NAME.CREATE_PROJECT,
-		PATH_NAME.TABLE_PROJECT,
-		PATH_NAME.TABLE_USER,
-		PATH_NAME.DASHBOARD,
-	];
+  // useQuery({
+  // 	queryKey: ['check-token-user'],
+  // 	queryFn: () => checkTokenApi(tokenUser)
+  // })
 
-	const listNotRequiredAuth = [PATH_NAME.SIGN_IN, PATH_NAME.SIGN_UP];
+  const listIsRequiredAuth = [
+    PATH_NAME.PROFILE,
+    PATH_NAME.CREATE_PROJECT,
+    PATH_NAME.TABLE_PROJECT,
+    PATH_NAME.TABLE_USER,
+    PATH_NAME.DASHBOARD,
+  ];
 
-	const pageIsAuth = listIsRequiredAuth.includes(pathname as string);
+  const listNotRequiredAuth = [PATH_NAME.SIGN_IN, PATH_NAME.SIGN_UP];
 
-	const pageIsNotAuth = listNotRequiredAuth.includes(pathname as string);
+  const pageIsAuth = listIsRequiredAuth.includes(pathname as string);
 
-	if (typeof window !== "undefined" && !getCookie("__token") && pageIsAuth) {
-		window.location.href = PATH_NAME.SIGN_IN;
-	}
+  const pageIsNotAuth = listNotRequiredAuth.includes(pathname as string);
 
-	if (typeof window !== "undefined" && getCookie("__token") && pageIsNotAuth) {
-		window.location.href = PATH_NAME.PROFILE;
-	}
+  if (typeof window !== "undefined" && !getCookie("__token") && pageIsAuth) {
+    window.location.href = PATH_NAME.SIGN_IN;
+  }
 
-	const fetchData = async (tokenUser: string) => {
-		if (!getCookie("__token")) {
-			updateUser(undefined);
-			router.push(PATH_NAME.SIGN_IN);
-		}
+  if (typeof window !== "undefined" && getCookie("__token") && pageIsNotAuth) {
+    window.location.href = PATH_NAME.PROFILE;
+  }
 
-		try {
-			router.push(PATH_NAME.PROFILE);
-			updateStatusAuth(true);
-			// const userInfo = await onSubmitGetUser(tokenUser);
+  const fetchData = async (tokenUser: string) => {
+    if (!getCookie("__token")) {
+      updateUser(undefined);
+      router.push(PATH_NAME.SIGN_IN);
+    }
 
-			// const dataUser = _get(userInfo, "data.data", {});
+    try {
+      router.push(PATH_NAME.PROFILE);
+      updateStatusAuth(true);
+      // const userInfo = await onSubmitGetUser(tokenUser);
 
-			// const dataUserModify = useModifyObject(dataUser, false);
+      // const dataUser = _get(userInfo, "data.data", {});
 
-			// dataUserModify && updateUser(dataUserModify);
+      // const dataUserModify = useModifyObject(dataUser, false);
 
-			// window.location.href = `/${PAGE_TYPE.MY_PROFILE}`;
-		} catch (_) {
-			throw new Error("Error occurred");
-		}
-	};
+      // dataUserModify && updateUser(dataUserModify);
 
-	useEffect(() => {
-		if (!getCookie("__token")) {
-			updateUser(undefined);
-		}
+      // window.location.href = `/${PAGE_TYPE.MY_PROFILE}`;
+    } catch (_) {
+      throw new Error("Error occurred");
+    }
+  };
 
-		if (_isEmpty(userInfo) || !userInfo) {
-			getCookie("__token") && fetchData(tokenUser);
-		}
-	}, [tokenUser, userInfo]);
+  useEffect(() => {
+    if (!getCookie("__token")) {
+      updateUser(undefined);
+      router.push(PATH_NAME.SIGN_IN);
+    }
 
-	return <></>;
+    if (_isEmpty(userInfo) || !userInfo) {
+      getCookie("__token") && fetchData(tokenUser);
+    }
+  }, [tokenUser, userInfo]);
+
+  return <></>;
 };
 
 export default BaseComponent;

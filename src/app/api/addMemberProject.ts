@@ -4,22 +4,22 @@ import { request } from "./axios";
 import { AddMemberProjectProps } from "../types/project";
 import { notification } from "antd";
 
-export const addMemberProject = async (
-	dataMember: AddMemberProjectProps,
-	tokenUser: string
+export const addMemberProjectApi = async (
+  dataMember: AddMemberProjectProps,
+  tokenUser: string
 ) => {
-	try {
-		const response = await request.post(
-			`${BASE_URL_API}/Project/assignUserProject`,
-			dataMember,
-			{
-				headers: {
-					Authorization: `Bearer ${tokenUser}`,
-				},
-			}
-		);
-		if (response.status === HttpStatusCode.Ok) return response?.data;
-	} catch (error) {
-		return error;
-	}
+  try {
+    const response = await request.post(
+      `${BASE_URL_API}/Project/assignUserProject`,
+      dataMember,
+      {
+        headers: {
+          Authorization: `Bearer ${tokenUser}`,
+        },
+      }
+    );
+    if (response.status === HttpStatusCode.Ok) return response?.data;
+  } catch (error) {
+    return error;
+  }
 };

@@ -3,7 +3,7 @@ import { BASE_URL_API } from "../constans/common";
 import { request } from "./axios";
 import { AddMemberProjectProps } from "../types/project";
 
-export const deleteMemberProject = async (
+export const deleteMemberProjectApi = async (
 	dataMember: AddMemberProjectProps,
 	tokenUser: string
 ) => {

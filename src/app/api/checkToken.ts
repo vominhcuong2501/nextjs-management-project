@@ -1,21 +1,12 @@
 import HttpStatusCode from "@/lib/utils/httpStatusCode.enum";
 import { BASE_URL_API } from "../constans/common";
 import { request } from "./axios";
-import { ProjectItem } from "../types/project";
 
-export const createProjectApi = async (
-  dataCreate: ProjectItem,
-  tokenUser: string
-) => {
+export const checkTokenApi = async (tokenUser: string) => {
   try {
     const response = await request.post(
-      `${BASE_URL_API}/Project/createProjectAuthorize`,
-      dataCreate,
-      {
-        headers: {
-          Authorization: `Bearer ${tokenUser}`,
-        },
-      }
+      `${BASE_URL_API}/Users/TestToken`,
+      tokenUser
     );
     if (response.status === HttpStatusCode.Ok) return response?.data;
   } catch (error) {
