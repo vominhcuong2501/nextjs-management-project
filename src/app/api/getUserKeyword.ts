@@ -14,7 +14,6 @@ export const getUserKeyword = async (keyWord: string, tokenUser: string) => {
 		);
 		if (response.status === HttpStatusCode.Ok) return response?.data;
 	} catch (error) {
-		console.error("Error fetching page:", error);
 		return error;
 	}
 };

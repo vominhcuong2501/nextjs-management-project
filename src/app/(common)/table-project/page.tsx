@@ -70,16 +70,23 @@ export default function TableProject() {
 	// delete project;
 	const deleteProjectMutation = useMutation({
 		mutationFn: (id: number | string) => deleteProject(id, tokenUser),
+		onSuccess: (data, id) => {
+			console.log(data, id);
 
-		onSuccess: (_, id) => {
-			notification.success({
-				message: `Delete successfully with ID: ${id} !`,
-			});
+			if (data?.statusCode === 200) {
+				notification.success({
+					message: `Delete successfully with ID: ${id} !`,
+				});
 
-			queryClient.invalidateQueries({
-				queryKey: ["get-project-list"],
-				exact: true,
-			});
+				queryClient.invalidateQueries({
+					queryKey: ["get-project-list"],
+					exact: true,
+				});
+			} else {
+				notification.error({
+					message: data?.response.data.content,
+				});
+			}
 		},
 	});
 
@@ -92,15 +99,21 @@ export default function TableProject() {
 		mutationFn: (data: AddMemberProjectProps) =>
 			addMemberProject(data, tokenUser),
 
-		onSuccess: () => {
-			notification.success({
-				message: "Add member successfully !",
-			});
+		onSuccess: (data) => {
+			if (data?.statusCode === 200) {
+				notification.success({
+					message: "Add member successfully !",
+				});
 
-			queryClient.invalidateQueries({
-				queryKey: ["get-project-list"],
-				exact: true,
-			});
+				queryClient.invalidateQueries({
+					queryKey: ["get-project-list"],
+					exact: true,
+				});
+			} else {
+				notification.error({
+					message: data?.response.data.content,
+				});
+			}
 		},
 	});
 
@@ -113,15 +126,21 @@ export default function TableProject() {
 		mutationFn: (data: AddMemberProjectProps) =>
 			deleteMemberProject(data, tokenUser),
 
-		onSuccess: () => {
-			notification.success({
-				message: `Remove member successfully !`,
-			});
+		onSuccess: (data) => {
+			if (data?.statusCode === 200) {
+				notification.success({
+					message: `Remove member successfully !`,
+				});
 
-			queryClient.invalidateQueries({
-				queryKey: ["get-project-list"],
-				exact: true,
-			});
+				queryClient.invalidateQueries({
+					queryKey: ["get-project-list"],
+					exact: true,
+				});
+			} else {
+				notification.error({
+					message: data?.response.data.content,
+				});
+			}
 		},
 	});
 
@@ -370,7 +389,7 @@ export default function TableProject() {
 						id="search"
 						className="py-2 pl-10 rounded-2xl min-w-[300px]  md:min-w-[250px] lg:min-w-[350px] text-neutral-8 font-medium text-16 leading-1-4"
 						maxLength={255}
-						placeholder="Search project name..."
+						placeholder="Search Project Name..."
 						value={searchTerm}
 						onChange={handleInputChange}
 					/>
@@ -407,7 +426,6 @@ export default function TableProject() {
 				rowKey={"id"}
 				columns={columns}
 				dataSource={projectData}
-				// rowSelection={{ ...rowSelection }}
 				loading={isLoading}
 				className="overflow-x-auto w-full"
 			/>

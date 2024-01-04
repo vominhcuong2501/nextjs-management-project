@@ -19,7 +19,6 @@ export const createProject = async (
 		);
 		if (response.status === HttpStatusCode.Ok) return response?.data;
 	} catch (error) {
-		console.error("Error fetching page:", error);
 		return error;
 	}
 };

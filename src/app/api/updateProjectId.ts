@@ -4,25 +4,24 @@ import { request } from "./axios";
 import { ProjectItem } from "../types/project";
 
 export const updateProjectId = async (
-  projectId: number,
-  dataUpdate: ProjectItem,
-  tokenUser: string
+	projectId: number,
+	dataUpdate: ProjectItem,
+	tokenUser: string
 ) => {
-  console.log("dataUpdate", dataUpdate);
+	console.log("dataUpdate", dataUpdate);
 
-  try {
-    const response = await request.put(
-      `${BASE_URL_API}/Project/updateProject?projectId=${projectId}`,
-      dataUpdate,
-      {
-        headers: {
-          Authorization: `Bearer ${tokenUser}`,
-        },
-      }
-    );
-    if (response.status === HttpStatusCode.Ok) return response?.data;
-  } catch (error) {
-    console.error("Error fetching page:", error);
-    return error;
-  }
+	try {
+		const response = await request.put(
+			`${BASE_URL_API}/Project/updateProject?projectId=${projectId}`,
+			dataUpdate,
+			{
+				headers: {
+					Authorization: `Bearer ${tokenUser}`,
+				},
+			}
+		);
+		if (response.status === HttpStatusCode.Ok) return response?.data;
+	} catch (error) {
+		return error;
+	}
 };

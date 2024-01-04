@@ -16,7 +16,7 @@ export default function AuthLayout({ children }: CommonLayoutProps) {
 	const handleCloseSidebarMobi = () => {
 		setIsShow(false);
 	};
-	// bg-gradient-to-b from-[#7fe2f3] to-[#5f88c9]
+
 	return (
 		<section
 			className="flex gap-3 lg:gap-5 p-3 lg:p-5 min-h-screen "

@@ -8,7 +8,6 @@ export const submitSignUp = async (data: FormSignUp) => {
 		const response = await request.post(`${BASE_URL_API}/Users/signup`, data);
 		if (response.status === HttpStatusCode.Ok) return response?.data;
 	} catch (error) {
-		console.error("Error fetching page:", error);
 		return error;
 	}
 };

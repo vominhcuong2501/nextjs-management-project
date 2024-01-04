@@ -1,9 +1,9 @@
 "use client";
 import { getUserList } from "@/app/api/getUserList";
 import { ColumnsProps } from "@/app/types/table";
-import { EditOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
-import { Avatar, Input, Space, Table, Tag, Popover } from "antd";
+import { Input, Space, Table } from "antd";
 import { getCookie } from "cookies-next";
 import { useEffect, useState } from "react";
 
@@ -61,12 +61,12 @@ export default function TableUser() {
 			key: "action",
 			render: () => (
 				<Space size="middle">
-					<a title="Edit" className="text-green-1" style={{ fontSize: 20 }}>
+					<p title="Edit User" className="text-blue-4 text-20 cursor-pointer">
 						<EditOutlined />
-					</a>
-					<a title="Delete" className="text-red-1" style={{ fontSize: 20 }}>
+					</p>
+					<p title="Delete User" className="text-red-1 text-20 cursor-pointer">
 						<DeleteOutlined />
-					</a>
+					</p>
 				</Space>
 			),
 		},
