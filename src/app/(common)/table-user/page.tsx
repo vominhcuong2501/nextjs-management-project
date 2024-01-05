@@ -1,6 +1,7 @@
 "use client";
 import { deleteUser } from "@/app/api/deleteUser";
 import { getUserListApi } from "@/app/api/getUserList";
+import FormEditUser from "@/app/component/FormEditUser";
 import { ColumnsProps } from "@/app/types/table";
 import useDataUser from "@/lib/store/client/infomationUser";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
@@ -15,6 +16,7 @@ export default function TableUser() {
 	const [userData, setUserData] = useState();
 
 	const { updateUser } = useDataUser();
+	const [isShow, setIsShow] = useState(false);
 
 	const { data, isLoading, status }: any = useQuery({
 		queryKey: ["get-user-list"],
@@ -58,8 +60,6 @@ export default function TableUser() {
 	const handleDeleteUser = async (id: number) => {
 		deleteProjectMutation.mutate(id);
 	};
-
-  
 
 	const columns: ColumnsProps[] = [
 		{
@@ -114,12 +114,16 @@ export default function TableUser() {
 			key: "action",
 			render: (_, record) => (
 				<Space size="middle">
-					<p title="Edit User" className="text-blue-4 text-20 cursor-pointer">
+					<p
+						title="Edit User"
+						className="text-blue-4 text-20 cursor-pointer"
+						onClick={() => setIsShow(true)}
+					>
 						<EditOutlined />
 					</p>
 					<p
 						title="Delete User"
-						className="text-red-1 text-20 cursor-pointer"
+						className="text-red-1 text-20 cursor-pointer hover:text-blue-15"
 						onClick={() => handleDeleteUser(record?.userId)}
 					>
 						<DeleteOutlined />
@@ -183,6 +187,18 @@ export default function TableUser() {
 				loading={isLoading}
 				className="overflow-x-auto w-full"
 			/>
+			<div
+				className={`w-screen h-screen fixed top-0 transition-all duration-300 bg-neutral-9 opacity-80 z-[60] ${
+					isShow ? "right-0 !z-30" : "-right-[150vw]"
+				}`}
+			></div>
+			<div
+				className={`fixed top-0 transition-all duration-300 ${
+					isShow ? "right-0 !z-50" : "-right-[150vw]"
+				}`}
+			>
+				<FormEditUser />
+			</div>
 		</section>
 	);
 }

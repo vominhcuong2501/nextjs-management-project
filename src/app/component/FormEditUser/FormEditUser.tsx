@@ -1,19 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-import { getProjectCategoryApi } from "@/app/api/getProjectCategory";
 import Button from "@/app/component/Button";
 import Input from "@/app/component/Input";
 import { ProjectItem } from "@/app/types/project";
 import { createProjectSchema } from "@/lib/utils/rules";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useQuery } from "@tanstack/react-query";
 import { notification } from "antd";
 import { useParams, useRouter } from "next/navigation";
 import { MouseEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { createProjectApi } from "@/app/api/createProject";
 import { getCookie } from "cookies-next";
-import { getProjectIdDetailApi } from "@/app/api/getProjectIdDetail";
 import {
 	UserOutlined,
 	KeyOutlined,
@@ -23,7 +20,7 @@ import {
 } from "@ant-design/icons";
 import { EditProfile } from "@/app/types/user";
 
-export default function Profile() {
+export default function FormEditUser() {
 	const defaultValues: EditProfile = {
 		id: 0,
 		name: "",
@@ -142,92 +139,88 @@ export default function Profile() {
 	};
 
 	return (
-		<>
-			<div className="rounded-lg bg-white bg-opacity-50 backdrop-blur-lg p-4">
-				<h1 className="text-24 lg:text-32 text-gradient-red font-bold leading-1-4 text-center">
-					My Profile
-				</h1>
-			</div>
+		<div className="w-screen md:w-[40vw] h-screen shadow-primary bg-neutral-1">
+			<h2 className="text-24 lg:text-32 text-gradient-red font-bold leading-1-4 text-center">
+				Update User
+			</h2>
 			<div className="rounded-lg bg-white bg-opacity-50 backdrop-blur-lg p-4 mt-4">
 				<form className="grid grid-cols-1 gap-5">
-					<div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-						<Input
-							classNameLabel="text-neutral-8"
-							nameLabel="ID"
-							required
-							name="id"
-							type="text"
-							id="id"
-							className="relative group "
-							classNameInput="!bg-neutral-1  text-neutral-8 cursor-no-drop"
-							disabled={true}
-							value={formState?.id}
-							iconInput={<LockOutlined className="text-20 text-blue-15" />}
-						/>
-						<Input
-							classNameLabel="text-neutral-8"
-							nameLabel="Name"
-							required
-							name="name"
-							type="text"
-							id="name"
-							className="relative group "
-							errorMessage={errors.name?.message}
-							register={register}
-							maxLength={255}
-							classNameInput="!bg-neutral-1  text-neutral-8"
-							value={nameProject}
-							onChange={(e) => setNameProject(e.target.value)}
-							iconInput={<UserOutlined className="text-20 text-blue-15" />}
-						/>
-						<Input
-							classNameLabel="text-neutral-8"
-							classNameInput="!bg-neutral-1  text-neutral-8"
-							nameLabel="Phone Number"
-							required
-							name="phoneNumber"
-							type="text"
-							id="phoneNumber"
-							className="relative group "
-							errorMessage={errors.phoneNumber?.message}
-							register={register}
-							maxLength={15}
-							iconInput={<PhoneOutlined className="text-20 text-blue-15" />}
-						/>
+					<Input
+						classNameLabel="text-neutral-8"
+						nameLabel="ID"
+						required
+						name="id"
+						type="text"
+						id="id"
+						className="relative group "
+						classNameInput="!bg-neutral-1  text-neutral-8 cursor-no-drop"
+						disabled={true}
+						value={formState?.id}
+						iconInput={<LockOutlined className="text-20 text-blue-15" />}
+					/>
+					<Input
+						classNameLabel="text-neutral-8"
+						nameLabel="Name"
+						required
+						name="name"
+						type="text"
+						id="name"
+						className="relative group "
+						errorMessage={errors.name?.message}
+						register={register}
+						maxLength={255}
+						classNameInput="!bg-neutral-1  text-neutral-8"
+						value={nameProject}
+						onChange={(e) => setNameProject(e.target.value)}
+						iconInput={<UserOutlined className="text-20 text-blue-15" />}
+					/>
+					<Input
+						classNameLabel="text-neutral-8"
+						classNameInput="!bg-neutral-1  text-neutral-8"
+						nameLabel="Phone Number"
+						required
+						name="phoneNumber"
+						type="text"
+						id="phoneNumber"
+						className="relative group "
+						errorMessage={errors.phoneNumber?.message}
+						register={register}
+						maxLength={15}
+						iconInput={<PhoneOutlined className="text-20 text-blue-15" />}
+					/>
 
-						<Input
-							classNameLabel="text-neutral-8"
-							classNameInput="!bg-neutral-1  text-neutral-8"
-							nameLabel="Email"
-							required
-							name="email"
-							type="text"
-							id="email"
-							className="relative group "
-							errorMessage={errors.email?.message}
-							register={register}
-							maxLength={255}
-							iconInput={<MailOutlined className="text-20 text-blue-15" />}
-						/>
-						<Input
-							classNameLabel="text-neutral-8"
-							type="password"
-							name="passWord"
-							id="passWord"
-							classNameInput="!bg-neutral-1  text-neutral-8"
-							nameLabel="Password"
-							className="relative group"
-							autoComplete="current-password"
-							errorMessage={errors.passWord?.message}
-							register={register}
-							required
-							isRequired={false}
-							maxLength={20}
-							minLength={6}
-							autocomplete=""
-							iconInput={<KeyOutlined className="text-20 text-blue-15" />}
-						/>
-					</div>
+					<Input
+						classNameLabel="text-neutral-8"
+						classNameInput="!bg-neutral-1  text-neutral-8"
+						nameLabel="Email"
+						required
+						name="email"
+						type="text"
+						id="email"
+						className="relative group "
+						errorMessage={errors.email?.message}
+						register={register}
+						maxLength={255}
+						iconInput={<MailOutlined className="text-20 text-blue-15" />}
+					/>
+					<Input
+						classNameLabel="text-neutral-8"
+						type="password"
+						name="passWord"
+						id="passWord"
+						classNameInput="!bg-neutral-1  text-neutral-8"
+						nameLabel="Password"
+						className="relative group"
+						autoComplete="current-password"
+						errorMessage={errors.passWord?.message}
+						register={register}
+						required
+						isRequired={false}
+						maxLength={20}
+						minLength={6}
+						autocomplete=""
+						iconInput={<KeyOutlined className="text-20 text-blue-15" />}
+					/>
 					<Button
 						isLoading={isLoading}
 						onClick={(e) => handleFormSubmit(e)}
@@ -238,6 +231,6 @@ export default function Profile() {
 					</Button>
 				</form>
 			</div>
-		</>
+		</div>
 	);
 }

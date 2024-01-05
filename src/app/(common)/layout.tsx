@@ -28,7 +28,7 @@ export default function AuthLayout({ children }: CommonLayoutProps) {
 			}}
 		>
 			<div className="hidden md:block">
-				<div className="sticky top-0 !z-20">
+				<div className="sticky top-0 ">
 					<Sidebar />
 					<div
 						className="p-4 pb-6 rounded-2xl overflow-hidden mt-4"

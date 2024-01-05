@@ -18,8 +18,12 @@ import { getCookie } from "cookies-next";
 import PATH_NAME from "@/app/constans/pathname";
 import { getProjectIdDetailApi } from "@/app/api/getProjectIdDetail";
 import { updateProjectApi } from "@/app/api/updateProjectId";
-import Image from "next/image";
 import Link from "next/link";
+import {
+	ProjectOutlined,
+	UnorderedListOutlined,
+	KeyOutlined,
+} from "@ant-design/icons";
 
 export default function CreateProjectPage() {
 	const defaultValues: ProjectItem = {
@@ -204,6 +208,7 @@ export default function CreateProjectPage() {
 							viewBox="0 0 44 45"
 							fill="none"
 							xmlns="http://www.w3.org/2000/svg"
+							className="scale-[0.75] lg:scale-100"
 						>
 							<rect
 								y="0.5"
@@ -247,9 +252,10 @@ export default function CreateProjectPage() {
 							type="text"
 							id="projectID"
 							className="relative group "
-							classNameInput="!bg-neutral-1 mt-2 text-neutral-8 cursor-no-drop"
+							classNameInput="!bg-neutral-1 text-neutral-8 cursor-no-drop"
 							disabled={true}
 							value={formState?.id}
+							iconInput={<KeyOutlined className="text-20 text-blue-15" />}
 						/>
 					)}
 
@@ -264,15 +270,17 @@ export default function CreateProjectPage() {
 						errorMessage={errors.projectName?.message}
 						register={register}
 						maxLength={255}
-						classNameInput="!bg-neutral-1 mt-2 text-neutral-8"
+						classNameInput="!bg-neutral-1 text-neutral-8"
 						value={nameProject}
 						onChange={(e) => setNameProject(e.target.value)}
+						placeholder="Enter your name project"
+						iconInput={<ProjectOutlined className="text-20 text-blue-15" />}
 					/>
 
 					<div>
 						<label
 							htmlFor=""
-							className="text-14 lg:text-16 text-neutral-8 leading-1-4 font-semibold "
+							className="text-14 lg:text-16 text-neutral-8 leading-1-4 font-semibold mb-1 block"
 						>
 							Project Category <span className="text-red-1">*</span>
 						</label>
@@ -283,6 +291,9 @@ export default function CreateProjectPage() {
 							errorMessage={errors.categoryId?.message}
 							optionDefault={formState?.projectCategory?.name}
 							onChange={(selected) => setValueCategoryId(+selected)}
+							iconSelect={
+								<UnorderedListOutlined className="text-20 text-blue-15" />
+							}
 						/>
 					</div>
 
@@ -296,8 +307,9 @@ export default function CreateProjectPage() {
 						<Editor
 							value={text}
 							onTextChange={(e: any) => setText(e.htmlValue)}
-							className="min-h-[20vh] border-[2px] border-blue-15 rounded-lg overflow-hidden mt-2"
+							className="min-h-[20vh] border-[2px] border-blue-15 rounded-[10px] overflow-hidden mt-1"
 							name="description"
+							placeholder="You can write description your project"
 						/>
 					</div>
 
@@ -305,7 +317,7 @@ export default function CreateProjectPage() {
 						isLoading={isLoading}
 						onClick={(e) => handleFormSubmit(e)}
 						disabled={!isFormChange}
-						className={`bg-gradient-to-r from-green-400 via-cyan-400 to-indigo-400 lg:h-14 h-8 rounded-lg text-14 lg:text-16 font-semibold w-full leading-1-4 text-neutral-1 border-0`}
+						className={`bg-gradient-to-r from-green-400 via-cyan-400 to-indigo-400 lg:h-14 h-8  text-14 lg:text-16 font-semibold w-full leading-1-4 text-neutral-1 border-0 max-w-[50vw] lg:max-w-[30vw] mx-auto rounded-[50px]`}
 					>
 						{params?.slug ? "Create" : "Update"} Project
 					</Button>
