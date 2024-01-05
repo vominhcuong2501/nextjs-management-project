@@ -44,10 +44,10 @@ const BaseComponent = () => {
   }
 
   const fetchData = async (tokenUser: string) => {
-    if (!getCookie("__token")) {
-      updateUser(undefined);
-      router.push(PATH_NAME.SIGN_IN);
-    }
+    // if (!getCookie("__token")) {
+    //   updateUser(undefined);
+    //   router.push(PATH_NAME.SIGN_IN);
+    // }
 
     try {
       router.push(PATH_NAME.PROFILE);

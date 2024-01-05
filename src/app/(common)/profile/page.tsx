@@ -1,243 +1,248 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-import { getProjectCategoryApi } from "@/app/api/getProjectCategory";
 import Button from "@/app/component/Button";
 import Input from "@/app/component/Input";
-import { ProjectItem } from "@/app/types/project";
-import { createProjectSchema } from "@/lib/utils/rules";
+import { editUserSchema } from "@/lib/utils/rules";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useQuery } from "@tanstack/react-query";
 import { notification } from "antd";
-import { useParams, useRouter } from "next/navigation";
 import { MouseEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { createProjectApi } from "@/app/api/createProject";
 import { getCookie } from "cookies-next";
-import { getProjectIdDetailApi } from "@/app/api/getProjectIdDetail";
 import {
-	UserOutlined,
-	KeyOutlined,
-	MailOutlined,
-	LockOutlined,
-	PhoneOutlined,
+  UserOutlined,
+  KeyOutlined,
+  MailOutlined,
+  LockOutlined,
+  PhoneOutlined,
+  SmileOutlined,
 } from "@ant-design/icons";
 import { EditProfile } from "@/app/types/user";
+import {
+  useModifyObject,
+  useReverseModifyObject,
+} from "@/lib/utils/modifyContent";
+import useDataUser from "@/lib/store/client/infomationUser";
+import { updateUserApi } from "@/app/api/updateUser";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export default function Profile() {
-	const defaultValues: EditProfile = {
-		id: 0,
-		name: "",
-		email: "",
-		passWord: "",
-		phoneNumber: "",
-	};
+  const { userInfo, updateUser } = useDataUser();
 
-	const [formState, setFormState] = useState<EditProfile>(defaultValues);
+  const profileDetail = useReverseModifyObject(userInfo, false);
 
-	const [nameProject, setNameProject] = useState("");
+  const defaultValues: EditProfile = {
+    id: Number(profileDetail?.id),
+    name: profileDetail?.name,
+    email: profileDetail?.email,
+    passWord: "",
+    phoneNumber: profileDetail?.phoneNumber,
+    avatar: profileDetail?.avatar,
+  };
 
-	const [isLoading, setIsLoading] = useState(false);
+  const [nameProfile, setNameProfile] = useState(profileDetail?.name);
 
-	const tokenUser = getCookie("__token") as string;
+  const [emailProfile, setEmailProfile] = useState(profileDetail?.email);
 
-	const router = useRouter();
+  const [phoneProfile, setPhoneProfile] = useState(profileDetail?.phoneNumber);
 
-	const params = useParams();
+  const [avatarProfile, setAvatarProfile] = useState(profileDetail?.avatar);
 
-	// const projectQuery = useQuery({
-	// 	queryKey: ["get-project-detail-id", params?.slug],
+  const [passProfile, setPassProfile] = useState("");
 
-	// 	queryFn: () =>
-	// 		params?.slug !== "add" &&
-	// 		getProjectIdDetailApi(params?.slug as string, tokenUser),
+  const [isLoading, setIsLoading] = useState(false);
 
-	// 	enabled: params?.slug !== undefined,
+  const tokenUser = getCookie("__token") as string;
 
-	// 	staleTime: 1000 * 10,
-	// });
+  const queryClient = useQueryClient();
 
-	// useEffect(() => {
-	// 	if (projectQuery?.data?.statusCode === 200) {
-	// 		//  hiển thị UI
-	// 		setFormState(projectQuery?.data?.content);
-	// 		setNameProject(projectQuery?.data?.content.projectName);
+  const {
+    handleSubmit,
+    register,
+    formState: { errors, isValid },
+  } = useForm<any>({
+    mode: "all",
+    defaultValues,
+    resolver: yupResolver(editUserSchema()),
+    shouldFocusError: false,
+  });
 
-	// 		// set giá trị cho các field
-	// 		setValue("categoryId", projectQuery?.data?.content.projectCategory?.id);
-	// 		setValue("projectName", projectQuery?.data?.content.projectName);
-	// 		setValue("description", projectQuery?.data?.content.description);
+  // validate form
+  const [isFormChange, setIsFormChange] = useState(isValid);
 
-	// 	}
-	// }, [projectQuery?.data]);
+  const currentProfile = {
+    id: Number(profileDetail?.id),
+    name: nameProfile,
+    email: emailProfile,
+    passWord: passProfile,
+    phoneNumber: phoneProfile,
+    avatar: avatarProfile,
+  };
 
-	const {
-		handleSubmit,
-		register,
-		setValue,
-		control,
-		formState: { errors, isValid },
-	} = useForm<any>({
-		mode: "all",
-		defaultValues,
-		resolver: yupResolver(createProjectSchema()),
-		shouldFocusError: false,
-	});
+  useEffect(() => {
+    const formHasChanged =
+      JSON.stringify(currentProfile) !== JSON.stringify(defaultValues);
+    setIsFormChange(formHasChanged);
+  }, [nameProfile, emailProfile, passProfile, phoneProfile, avatarProfile]);
 
-	// validate form
-	const [isFormChange, setIsFormChange] = useState(isValid);
+  const updateProfileMutation = useMutation({
+    mutationFn: (data: EditProfile) => updateUserApi(data, tokenUser),
+    onSuccess: (responseApi) => {
+      if (responseApi?.statusCode === 200) {
+        notification.success({
+          message: `Update Profile Successfully !`,
+        });
 
-	// const getProjectDetail = {
-	// 	projectName: formState?.projectName,
-	// 	categoryId: formState?.projectCategory?.id,
-	// 	description: formState?.description,
-	// };
+        queryClient.invalidateQueries({
+          queryKey: ["get-user-list"],
+          exact: true,
+        });
 
-	// const currentProjectDetail = {
-	// 	projectName: nameProject,
-	// 	categoryId: valueCategoryId,
-	// 	description: text,
-	// };
+        setIsLoading(false);
+      } else {
+        notification.error({
+          message: responseApi?.response.data.content,
+        });
+      }
+    },
+  });
 
-	// useEffect(() => {
-	// 	const formHasChanged =
-	// 		JSON.stringify(currentProjectDetail) !== JSON.stringify(getProjectDetail);
-	// 	setIsFormChange(formHasChanged);
-	// }, [nameProject, text, valueCategoryId, currentProjectDetail]);
+  const onSubmit = handleSubmit((formEditProfile: EditProfile) => {
+    setIsLoading(true);
 
-	const onSubmit = handleSubmit(async (formProject: ProjectItem) => {
-		setIsLoading(true);
-		try {
-			const responseCreateProject = await createProjectApi(
-				{
-					...formProject,
-				},
-				tokenUser
-			);
+    updateProfileMutation.mutate(formEditProfile);
 
-			if (responseCreateProject?.statusCode === 200) {
-				notification.success({
-					message: "Successfully!",
-				});
+    if (!isLoading) {
+      const dataUpdate = useModifyObject(formEditProfile, false);
 
-				setIsLoading(false);
+      updateUser(dataUpdate);
+    }
+  });
 
-				setNameProject("");
+  const handleFormSubmit = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    onSubmit();
+  };
 
-				setValue("categoryId", 0);
-			} else {
-				notification.error({
-					message: responseCreateProject?.response.data.content,
-				});
-
-				setIsLoading(false);
-			}
-		} catch (error) {
-			console.error(error);
-		}
-	});
-
-	const handleFormSubmit = (e: MouseEvent<HTMLButtonElement>) => {
-		e.preventDefault();
-		onSubmit();
-	};
-
-	return (
-		<>
-			<div className="rounded-lg bg-white bg-opacity-50 backdrop-blur-lg p-4">
-				<h1 className="text-24 lg:text-32 text-gradient-red font-bold leading-1-4 text-center">
-					My Profile
-				</h1>
-			</div>
-			<div className="rounded-lg bg-white bg-opacity-50 backdrop-blur-lg p-4 mt-4">
-				<form className="grid grid-cols-1 gap-5">
-					<div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-						<Input
-							classNameLabel="text-neutral-8"
-							nameLabel="ID"
-							required
-							name="id"
-							type="text"
-							id="id"
-							className="relative group "
-							classNameInput="!bg-neutral-1  text-neutral-8 cursor-no-drop"
-							disabled={true}
-							value={formState?.id}
-							iconInput={<LockOutlined className="text-20 text-blue-15" />}
-						/>
-						<Input
-							classNameLabel="text-neutral-8"
-							nameLabel="Name"
-							required
-							name="name"
-							type="text"
-							id="name"
-							className="relative group "
-							errorMessage={errors.name?.message}
-							register={register}
-							maxLength={255}
-							classNameInput="!bg-neutral-1  text-neutral-8"
-							value={nameProject}
-							onChange={(e) => setNameProject(e.target.value)}
-							iconInput={<UserOutlined className="text-20 text-blue-15" />}
-						/>
-						<Input
-							classNameLabel="text-neutral-8"
-							classNameInput="!bg-neutral-1  text-neutral-8"
-							nameLabel="Phone Number"
-							required
-							name="phoneNumber"
-							type="text"
-							id="phoneNumber"
-							className="relative group "
-							errorMessage={errors.phoneNumber?.message}
-							register={register}
-							maxLength={15}
-							iconInput={<PhoneOutlined className="text-20 text-blue-15" />}
-						/>
-
-						<Input
-							classNameLabel="text-neutral-8"
-							classNameInput="!bg-neutral-1  text-neutral-8"
-							nameLabel="Email"
-							required
-							name="email"
-							type="text"
-							id="email"
-							className="relative group "
-							errorMessage={errors.email?.message}
-							register={register}
-							maxLength={255}
-							iconInput={<MailOutlined className="text-20 text-blue-15" />}
-						/>
-						<Input
-							classNameLabel="text-neutral-8"
-							type="password"
-							name="passWord"
-							id="passWord"
-							classNameInput="!bg-neutral-1  text-neutral-8"
-							nameLabel="Password"
-							className="relative group"
-							autoComplete="current-password"
-							errorMessage={errors.passWord?.message}
-							register={register}
-							required
-							isRequired={false}
-							maxLength={20}
-							minLength={6}
-							autocomplete=""
-							iconInput={<KeyOutlined className="text-20 text-blue-15" />}
-						/>
-					</div>
-					<Button
-						isLoading={isLoading}
-						onClick={(e) => handleFormSubmit(e)}
-						disabled={!isFormChange}
-						className={`bg-gradient-to-r from-green-400 via-cyan-400 to-indigo-400 lg:h-14 h-8 text-14 lg:text-16 font-semibold w-full leading-1-4 text-neutral-1 border-0 max-w-[50vw] lg:max-w-[30vw] mx-auto rounded-[50px]`}
-					>
-						Update Profile
-					</Button>
-				</form>
-			</div>
-		</>
-	);
+  return (
+    <>
+      <div className="rounded-lg bg-white bg-opacity-50 backdrop-blur-lg p-4">
+        <h1 className="text-24 lg:text-32 text-gradient-red font-bold leading-1-4 text-center">
+          My Profile
+        </h1>
+      </div>
+      <div className="rounded-lg bg-white bg-opacity-50 backdrop-blur-lg p-4 mt-4">
+        <form className="grid grid-cols-1 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <Input
+              classNameLabel="text-neutral-8"
+              nameLabel="ID"
+              required
+              name="id"
+              type="text"
+              id="id"
+              className="relative group "
+              classNameInput="text-neutral-8 cursor-no-drop"
+              disabled={true}
+              value={defaultValues?.id}
+              iconInput={<LockOutlined className="text-20 text-blue-15" />}
+            />
+            <Input
+              classNameLabel="text-neutral-8"
+              nameLabel="Name"
+              required
+              name="name"
+              type="text"
+              id="name"
+              className="relative group "
+              errorMessage={errors.name?.message}
+              register={register}
+              maxLength={255}
+              classNameInput="text-neutral-8"
+              value={nameProfile}
+              onChange={(e) => setNameProfile(e.target.value)}
+              iconInput={<UserOutlined className="text-20 text-blue-15" />}
+            />
+            <Input
+              classNameLabel="text-neutral-8"
+              classNameInput="text-neutral-8"
+              nameLabel="Phone Number"
+              required
+              name="phoneNumber"
+              type="text"
+              id="phoneNumber"
+              className="relative group "
+              errorMessage={errors.phoneNumber?.message}
+              register={register}
+              maxLength={15}
+              iconInput={<PhoneOutlined className="text-20 text-blue-15" />}
+              value={phoneProfile}
+              onChange={(e) => setPhoneProfile(e.target.value)}
+            />
+            <Input
+              classNameLabel="text-neutral-8"
+              classNameInput="text-neutral-8"
+              nameLabel="Avatar"
+              required
+              name="avatar"
+              type="text"
+              id="avatar"
+              className="relative group "
+              errorMessage={errors.avatar?.message}
+              register={register}
+              maxLength={15}
+              iconInput={<SmileOutlined className="text-20 text-blue-15" />}
+              value={avatarProfile}
+              onChange={(e) => setAvatarProfile(e.target.value)}
+            />
+            <Input
+              classNameLabel="text-neutral-8"
+              classNameInput="text-neutral-8"
+              nameLabel="Email"
+              required
+              name="email"
+              type="text"
+              id="email"
+              className="relative group "
+              errorMessage={errors.email?.message}
+              register={register}
+              maxLength={255}
+              iconInput={<MailOutlined className="text-20 text-blue-15" />}
+              value={emailProfile}
+              onChange={(e) => setEmailProfile(e.target.value)}
+            />
+            <Input
+              classNameLabel="text-neutral-8"
+              type="password"
+              name="passWord"
+              id="passWord"
+              classNameInput="text-neutral-8"
+              nameLabel="Password"
+              className="relative group"
+              autoComplete="current-password"
+              errorMessage={errors.passWord?.message}
+              register={register}
+              required
+              isRequired={false}
+              maxLength={20}
+              minLength={6}
+              autocomplete=""
+              iconInput={<KeyOutlined className="text-20 text-blue-15" />}
+              placeholder="Enter your new password"
+              value={passProfile}
+              onChange={(e) => setPassProfile(e.target.value)}
+            />
+          </div>
+          <Button
+            isLoading={isLoading}
+            onClick={(e) => handleFormSubmit(e)}
+            disabled={!isFormChange}
+            className={`border-0 max-w-[50vw] lg:max-w-[30vw] mx-auto`}
+          >
+            Update Profile
+          </Button>
+        </form>
+      </div>
+    </>
+  );
 }

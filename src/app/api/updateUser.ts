@@ -1,16 +1,16 @@
 import HttpStatusCode from "@/lib/utils/httpStatusCode.enum";
 import { BASE_URL_API } from "../constans/common";
 import { request } from "./axios";
-import { AddMemberProjectProps } from "../types/project";
+import { EditProfile } from "../types/user";
 
-export const deleteMemberProjectApi = async (
-  dataMember: AddMemberProjectProps,
+export const updateUserApi = async (
+  dataUpdate: EditProfile,
   tokenUser: string
 ) => {
   try {
-    const response = await request.post(
-      `${BASE_URL_API}/Project/removeUserFromProject`,
-      dataMember,
+    const response = await request.put(
+      `${BASE_URL_API}/Users/editUser`,
+      dataUpdate,
       {
         headers: {
           Authorization: `Bearer ${tokenUser}`,

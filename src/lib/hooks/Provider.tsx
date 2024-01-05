@@ -6,14 +6,14 @@ import type { PropsWithChildren } from "react";
 import { useState } from "react";
 
 function Providers({ children }: PropsWithChildren) {
-	const [client] = useState(new QueryClient());
+  const [client] = useState(new QueryClient());
 
-	return (
-		<QueryClientProvider client={client}>
-			<ReactQueryDevtools initialIsOpen={false} />
-			{children}
-		</QueryClientProvider>
-	);
+  return (
+    <QueryClientProvider client={client}>
+      <ReactQueryDevtools initialIsOpen={false} />
+      {children}
+    </QueryClientProvider>
+  );
 }
 
 export default Providers;
