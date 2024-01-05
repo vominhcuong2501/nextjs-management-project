@@ -9,6 +9,7 @@ import { usePathname, useRouter } from "next/navigation";
 import PATH_NAME from "@/app/constans/pathname";
 import useDataUser from "@/lib/store/client/infomationUser";
 import { useReverseModifyObject } from "@/lib/utils/modifyContent";
+import { useMounted } from "@/lib/hooks/useMounted";
 
 interface SidebarMobileProps {
 	handleCloseSidebarMobi: () => void;
@@ -42,7 +43,7 @@ export default function SidebarMobile({
 
 	const currentPath = dataPathname.find((item) => item.path === pathname);
 
-	const activePath = currentPath ? currentPath.key : "1";
+	const activePath = currentPath ? currentPath.key : "0";
 
 	const handleLogOut = () => {
 		deleteCookie("__token");
@@ -53,11 +54,7 @@ export default function SidebarMobile({
 
 	const convertUserInfo = useReverseModifyObject(userInfo, false);
 
-	const [isClient, setIsClient] = useState(false);
-
-	useEffect(() => {
-		setIsClient(true);
-	}, []);
+	const isClient = useMounted();
 
 	const items = [
 		getItem(
@@ -92,7 +89,10 @@ export default function SidebarMobile({
 			</div>
 		),
 		getItem(
-			<p className="text-neutral-8 font-semibold" onClick={handleCloseSidebarMobi}>
+			<p
+				className="text-neutral-8 font-semibold"
+				onClick={handleCloseSidebarMobi}
+			>
 				<Link href={PATH_NAME.DASHBOARD} title="Dashboard" target="_self">
 					Dashboard
 				</Link>
@@ -130,7 +130,10 @@ export default function SidebarMobile({
 			</div>
 		),
 		getItem(
-			<p className="text-neutral-8 font-semibold" onClick={handleCloseSidebarMobi}>
+			<p
+				className="text-neutral-8 font-semibold"
+				onClick={handleCloseSidebarMobi}
+			>
 				<Link
 					href={PATH_NAME.TABLE_PROJECT}
 					title="Project List"
@@ -180,7 +183,10 @@ export default function SidebarMobile({
 			</div>
 		),
 		getItem(
-			<p className="text-neutral-8 font-semibold" onClick={handleCloseSidebarMobi}>
+			<p
+				className="text-neutral-8 font-semibold"
+				onClick={handleCloseSidebarMobi}
+			>
 				<Link href={PATH_NAME.TABLE_USER} title="User List" target="_self">
 					User List
 				</Link>
@@ -206,7 +212,10 @@ export default function SidebarMobile({
 			</div>
 		),
 		getItem(
-			<p className="text-neutral-8 font-semibold" onClick={handleCloseSidebarMobi}>
+			<p
+				className="text-neutral-8 font-semibold"
+				onClick={handleCloseSidebarMobi}
+			>
 				<Link
 					href={PATH_NAME.CREATE_PROJECT}
 					title="Create Project"

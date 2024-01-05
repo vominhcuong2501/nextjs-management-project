@@ -1,31 +1,31 @@
 // export default axios
 import axios from "axios";
 import {
-  BASE_URL_API,
-  TOKEN_CYBERSOFT,
-  USER_LOGIN_KEY,
+	BASE_URL_API,
+	TOKEN_CYBERSOFT,
+	USER_LOGIN_KEY,
 } from "./../constans/common";
 
 export const request = axios.create({
-  baseURL: BASE_URL_API,
-  headers: {
-    TokenCybersoft: TOKEN_CYBERSOFT,
-  },
+	baseURL: BASE_URL_API,
+	headers: {
+		TokenCybersoft: TOKEN_CYBERSOFT,
+	},
 });
 
 request.interceptors.request.use((config) => {
-  // let userInfo = localStorage.getItem(USER_LOGIN_KEY);
+	// let userInfo = localStorage.getItem(USER_LOGIN_KEY);
 
-  // if (userInfo) {
-  // 	userInfo = JSON.parse(userInfo);
-  // 	config.headers.Authorization = `Bearer ${userInfo?.accessToken}`;
-  // }
+	// if (userInfo) {
+	// 	userInfo = JSON.parse(userInfo);
+	// 	config.headers.Authorization = `Bearer ${userInfo?.accessToken}`;
+	// }
 
-  return config;
+	return config;
 });
 
 request.interceptors.response.use((response) => {
-  console.log(response);
+	// console.log(response);
 
-  return response;
+	return response;
 });
