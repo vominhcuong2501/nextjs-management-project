@@ -23,38 +23,77 @@ import {
 } from "@/lib/utils/modifyContent";
 import useDataUser from "@/lib/store/client/infomationUser";
 import { updateUserApi } from "@/app/api/updateUser";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getUserListApi } from "@/app/api/getUserList";
 
 export default function Profile() {
-	const { userInfo, updateUser } = useDataUser();
-
-	const profileDetail = useReverseModifyObject(userInfo, false);
-
 	const defaultValues: EditProfile = {
-		id: Number(profileDetail?.id),
-		name: profileDetail?.name,
-		email: profileDetail?.email,
+		id: 0,
+		name: "",
+		email: "",
 		passWord: "",
-		phoneNumber: profileDetail?.phoneNumber,
+		phoneNumber: "",
 	};
 
-	const [nameProfile, setNameProfile] = useState(profileDetail?.name);
+	const { userInfo } = useDataUser();
 
-	const [emailProfile, setEmailProfile] = useState(profileDetail?.email);
-
-	const [phoneProfile, setPhoneProfile] = useState(profileDetail?.phoneNumber);
-
-	const [passProfile, setPassProfile] = useState("");
+	const getProfile = useReverseModifyObject(userInfo, false);
 
 	const [isLoading, setIsLoading] = useState(false);
 
+	const queryClient = useQueryClient();
+
+	const [dataDefault, setDataDefault] = useState<EditProfile>(defaultValues);
+
+	const [dataProfile, setDataProfile] = useState<EditProfile>(defaultValues);
+
 	const tokenUser = getCookie("__token") as string;
 
-	const queryClient = useQueryClient();
+	const { data, status }: any = useQuery({
+		queryKey: ["get-user-list"],
+		queryFn: () => getUserListApi(tokenUser),
+	});
+
+	useEffect(() => {
+		if (status) {
+			const listDataUser = data?.content;
+			const index =
+				Number(getProfile?.id) &&
+				listDataUser?.findIndex(
+					(user: any) => Number(getProfile?.id) === user.userId
+				);
+			if (index) {
+				const profile = listDataUser[index];
+
+				setDataProfile({
+					id: profile?.userId,
+					name: profile?.name,
+					email: profile?.email,
+					passWord: profile?.passWord,
+					phoneNumber: profile?.phoneNumber,
+				});
+
+				setDataDefault({
+					id: profile?.userId,
+					name: profile?.name,
+					email: profile?.email,
+					passWord: profile?.passWord,
+					phoneNumber: profile?.phoneNumber,
+				});
+
+				setValue("name", profile?.name);
+				setValue("email", profile?.email);
+				setValue("phoneNumber", profile?.phoneNumber);
+				setValue("passWord", profile?.passWord);
+				setValue("id", profile?.userId);
+			}
+		}
+	}, [data?.content, status]);
 
 	const {
 		handleSubmit,
 		register,
+		setValue,
 		formState: { errors, isValid },
 	} = useForm<any>({
 		mode: "all",
@@ -66,19 +105,19 @@ export default function Profile() {
 	// validate form
 	const [isFormChange, setIsFormChange] = useState(isValid);
 
-	const currentProfile = {
-		id: Number(profileDetail?.id),
-		name: nameProfile,
-		email: emailProfile,
-		passWord: passProfile,
-		phoneNumber: phoneProfile,
-	};
-
 	useEffect(() => {
 		const formHasChanged =
-			JSON.stringify(currentProfile) !== JSON.stringify(defaultValues);
+			JSON.stringify(dataProfile) !== JSON.stringify(dataDefault);
 		setIsFormChange(formHasChanged);
-	}, [nameProfile, emailProfile, passProfile, phoneProfile]);
+	}, [dataProfile]);
+
+	const handleChange = (e: any) => {
+		const { name, value } = e.target;
+		setDataProfile((prevValues) => ({
+			...prevValues,
+			[name]: value,
+		}));
+	};
 
 	const updateProfileMutation = useMutation({
 		mutationFn: (data: EditProfile) => updateUserApi(data, tokenUser),
@@ -98,6 +137,8 @@ export default function Profile() {
 				notification.error({
 					message: responseApi?.response.data.content,
 				});
+
+				setIsLoading(false);
 			}
 		},
 	});
@@ -106,12 +147,6 @@ export default function Profile() {
 		setIsLoading(true);
 
 		updateProfileMutation.mutate(formEditProfile);
-
-		if (!isLoading) {
-			const dataUpdate = useModifyObject(formEditProfile, false);
-
-			updateUser(dataUpdate);
-		}
 	});
 
 	const handleFormSubmit = (e: MouseEvent<HTMLButtonElement>) => {
@@ -139,7 +174,7 @@ export default function Profile() {
 							className="relative group "
 							classNameInput="text-neutral-8 cursor-no-drop"
 							disabled={true}
-							value={defaultValues?.id}
+							value={dataProfile?.id ? dataProfile?.id : 0}
 							iconInput={<LockOutlined className="text-20 text-blue-15" />}
 						/>
 						<Input
@@ -154,8 +189,8 @@ export default function Profile() {
 							register={register}
 							maxLength={255}
 							classNameInput="text-neutral-8"
-							value={nameProfile}
-							onChange={(e) => setNameProfile(e.target.value)}
+							value={dataProfile?.name ? dataProfile?.name : ""}
+							onChange={handleChange}
 							iconInput={<UserOutlined className="text-20 text-blue-15" />}
 						/>
 						<Input
@@ -171,8 +206,8 @@ export default function Profile() {
 							register={register}
 							maxLength={15}
 							iconInput={<PhoneOutlined className="text-20 text-blue-15" />}
-							value={phoneProfile}
-							onChange={(e) => setPhoneProfile(e.target.value)}
+							value={dataProfile?.phoneNumber ? dataProfile?.phoneNumber : ""}
+							onChange={handleChange}
 						/>
 
 						<Input
@@ -188,8 +223,8 @@ export default function Profile() {
 							register={register}
 							maxLength={255}
 							iconInput={<MailOutlined className="text-20 text-blue-15" />}
-							value={emailProfile}
-							onChange={(e) => setEmailProfile(e.target.value)}
+							value={dataProfile?.email ? dataProfile?.email : ""}
+							onChange={handleChange}
 						/>
 						<Input
 							classNameLabel="text-neutral-8"
@@ -209,8 +244,8 @@ export default function Profile() {
 							autocomplete=""
 							iconInput={<KeyOutlined className="text-20 text-blue-15" />}
 							placeholder="Enter your new password"
-							value={passProfile}
-							onChange={(e) => setPassProfile(e.target.value)}
+							value={dataProfile?.passWord ? dataProfile?.passWord : ""}
+							onChange={handleChange}
 						/>
 					</div>
 					<Button
