@@ -50,10 +50,6 @@ export default function TableUser() {
 				notification.success({
 					message: `Delete User successfully with ID: ${id} !`,
 				});
-
-				deleteCookie("__token");
-
-				updateUser(undefined);
 			} else {
 				notification.error({
 					message: responseApi?.response.data.content,
