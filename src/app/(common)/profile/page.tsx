@@ -17,10 +17,7 @@ import {
 	PhoneOutlined,
 } from "@ant-design/icons";
 import { EditProfile } from "@/app/types/user";
-import {
-	useModifyObject,
-	useReverseModifyObject,
-} from "@/lib/utils/modifyContent";
+import { useReverseModifyObject } from "@/lib/utils/modifyContent";
 import useDataUser from "@/lib/store/client/infomationUser";
 import { updateUserApi } from "@/app/api/updateUser";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -252,7 +249,7 @@ export default function Profile() {
 						isLoading={isLoading}
 						onClick={(e) => handleFormSubmit(e)}
 						disabled={!isFormChange}
-						className={`border-0 max-w-[50vw] lg:max-w-[30vw] mx-auto`}
+						className={` max-w-[50vw] lg:max-w-[20vw] mx-auto`}
 					>
 						Update Profile
 					</Button>

@@ -5,6 +5,7 @@ import FormEditUser from "@/app/component/FormEditUser";
 import { ColumnsProps } from "@/app/types/table";
 import { EditProfile } from "@/app/types/user";
 import useDataUser from "@/lib/store/client/infomationUser";
+import useUpdateStatusModal from "@/lib/store/client/statusIsShowModal";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Input, Space, Table, notification } from "antd";
@@ -18,13 +19,9 @@ export default function TableUser() {
 
 	const { updateUser } = useDataUser();
 
-	const [isShow, setIsShow] = useState(false);
-
 	const [userId, setUserId] = useState();
 
-	const handleCloseFormEditUser = () => {
-		setIsShow(false);
-	};
+	const { isEditUser, updateIsEditUser } = useUpdateStatusModal();
 
 	const { data, isLoading, status }: any = useQuery({
 		queryKey: ["get-user-list"],
@@ -136,7 +133,7 @@ export default function TableUser() {
 						title="Edit User"
 						className="text-blue-4 text-20 cursor-pointer"
 						onClick={() => {
-							setIsShow(true);
+							updateIsEditUser(true);
 							fetchUserEdit(record?.userId);
 						}}
 					>
@@ -208,22 +205,19 @@ export default function TableUser() {
 				loading={isLoading}
 				className="overflow-x-auto w-full"
 			/>
-			{isShow && (
+			{isEditUser && (
 				<div
 					className={`w-screen h-screen fixed top-0 transition-all duration-300 bg-neutral-9 opacity-80 right-0 !z-30`}
-					onClick={() => setIsShow(false)}
+					onClick={() => updateIsEditUser(false)}
 				></div>
 			)}
 
 			<div
 				className={`fixed top-0 transition-all duration-300 ${
-					isShow ? "right-0 !z-50" : "-right-[150vw]"
+					isEditUser ? "right-0 !z-50" : "-right-[150vw]"
 				}`}
 			>
-				<FormEditUser
-					handleCloseFormEditUser={handleCloseFormEditUser}
-					dataUserId={userId}
-				/>
+				<FormEditUser dataUserId={userId} />
 			</div>
 		</section>
 	);

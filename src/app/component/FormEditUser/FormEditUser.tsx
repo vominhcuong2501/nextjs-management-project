@@ -19,16 +19,15 @@ import {
 import { EditProfile } from "@/app/types/user";
 import { updateUserApi } from "@/app/api/updateUser";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import useUpdateStatusModal from "@/lib/store/client/statusIsShowModal";
 
 interface FormEditUserProps {
-	handleCloseFormEditUser: () => void;
 	dataUserId?: EditProfile;
 }
 
-export default function FormEditUser({
-	handleCloseFormEditUser,
-	dataUserId,
-}: FormEditUserProps) {
+export default function FormEditUser({ dataUserId }: FormEditUserProps) {
+	const { isEditUser, updateIsEditUser } = useUpdateStatusModal();
+
 	const defaultValues: EditProfile = {
 		id: 0,
 		name: "",
@@ -119,7 +118,7 @@ export default function FormEditUser({
 
 				setIsLoading(false);
 
-				handleCloseFormEditUser();
+				updateIsEditUser(false);
 			} else {
 				notification.error({
 					message: responseApi?.response.data.content,
@@ -130,9 +129,8 @@ export default function FormEditUser({
 		},
 	});
 
-	const onSubmit = handleSubmit((value: EditProfile) => {
+	const onSubmit = handleSubmit(() => {
 		setIsLoading(true);
-		console.log(value);
 
 		updateUserMutation.mutate(formEditUser);
 	});
@@ -143,13 +141,13 @@ export default function FormEditUser({
 	};
 
 	return (
-		<div className="w-screen md:w-[40vw] h-screen shadow-primary bg-neutral-1 pt-8 px-4 overflow-y-scroll scrollbar-input">
+		<div className="w-screen md:w-[50vw] xl:w-[30vw] h-screen shadow-primary bg-neutral-1 pt-8 px-4 overflow-y-scroll scrollbar-input">
 			<div className="relative">
 				<h2 className="text-24 lg:text-32 text-gradient-red font-bold leading-1-4 text-center">
 					Update User
 				</h2>
 				<svg
-					onClick={handleCloseFormEditUser}
+					onClick={() => updateIsEditUser(false)}
 					width="44"
 					height="44"
 					viewBox="0 0 44 44"
@@ -252,7 +250,7 @@ export default function FormEditUser({
 						isLoading={isLoading}
 						onClick={(e) => handleFormSubmit(e)}
 						disabled={!isFormChange}
-						className={`border-0 max-w-[50vw] lg:max-w-[30vw] mx-auto`}
+						className={`border-0 max-w-[50vw] lg:max-w-[15vw] mx-auto`}
 					>
 						Update
 					</Button>

@@ -101,3 +101,28 @@ export const editUserSchema = () =>
 				"Password is invalid"
 			),
 	});
+
+export const createTaskSchema = () =>
+	yup.object({
+		projectId: yup
+			.number()
+			.min(1, "Project Name is required")
+			.required("Project Name is required"),
+		taskName: yup
+			.string()
+			.trim()
+			.required("Task Name is required")
+			.max(255, "Task Name is invalid"),
+		statusId: yup
+			.number()
+			.min(1, "Status is required")
+			.required("Status is required"),
+		typeId: yup
+			.number()
+			.min(1, "Type Task is required")
+			.required("Type Task is required"),
+		priorityId: yup
+			.number()
+			.min(1, "Priority Task is required")
+			.required("Priority Task is required"),
+	});

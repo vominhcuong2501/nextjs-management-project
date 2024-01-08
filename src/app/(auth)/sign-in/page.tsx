@@ -172,7 +172,7 @@ export default function SignIn() {
 						isLoading={isLoading}
 						disabled={!isValid || isLoading}
 						onClick={(e) => handleFormSubmit(e)}
-						className={`${isValid ? "opacity-100" : "opacity-75"}  border-0`}
+						className={`${isValid ? "opacity-100" : "opacity-70"}`}
 					>
 						Sign In
 					</Button>

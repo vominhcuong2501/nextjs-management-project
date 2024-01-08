@@ -148,9 +148,7 @@ export default function SignUp() {
 						isLoading={isLoading}
 						disabled={!isValid || isLoading}
 						onClick={(e) => handleFormSubmit(e)}
-						className={`${
-							isValid ? "opacity-100" : "opacity-75"
-						} border-0 mt-4`}
+						className={`${isValid ? "opacity-100" : "opacity-70"}  mt-4`}
 					>
 						{" "}
 						Sign Up
