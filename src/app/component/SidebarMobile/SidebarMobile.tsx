@@ -281,9 +281,7 @@ export default function SidebarMobile({
   return (
     <Sider
       className=" min-w-100px h-screen !w-screen"
-      style={{
-        background: "rgba(255, 255, 255, 0.50)",
-      }}
+      
     >
       <div className="flex items-center justify-between bg-gradient-to-b from-[#7fe2f3] to-[#5f88c9] p-2">
         <Link

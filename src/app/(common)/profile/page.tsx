@@ -32,7 +32,7 @@ export default function Profile() {
 		phoneNumber: "",
 	};
 
-	const { userInfo } = useDataUser();
+	const { userInfo, updateUser } = useDataUser();
 
 	const getProfile = useReverseModifyObject(userInfo, false);
 
@@ -144,6 +144,8 @@ export default function Profile() {
 		setIsLoading(true);
 
 		updateProfileMutation.mutate(formEditProfile);
+
+		!isLoading && updateUser(formEditProfile);
 	});
 
 	const handleFormSubmit = (e: MouseEvent<HTMLButtonElement>) => {

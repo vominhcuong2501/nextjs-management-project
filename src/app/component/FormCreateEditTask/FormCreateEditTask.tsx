@@ -7,7 +7,6 @@ import { createTaskSchema } from "@/lib/utils/rules";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { MouseEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { getCookie } from "cookies-next";
 import {
 	HighlightOutlined,
 	CheckCircleTwoTone,
@@ -32,6 +31,7 @@ import { getPriorityTaskApi } from "@/app/api/getPriorityTask";
 import { getTypeTaskApi } from "@/app/api/getTypeTask";
 import { createTaskApi } from "@/app/api/createTask";
 import { getMemberByProjectApi } from "@/app/api/getMemberByProjectId";
+import { getCookie } from "cookies-next";
 
 interface FormCreateTaskProps {
 	projectData?: ProjectItem;
@@ -167,6 +167,8 @@ export default function FormCreateEditTask({
 				});
 
 				setIsLoading(false);
+
+				updateIsCreateTask(false);
 			} else {
 				notification.error({
 					message: responseApi?.response.data.content,

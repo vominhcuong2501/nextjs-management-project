@@ -252,7 +252,7 @@ export default function CreateProjectPage() {
 							type="text"
 							id="projectID"
 							className="relative group "
-							classNameInput="!bg-neutral-1 text-neutral-8 cursor-no-drop"
+							classNameInput="text-neutral-8 cursor-no-drop"
 							disabled={true}
 							value={formState?.id}
 							iconInput={<KeyOutlined className="text-20 text-blue-15  " />}

@@ -6,11 +6,7 @@ import Input from "@/app/component/Input";
 import { ColumnsProps } from "@/app/types/table";
 import useDataUser from "@/lib/store/client/infomationUser";
 import useUpdateStatusModal from "@/lib/store/client/statusIsShowModal";
-import {
-	EditOutlined,
-	DeleteOutlined,
-	SearchOutlined,
-} from "@ant-design/icons";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Space, Table, notification } from "antd";
 import { getCookie } from "cookies-next";
@@ -20,8 +16,6 @@ export default function TableUser() {
 	const tokenUser = getCookie("__token") as string;
 
 	const [userData, setUserData] = useState();
-
-	const { updateUser } = useDataUser();
 
 	const [userId, setUserId] = useState();
 
@@ -216,7 +210,7 @@ export default function TableUser() {
 				dataSource={userData}
 				// rowSelection={{ ...rowSelection }}
 				loading={isLoading}
-				className="overflow-x-auto w-full"
+				className="overflow-x-auto w-full scrollbar-input"
 			/>
 			{isEditUser && (
 				<div

@@ -20,13 +20,19 @@ import { EditProfile } from "@/app/types/user";
 import { updateUserApi } from "@/app/api/updateUser";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useUpdateStatusModal from "@/lib/store/client/statusIsShowModal";
+import useDataUser from "@/lib/store/client/infomationUser";
+import { useReverseModifyObject } from "@/lib/utils/modifyContent";
 
 interface FormEditUserProps {
 	dataUserId?: EditProfile;
 }
 
 export default function FormEditUser({ dataUserId }: FormEditUserProps) {
-	const { isEditUser, updateIsEditUser } = useUpdateStatusModal();
+	const { updateIsEditUser } = useUpdateStatusModal();
+
+	const { userInfo, updateUser } = useDataUser();
+
+	const getProfile = useReverseModifyObject(userInfo, false);
 
 	const defaultValues: EditProfile = {
 		id: 0,
@@ -133,6 +139,10 @@ export default function FormEditUser({ dataUserId }: FormEditUserProps) {
 		setIsLoading(true);
 
 		updateUserMutation.mutate(formEditUser);
+
+		if (!isLoading && getProfile?.id == formEditUser.id) {
+			updateUser(formEditUser);
+		}
 	});
 
 	const handleFormSubmit = (e: MouseEvent<HTMLButtonElement>) => {

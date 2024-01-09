@@ -100,6 +100,13 @@ export default function AuthLayout({ children }: CommonLayoutProps) {
 				</div>
 				<div className="mt-[60px] md:mt-0">{children}</div>
 			</div>
+			<div
+				className={`fixed top-0 transition-all duration-300 ${
+					isShow ? "right-0 z-50" : "-right-[150vw]"
+				} bg-gradient-to-b from-[#7fe2f3] to-[#5f88c9]`}
+			>
+				<SidebarMobile handleCloseSidebarMobi={handleCloseSidebarMobi} />
+			</div>
 		</section>
 	);
 }

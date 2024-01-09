@@ -24,7 +24,7 @@ import { getUserListApi } from "@/app/api/getUserList";
 import { addMemberProjectApi } from "@/app/api/addMemberProject";
 import { getUserKeywordApi } from "@/app/api/getUserKeyword";
 import { deleteMemberProjectApi } from "@/app/api/deleteMemberProject";
-import { PlusCircleOutlined, SearchOutlined } from "@ant-design/icons";
+import { PlusCircleOutlined } from "@ant-design/icons";
 import useUpdateStatusModal from "@/lib/store/client/statusIsShowModal";
 import FormCreateEditTask from "@/app/component/FormCreateEditTask";
 import { useMounted } from "@/lib/hooks/useMounted";
@@ -172,6 +172,7 @@ export default function TableProject() {
 			key: "id",
 			sortDirections: ["descend"],
 			sorter: (item2, item1) => +item2.id - +item1.id,
+			responsive: ["sm"],
 		},
 		{
 			title: (
@@ -241,7 +242,7 @@ export default function TableProject() {
 				}
 			},
 			render: (_, record) => <Tag color="green">{record.creator?.name}</Tag>,
-			responsive: ["lg"],
+			responsive: ["xl"],
 		},
 		{
 			title: <p className="text-18 md:text-20 text-gradient-red">Members</p>,
@@ -445,7 +446,7 @@ export default function TableProject() {
 				columns={columns}
 				dataSource={projectData}
 				loading={isLoading}
-				className="overflow-x-auto w-full"
+				className="overflow-x-auto w-full scrollbar-input"
 			/>
 			{isCreateTask && isClient && (
 				<div

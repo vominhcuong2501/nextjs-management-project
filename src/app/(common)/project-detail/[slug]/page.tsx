@@ -1,36 +1,172 @@
 "use client";
 import { getProjectIdDetailApi } from "@/app/api/getProjectIdDetail";
-import FormCreateEditTask from "@/app/component/FormCreateEditTask";
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import Input from "@/app/component/Input";
+import { MemberProject } from "@/app/types/project";
 import useUpdateStatusModal from "@/lib/store/client/statusIsShowModal";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Avatar } from "antd";
+import { updateStatusApi } from "@/app/api/updateStatus";
+import FormCreateEditTask from "@/app/component/FormCreateEditTask";
+import { useMounted } from "@/lib/hooks/useMounted";
+import { getProjectListApi } from "@/app/api/getProjectList.ts";
+import Button from "@/app/component/Button";
+import { PlusCircleOutlined } from "@ant-design/icons";
 import { getCookie } from "cookies-next";
-import { useParams, usePathname } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 
 export default function ProjectDetail() {
 	const { isCreateTask, updateIsCreateTask } = useUpdateStatusModal();
 
+	const queryClient = useQueryClient();
+
 	const tokenUser = getCookie("__token") as string;
 
 	const params = useParams();
+
+	const isClient = useMounted();
+
+	// call api get project list
+	const dataProjectList: any = useQuery({
+		queryKey: ["get-project-list"],
+		queryFn: () => getProjectListApi(),
+	});
 
 	const projectDetail = useQuery({
 		queryKey: ["get-project-detail", params?.slug],
 		queryFn: () => getProjectIdDetailApi(params?.slug as string, tokenUser),
 	});
 
-	const [searchTerm, setSearchTerm] = useState("");
+	const listMember = projectDetail?.data?.content.members.map(
+		(mem: MemberProject) => {
+			return (
+				<div key={mem.userId}>
+					<Avatar
+						src={`${mem.avatar}`}
+						alt={mem.name ? mem.name : "Name"}
+						className="h-8 w-8 lg:h-10 lg:w-10"
+					/>
+				</div>
+			);
+		}
+	);
 
-	const [projectData, setProjectData] = useState();
-
-	const handleInputChange = (e: any) => {
-		setSearchTerm(e.target.value);
-		const filteredData = projectDetail?.data?.content.lstTask?.content.filter(
-			(item: any) =>
-				item.projectName.toLowerCase().includes(e.target.value.toLowerCase())
+	const handleDragEnd = async (result: any) => {
+		const { source, destination, draggableId } = result;
+		if (!destination) {
+			return;
+		}
+		if (
+			source.index === destination.index &&
+			source.droppableId === destination.droppableId
+		) {
+			return;
+		}
+		await updateStatusApi(
+			{
+				taskId: Number(draggableId),
+				statusId: destination.droppableId,
+			},
+			tokenUser
 		);
-		searchTerm.length > 0 && setProjectData(filteredData);
+		// setProjectDetail();
+		queryClient.invalidateQueries({
+			queryKey: ["get-project-detail", params?.slug],
+			exact: true,
+		});
+	};
+
+	const renderCardTaskList = () => {
+		return (
+			<DragDropContext onDragEnd={handleDragEnd}>
+				{projectDetail?.data?.content.lstTask?.map((task: any) => {
+					return (
+						<Droppable droppableId={task.statusId} key={task.statusId}>
+							{(provided: any) => {
+								return (
+									<div className="card p-3 rounded-lg bg-white bg-opacity-50 xl:min-h-[50vh]">
+										<div className="card-header text-18 md:text-20 text-gradient-blue font-bold leading-1-4">
+											{task.statusName}
+										</div>
+										<div
+											className="list-group list-group-flush mt-4"
+											ref={provided.innerRef}
+											{...provided.droppableProps}
+										>
+											{task.lstTaskDeTail.map((ele: any, index: number) => {
+												return (
+													<Draggable
+														key={ele.taskName}
+														draggableId={ele.taskId.toString()}
+														index={index}
+													>
+														{(provided: any) => {
+															return (
+																<div
+																	ref={provided.innerRef}
+																	{...provided.draggableProps}
+																	{...provided.dragHandleProps}
+																	className="list-group-item bg-neutral-1 p-5 rounded-2xl  grid grid-cols-1 gap-2 mt-4"
+																	data-toggle="modal"
+																	data-target="#infoModal"
+																	// onClick={async () => {
+																	// 	const result = await fetchTaskDetailApi(
+																	// 		ele.taskId
+																	// 	);
+																	// 	dispatch(
+																	// 		getTaskDetailAction(result.data.content)
+																	// 	);
+																	// }}
+																>
+																	<h5 className="text-16 md:text-18 font-bold leading-1-4 text-neutral-8 ">
+																		{ele.taskName}
+																	</h5>
+																	<p className="text-14 md:text-16 leading-1-4 text-neutral-8 font-semibold">
+																		Priority:{" "}
+																		<span className="text-red-1 font-normal">
+																			{ele.priorityTask.priority}
+																		</span>
+																	</p>
+																	{ele.description.length > 0 && (
+																		<p className="text-14 md:text-16 leading-1-4 text-neutral-8 font-semibold flex flex-wrap gap-2">
+																			Description:{" "}
+																			<span
+																				className="text-red-1 font-normal"
+																				dangerouslySetInnerHTML={{
+																					__html: ele.description,
+																				}}
+																			></span>
+																		</p>
+																	)}
+
+																	<div className="flex items-center">
+																		{ele.assigness.map((member: any) => {
+																			return (
+																				<div key={member.id}>
+																					<Avatar
+																						src={member.avatar}
+																						alt={member.avatar}
+																					/>
+																				</div>
+																			);
+																		})}
+																	</div>
+																</div>
+															);
+														}}
+													</Draggable>
+												);
+											})}
+											{provided.placeholder}
+										</div>
+									</div>
+								);
+							}}
+						</Droppable>
+					);
+				})}
+			</DragDropContext>
+		);
 	};
 
 	return (
@@ -46,9 +182,7 @@ export default function ProjectDetail() {
 						id="search"
 						className="py-2  rounded-2xl min-w-[300px]  md:min-w-[250px] lg:min-w-[350px] text-neutral-8 font-medium text-16 leading-1-4"
 						maxLength={255}
-						placeholder="Search Project Name..."
-						value={searchTerm}
-						onChange={handleInputChange}
+						placeholder="Search task..."
 						isRequired={false}
 					/>
 					<svg
@@ -84,12 +218,43 @@ export default function ProjectDetail() {
 					</svg>
 				</div>
 			</div>
-		</section>
-	);
-}
-{
-	/* <p onClick={() => updateIsCreateTask(true)}>Edit Task</p>
-			{isCreateTask && (
+
+			<div className="grid grid-cols-1 md:grid-cols-2 gap-3 p-3 rounded-lg bg-white bg-opacity-50">
+				<h3 className="flex items-center gap-2 text-16 md:text-18 leading-1-4">
+					<p className="font-bold text-gradient-red">Creator:</p>
+					{projectDetail?.data?.content.creator.name}
+				</h3>
+				<h3 className="flex items-center text-16 md:text-18 leading-1-4 font-bold text-gradient-red">
+					<span className="mr-2">Members:</span> {listMember}
+				</h3>
+				<div className="flex items-center gap-2">
+					<h3 className="text-16 md:text-18 leading-1-4 font-bold text-gradient-red">
+						Description:
+					</h3>
+					<div
+						dangerouslySetInnerHTML={{
+							__html: projectDetail?.data?.content.description,
+						}}
+					></div>
+				</div>
+				<h3 className="flex items-center gap-2 text-16 md:text-18 leading-1-4">
+					<p className="font-bold text-gradient-red">Category:</p>
+					{projectDetail?.data?.content.projectCategory.name}
+				</h3>
+			</div>
+
+			<Button
+				className={`max-w-[170px] flex items-center justify-center gap-2`}
+				onClick={() => updateIsCreateTask(true)}
+			>
+				<PlusCircleOutlined className="text-24" /> Create Task
+			</Button>
+
+			<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+				{renderCardTaskList()}
+			</div>
+
+			{isCreateTask && isClient && (
 				<div
 					className={`w-screen h-screen fixed top-0 transition-all duration-300 bg-neutral-9 opacity-80 right-0 !z-30`}
 					onClick={() => updateIsCreateTask(false)}
@@ -97,9 +262,17 @@ export default function ProjectDetail() {
 			)}
 			<div
 				className={`fixed top-0 transition-all duration-300 ${
-					isCreateTask ? "right-0 !z-50" : "-right-[150vw]"
+					isCreateTask && isClient ? "right-0 !z-50" : "-right-[150vw]"
 				}`}
 			>
-				<FormCreateEditTask />
-			</div> */
+				{isCreateTask && isClient && (
+					<FormCreateEditTask
+						projectData={
+							dataProjectList?.data?.content && dataProjectList?.data?.content
+						}
+					/>
+				)}
+			</div>
+		</section>
+	);
 }

@@ -61,7 +61,7 @@ export default function Input({
 				</label>
 				<div className="relative">
 					<input
-						className={`w-full md:h-12 h-11 rounded-[10px] pr-3 pl-10 outline-none transition-colors text-14 lg:text-16 border-[2px] border-blue-15  text-neutral-1 focus:border-[#00fdff] leading-1-4 bg-transparent ${classNameInput}  auto-fill-input ${
+						className={`w-full md:h-12 h-11 rounded-[10px] pr-3 pl-10 outline-none transition-colors text-14 lg:text-16 border-[2px] border-blue-15  text-neutral-1 focus:border-blue-16 leading-1-4 bg-transparent ${classNameInput}  auto-fill-input ${
 							errorMessage ? "border-red-1" : ""
 						}`}
 						{...registerResult}
