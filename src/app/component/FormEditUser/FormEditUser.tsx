@@ -153,7 +153,7 @@ export default function FormEditUser({ dataUserId }: FormEditUserProps) {
 					viewBox="0 0 44 44"
 					fill="none"
 					xmlns="http://www.w3.org/2000/svg"
-					className="cursor-pointer border border-neutral-9 rounded-lg hover:border-blue-15 absolute right-4 -top-[10px] scale-[.75] lg:scale-100"
+					className="cursor-pointer border border-neutral-9 rounded-lg hover:border-blue-15  absolute right-4 -top-[10px] scale-[.75] lg:scale-100"
 				>
 					<path
 						d="M27.9952 17.3475C28.366 16.9767 28.366 16.3755 27.9952 16.0047C27.6243 15.6339 27.0231 15.6339 26.6523 16.0047L21.9999 20.6571L17.3475 16.0047C16.9767 15.6339 16.3755 15.6339 16.0047 16.0047C15.6339 16.3755 15.6339 16.9767 16.0047 17.3475L20.6571 21.9999L16.0047 26.6523C15.6339 27.0231 15.6339 27.6243 16.0047 27.9952C16.3755 28.366 16.9767 28.366 17.3475 27.9952L21.9999 23.3428L26.6523 27.9952C27.0231 28.366 27.6243 28.366 27.9952 27.9952C28.366 27.6243 28.366 27.0231 27.9952 26.6523L23.3428 21.9999L27.9952 17.3475Z"
@@ -174,7 +174,7 @@ export default function FormEditUser({ dataUserId }: FormEditUserProps) {
 						classNameInput="text-neutral-8 cursor-no-drop"
 						disabled
 						value={formEditUser?.id ? formEditUser?.id : 0}
-						iconInput={<LockOutlined className="text-20 text-blue-15" />}
+						iconInput={<LockOutlined className="text-20 text-blue-15  " />}
 					/>
 					<Input
 						classNameLabel="text-neutral-8"
@@ -190,7 +190,7 @@ export default function FormEditUser({ dataUserId }: FormEditUserProps) {
 						classNameInput="text-neutral-8"
 						value={formEditUser?.name ? formEditUser?.name : ""}
 						onChange={handleChangeValue}
-						iconInput={<UserOutlined className="text-20 text-blue-15" />}
+						iconInput={<UserOutlined className="text-20 text-blue-15  " />}
 					/>
 					<Input
 						classNameLabel="text-neutral-8"
@@ -204,7 +204,7 @@ export default function FormEditUser({ dataUserId }: FormEditUserProps) {
 						errorMessage={errors.phoneNumber?.message}
 						register={register}
 						maxLength={15}
-						iconInput={<PhoneOutlined className="text-20 text-blue-15" />}
+						iconInput={<PhoneOutlined className="text-20 text-blue-15  " />}
 						value={formEditUser?.phoneNumber ? formEditUser?.phoneNumber : ""}
 						onChange={handleChangeValue}
 					/>
@@ -221,7 +221,7 @@ export default function FormEditUser({ dataUserId }: FormEditUserProps) {
 						errorMessage={errors.email?.message}
 						register={register}
 						maxLength={255}
-						iconInput={<MailOutlined className="text-20 text-blue-15" />}
+						iconInput={<MailOutlined className="text-20 text-blue-15  " />}
 						value={formEditUser?.email ? formEditUser?.email : ""}
 						onChange={handleChangeValue}
 					/>
@@ -241,7 +241,7 @@ export default function FormEditUser({ dataUserId }: FormEditUserProps) {
 						maxLength={20}
 						minLength={6}
 						autocomplete=""
-						iconInput={<KeyOutlined className="text-20 text-blue-15" />}
+						iconInput={<KeyOutlined className="text-20 text-blue-15  " />}
 						placeholder="Enter your new password"
 						value={formEditUser?.passWord ? formEditUser?.passWord : ""}
 						onChange={handleChangeValue}

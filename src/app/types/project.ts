@@ -5,9 +5,9 @@ export interface MemberProject {
 }
 
 export interface ProjectItem {
-	filter: any;
-	findIndex: any;
-	map: any;
+	filter?: any;
+	findIndex?: any;
+	map?: any;
 	members?: MemberProject[];
 	creator?: {
 		id?: number;
@@ -27,6 +27,6 @@ export interface ProjectItem {
 }
 
 export interface AddMemberProjectProps {
-	projectId: number;
-	userId: number;
+	projectId?: number;
+	userId?: number;
 }

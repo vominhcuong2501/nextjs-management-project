@@ -135,7 +135,7 @@ export default function CreateProjectPage() {
 
 				if (responseCreateProject?.statusCode === 200) {
 					notification.success({
-						message: "Successfully!",
+						message: "Create Project Successfully!",
 					});
 
 					setIsLoading(false);
@@ -169,7 +169,7 @@ export default function CreateProjectPage() {
 
 				if (responseUpdateProject?.statusCode === 200) {
 					notification.success({
-						message: "Successfully!",
+						message: "Update Project Successfully!",
 					});
 
 					setIsLoading(false);
@@ -255,7 +255,7 @@ export default function CreateProjectPage() {
 							classNameInput="!bg-neutral-1 text-neutral-8 cursor-no-drop"
 							disabled={true}
 							value={formState?.id}
-							iconInput={<KeyOutlined className="text-20 text-blue-15" />}
+							iconInput={<KeyOutlined className="text-20 text-blue-15  " />}
 						/>
 					)}
 
@@ -270,11 +270,11 @@ export default function CreateProjectPage() {
 						errorMessage={errors.projectName?.message}
 						register={register}
 						maxLength={255}
-						classNameInput="!bg-neutral-1 text-neutral-8"
+						classNameInput=" text-neutral-8"
 						value={nameProject}
 						onChange={(e) => setNameProject(e.target.value)}
 						placeholder="Enter your name project"
-						iconInput={<ProjectOutlined className="text-20 text-blue-15" />}
+						iconInput={<ProjectOutlined className="text-20 text-blue-15  " />}
 					/>
 
 					<div>
@@ -293,7 +293,7 @@ export default function CreateProjectPage() {
 							onChange={(selected) => setValueCategoryId(+selected)}
 							placeholder="Choose Project Category"
 							iconSelect={
-								<UnorderedListOutlined className="text-20 text-blue-15" />
+								<UnorderedListOutlined className="text-20 text-blue-15  " />
 							}
 						/>
 					</div>
@@ -308,7 +308,7 @@ export default function CreateProjectPage() {
 						<Editor
 							value={text}
 							onTextChange={(e: any) => setText(e.htmlValue)}
-							className="min-h-[20vh] border-[2px] border-blue-15 rounded-[10px] overflow-hidden mt-1"
+							className="min-h-[20vh] border-[2px] border-blue-15  rounded-[10px] overflow-hidden mt-1 focus:border-[#00fdff]"
 							name="description"
 							placeholder="You can write description your project"
 						/>

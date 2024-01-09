@@ -2,14 +2,18 @@
 import { deleteUser } from "@/app/api/deleteUser";
 import { getUserListApi } from "@/app/api/getUserList";
 import FormEditUser from "@/app/component/FormEditUser";
+import Input from "@/app/component/Input";
 import { ColumnsProps } from "@/app/types/table";
-import { EditProfile } from "@/app/types/user";
 import useDataUser from "@/lib/store/client/infomationUser";
 import useUpdateStatusModal from "@/lib/store/client/statusIsShowModal";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { Input, Space, Table, notification } from "antd";
-import { deleteCookie, getCookie } from "cookies-next";
+import {
+	EditOutlined,
+	DeleteOutlined,
+	SearchOutlined,
+} from "@ant-design/icons";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Space, Table, notification } from "antd";
+import { getCookie } from "cookies-next";
 import { useEffect, useState } from "react";
 
 export default function TableUser() {
@@ -22,6 +26,8 @@ export default function TableUser() {
 	const [userId, setUserId] = useState();
 
 	const { isEditUser, updateIsEditUser } = useUpdateStatusModal();
+
+	const queryClient = useQueryClient();
 
 	const { data, isLoading, status }: any = useQuery({
 		queryKey: ["get-user-list"],
@@ -43,12 +49,17 @@ export default function TableUser() {
 	};
 
 	// delete user;
-	const deleteProjectMutation = useMutation({
+	const deleteUserMutation = useMutation({
 		mutationFn: (id: number | string) => deleteUser(id, tokenUser),
 		onSuccess: (responseApi, id) => {
 			if (responseApi?.statusCode === 200) {
 				notification.success({
-					message: `Delete User successfully with ID: ${id} !`,
+					message: `Delete User Successfully With ID: ${id} !`,
+				});
+
+				queryClient.invalidateQueries({
+					queryKey: ["get-user-list"],
+					exact: true,
 				});
 			} else {
 				notification.error({
@@ -59,7 +70,7 @@ export default function TableUser() {
 	});
 
 	const handleDeleteUser = async (id: number) => {
-		deleteProjectMutation.mutate(id);
+		deleteUserMutation.mutate(id);
 	};
 
 	const fetchUserEdit = (id: number) => {
@@ -137,7 +148,7 @@ export default function TableUser() {
 					</p>
 					<p
 						title="Delete User"
-						className="text-red-1 text-20 cursor-pointer hover:text-blue-15"
+						className="text-red-1 text-20 cursor-pointer hover:text-blue-15  "
 						onClick={() => handleDeleteUser(record?.userId)}
 					>
 						<DeleteOutlined />
@@ -158,11 +169,13 @@ export default function TableUser() {
 						name="search"
 						type="text"
 						id="search"
-						className="py-2 pl-10 rounded-2xl min-w-[300px]  md:min-w-[250px] lg:min-w-[350px] text-neutral-8 font-medium text-16 leading-1-4"
+						className="py-2 rounded-2xl min-w-[300px]  md:min-w-[250px] lg:min-w-[350px] "
 						maxLength={255}
-						placeholder="Search User Name..."
+						placeholder="Search Project Name..."
 						value={searchTerm}
 						onChange={handleInputChange}
+						isRequired={false}
+						classNameInput="text-neutral-8 font-medium text-16 leading-1-4"
 					/>
 					<svg
 						width="44"
@@ -171,6 +184,10 @@ export default function TableUser() {
 						fill="none"
 						xmlns="http://www.w3.org/2000/svg"
 						className="absolute top-1/2 -translate-y-1/2 left-0"
+						style={{
+							filter:
+								"invert(65%) sepia(88%) saturate(426%) hue-rotate(126deg) brightness(86%) contrast(84%)",
+						}}
 					>
 						<g clipPath="url(#clip0_161_5736)">
 							<path

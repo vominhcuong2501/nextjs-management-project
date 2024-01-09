@@ -96,7 +96,7 @@ export default function SignIn() {
 				updateUser(infoUserModify);
 
 				notification.success({
-					message: "Successfully!",
+					message: "Login Successfully!",
 				});
 
 				router.push(PATH_NAME.PROFILE);
@@ -139,7 +139,7 @@ export default function SignIn() {
 						errorMessage={errors.email?.message}
 						register={register}
 						maxLength={255}
-						iconInput={<MailOutlined className="text-20 text-blue-15" />}
+						iconInput={<MailOutlined className="text-20 text-blue-15  " />}
 						placeholder="Enter your email"
 					/>
 					<Input
@@ -155,7 +155,7 @@ export default function SignIn() {
 						maxLength={20}
 						minLength={6}
 						autocomplete=""
-						iconInput={<KeyOutlined className="text-20 text-blue-15" />}
+						iconInput={<KeyOutlined className="text-20 text-blue-15  " />}
 						placeholder="Enter your password"
 					/>
 					<div className="flex items-center gap-2">
@@ -172,7 +172,6 @@ export default function SignIn() {
 						isLoading={isLoading}
 						disabled={!isValid || isLoading}
 						onClick={(e) => handleFormSubmit(e)}
-						className={`${isValid ? "opacity-100" : "opacity-70"}`}
 					>
 						Sign In
 					</Button>

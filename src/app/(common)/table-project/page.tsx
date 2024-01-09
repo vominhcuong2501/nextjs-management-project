@@ -6,7 +6,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Button from "@/app/component/Button";
 import {
 	Avatar,
-	Input,
 	Space,
 	Table,
 	Tag,
@@ -25,10 +24,11 @@ import { getUserListApi } from "@/app/api/getUserList";
 import { addMemberProjectApi } from "@/app/api/addMemberProject";
 import { getUserKeywordApi } from "@/app/api/getUserKeyword";
 import { deleteMemberProjectApi } from "@/app/api/deleteMemberProject";
-import { PlusCircleOutlined } from "@ant-design/icons";
+import { PlusCircleOutlined, SearchOutlined } from "@ant-design/icons";
 import useUpdateStatusModal from "@/lib/store/client/statusIsShowModal";
 import FormCreateEditTask from "@/app/component/FormCreateEditTask";
 import { useMounted } from "@/lib/hooks/useMounted";
+import Input from "@/app/component/Input";
 
 export default function TableProject() {
 	const { isCreateTask, updateIsCreateTask } = useUpdateStatusModal();
@@ -80,7 +80,7 @@ export default function TableProject() {
 		onSuccess: (responseApi, id) => {
 			if (responseApi?.statusCode === 200) {
 				notification.success({
-					message: `Delete successfully with ID: ${id} !`,
+					message: `Delete Successfully With ID: ${id} !`,
 				});
 
 				queryClient.invalidateQueries({
@@ -107,7 +107,7 @@ export default function TableProject() {
 		onSuccess: (responseApi) => {
 			if (responseApi?.statusCode === 200) {
 				notification.success({
-					message: "Add member successfully !",
+					message: "Add Member Successfully !",
 				});
 
 				queryClient.invalidateQueries({
@@ -134,7 +134,7 @@ export default function TableProject() {
 		onSuccess: (responseApi) => {
 			if (responseApi?.statusCode === 200) {
 				notification.success({
-					message: `Remove member successfully !`,
+					message: `Remove Member Successfully !`,
 				});
 
 				queryClient.invalidateQueries({
@@ -356,14 +356,14 @@ export default function TableProject() {
 					<Link
 						href={`/project/${record?.id}`}
 						title="Edit Project"
-						className="text-blue-4 text-20 hover:text-blue-15"
+						className="text-blue-4 text-20 hover:text-blue-15  "
 						target="_self"
 					>
 						<EditOutlined />
 					</Link>
 					<p
 						title="Delete Project"
-						className="text-red-1 text-20 cursor-pointer hover:text-blue-15"
+						className="text-red-1 text-20 cursor-pointer hover:text-blue-15  "
 						onClick={() => handleDeleteProject(record?.id)}
 					>
 						<DeleteOutlined />
@@ -372,7 +372,7 @@ export default function TableProject() {
 						target="_self"
 						title="View Detail"
 						href={`/project-detail/${record?.id}`}
-						className="text-green-1 text-20 hover:text-blue-15"
+						className="text-green-1 text-20 hover:text-blue-15  "
 					>
 						<EyeOutlined />
 					</Link>
@@ -392,11 +392,13 @@ export default function TableProject() {
 						name="search"
 						type="text"
 						id="search"
-						className="py-2 pl-10 rounded-2xl min-w-[300px]  md:min-w-[250px] lg:min-w-[350px] text-neutral-8 font-medium text-16 leading-1-4"
+						className="py-2 rounded-2xl min-w-[300px]  md:min-w-[250px] lg:min-w-[350px] "
 						maxLength={255}
 						placeholder="Search Project Name..."
 						value={searchTerm}
 						onChange={handleInputChange}
+						isRequired={false}
+						classNameInput="text-neutral-8 font-medium text-16 leading-1-4"
 					/>
 					<svg
 						width="44"
@@ -405,6 +407,10 @@ export default function TableProject() {
 						fill="none"
 						xmlns="http://www.w3.org/2000/svg"
 						className="absolute top-1/2 -translate-y-1/2 left-0"
+						style={{
+							filter:
+								"invert(65%) sepia(88%) saturate(426%) hue-rotate(126deg) brightness(86%) contrast(84%)",
+						}}
 					>
 						<g clipPath="url(#clip0_161_5736)">
 							<path

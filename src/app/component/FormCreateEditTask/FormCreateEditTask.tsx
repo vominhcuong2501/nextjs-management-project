@@ -23,13 +23,15 @@ import useUpdateStatusModal from "@/lib/store/client/statusIsShowModal";
 import SelectController from "../SelectController";
 import { Editor } from "primereact/editor";
 import Select from "react-select";
-import { Form, Slider } from "antd";
+import { Form, Slider, notification } from "antd";
 import { CreateTaskProps } from "@/app/types/task";
 import { getStatusTaskApi } from "@/app/api/getStatusTask";
 import { useMounted } from "@/lib/hooks/useMounted";
 import { MemberProject, ProjectItem } from "@/app/types/project";
 import { getPriorityTaskApi } from "@/app/api/getPriorityTask";
 import { getTypeTaskApi } from "@/app/api/getTypeTask";
+import { createTaskApi } from "@/app/api/createTask";
+import { getMemberByProjectApi } from "@/app/api/getMemberByProjectId";
 
 interface FormCreateTaskProps {
 	projectData?: ProjectItem;
@@ -51,15 +53,12 @@ export default function FormCreateEditTask({
 		description: "",
 	};
 
+	// check render UI server -> client
 	const isClient = useMounted();
 
 	const { updateIsCreateTask } = useUpdateStatusModal();
 
 	const [descriptionTask, setDescriptionTask] = useState("");
-
-	const [nameTask, setNameTask] = useState("");
-
-	const [timeEstimate, setTimeEstimate] = useState(0);
 
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -67,17 +66,23 @@ export default function FormCreateEditTask({
 
 	const [selectProjectName, setSelectProjectName] = useState(0);
 
+	const [selectedMembers, setSelectedMembers] = useState([]);
+
+	const queryClient = useQueryClient();
+
 	const [timeTracking, setTimeTracking] = useState({
 		timeTrackingSpent: 0,
 		timeTrackingRemaining: 0,
 	});
 
+	// list Project
 	const dataProjectNameOption =
 		projectData &&
 		projectData?.map((item: { id: number; projectName: string }) => {
 			return { value: item.id, label: item.projectName };
 		});
 
+	// call api status
 	const status = useQuery({
 		queryKey: ["get-status"],
 		queryFn: () => getStatusTaskApi(),
@@ -89,6 +94,7 @@ export default function FormCreateEditTask({
 		}
 	);
 
+	// call api priority
 	const priority = useQuery({
 		queryKey: ["get-priority"],
 		queryFn: () => getPriorityTaskApi(),
@@ -100,6 +106,7 @@ export default function FormCreateEditTask({
 		}
 	);
 
+	// call api type
 	const typeTask = useQuery({
 		queryKey: ["get-type-task"],
 		queryFn: () => getTypeTaskApi(),
@@ -111,22 +118,32 @@ export default function FormCreateEditTask({
 		}
 	);
 
+	// get data choose project
 	const dataFilterProjectId: any =
 		projectData &&
 		projectData?.filter((item: ProjectItem) => item.id === selectProjectName);
 
 	const dataAssignMemberOption =
-		dataFilterProjectId?.length > 0 &&
+		dataFilterProjectId &&
 		dataFilterProjectId?.map((item: { members: MemberProject[] }) => {
 			return item.members?.map((mem) => {
 				return { value: mem.userId, label: mem.name };
 			});
 		});
 
+	const handleMemberSelectChange = (selectedOptions: any) => {
+		setSelectedMembers(selectedOptions);
+	};
+
+	const arrayMemberId =
+		selectedMembers &&
+		selectedMembers?.map((member: { value: number; name: string }) => {
+			return member.value;
+		});
+
 	const {
 		handleSubmit,
 		register,
-		setValue,
 		control,
 		formState: { errors, isValid },
 	} = useForm<any>({
@@ -136,21 +153,38 @@ export default function FormCreateEditTask({
 		shouldFocusError: false,
 	});
 
-	// const handleChangeValue = (e: any) => {
-	// 	const { name, value } = e.target;
-	// 	setFormEditUser((prevValues) => ({
-	// 		...prevValues,
-	// 		[name]: value,
-	// 	}));
-	// };
+	const updateUserMutation = useMutation({
+		mutationFn: (data: CreateTaskProps) => createTaskApi(data, tokenUser),
+		onSuccess: (responseApi) => {
+			if (responseApi?.statusCode === 200) {
+				notification.success({
+					message: `Create Task Successfully !`,
+				});
 
-	// validate form
-	// const [isFormChange, setIsFormChange] = useState(isValid);
+				queryClient.invalidateQueries({
+					queryKey: ["get-project-list"],
+					exact: true,
+				});
+
+				setIsLoading(false);
+			} else {
+				notification.error({
+					message: responseApi?.response.data.content,
+				});
+
+				setIsLoading(false);
+			}
+		},
+	});
 
 	const onSubmit = handleSubmit((formCreateTask) => {
 		setIsLoading(true);
 
-		console.log(formCreateTask);
+		updateUserMutation.mutate({
+			...formCreateTask,
+			description: descriptionTask,
+			listUserAsign: arrayMemberId,
+		});
 	});
 
 	const handleFormSubmit = (e: MouseEvent<HTMLButtonElement>) => {
@@ -171,7 +205,7 @@ export default function FormCreateEditTask({
 					viewBox="0 0 44 44"
 					fill="none"
 					xmlns="http://www.w3.org/2000/svg"
-					className="cursor-pointer border border-neutral-9 rounded-lg hover:border-blue-15 absolute right-4 -top-[10px] scale-[.75] lg:scale-100"
+					className="cursor-pointer border border-neutral-9 rounded-lg hover:border-blue-15  absolute right-4 -top-[10px] scale-[.75] lg:scale-100"
 				>
 					<path
 						d="M27.9952 17.3475C28.366 16.9767 28.366 16.3755 27.9952 16.0047C27.6243 15.6339 27.0231 15.6339 26.6523 16.0047L21.9999 20.6571L17.3475 16.0047C16.9767 15.6339 16.3755 15.6339 16.0047 16.0047C15.6339 16.3755 15.6339 16.9767 16.0047 17.3475L20.6571 21.9999L16.0047 26.6523C15.6339 27.0231 15.6339 27.6243 16.0047 27.9952C16.3755 28.366 16.9767 28.366 17.3475 27.9952L21.9999 23.3428L26.6523 27.9952C27.0231 28.366 27.6243 28.366 27.9952 27.9952C28.366 27.6243 28.366 27.0231 27.9952 26.6523L23.3428 21.9999L27.9952 17.3475Z"
@@ -194,11 +228,10 @@ export default function FormCreateEditTask({
 								control={control}
 								options={dataProjectNameOption}
 								errorMessage={errors.projectId?.message}
-								// optionDefault={formState?.projectCategory?.name}
 								onChange={(selected) => setSelectProjectName(+selected)}
 								placeholder="Choose a project"
 								iconSelect={
-									<FileSearchOutlined className="text-20 text-blue-15" />
+									<FileSearchOutlined className="text-20 text-blue-15  " />
 								}
 							/>
 						</div>
@@ -215,10 +248,8 @@ export default function FormCreateEditTask({
 							register={register}
 							maxLength={255}
 							classNameInput="!bg-neutral-1 text-neutral-8"
-							value={nameTask}
-							onChange={(e) => setNameTask(e.target.value)}
 							placeholder="Enter your name task"
-							iconInput={<ProjectOutlined className="text-20 text-blue-15" />}
+							iconInput={<ProjectOutlined className="text-20 text-blue-15  " />}
 						/>
 					</div>
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -237,7 +268,7 @@ export default function FormCreateEditTask({
 								placeholder="Choose a status task"
 								iconSelect={
 									<CheckCircleTwoTone
-										className="text-20 text-blue-15"
+										className="text-20 text-blue-15  "
 										twoToneColor="#22c1c3"
 									/>
 								}
@@ -257,7 +288,7 @@ export default function FormCreateEditTask({
 								errorMessage={errors.priorityId?.message}
 								placeholder="Choose a priority task"
 								iconSelect={
-									<HighlightOutlined className="text-20 text-blue-15" />
+									<HighlightOutlined className="text-20 text-blue-15  " />
 								}
 							/>
 						</div>
@@ -277,7 +308,7 @@ export default function FormCreateEditTask({
 								options={dataTypeOption}
 								errorMessage={errors.typeId?.message}
 								placeholder="Choose a type task"
-								iconSelect={<TagsOutlined className="text-20 text-blue-15" />}
+								iconSelect={<TagsOutlined className="text-20 text-blue-15  " />}
 							/>
 						</div>
 
@@ -298,6 +329,8 @@ export default function FormCreateEditTask({
 									}
 									className="basic-multi-select "
 									classNamePrefix="select"
+									value={selectedMembers}
+									onChange={handleMemberSelectChange}
 								/>
 							)}
 						</div>
@@ -336,10 +369,10 @@ export default function FormCreateEditTask({
 							errorMessage={errors.originalEstimate?.message}
 							register={register}
 							classNameInput="!bg-neutral-1 text-neutral-8"
-							onChange={(e) => setTimeEstimate(+e.target.value)}
 							iconInput={
-								<ClockCircleOutlined className="text-20 text-blue-15" />
+								<ClockCircleOutlined className="text-20 text-blue-15  " />
 							}
+							min={0}
 						/>
 						<Input
 							classNameLabel="text-neutral-8"
@@ -359,8 +392,9 @@ export default function FormCreateEditTask({
 								})
 							}
 							iconInput={
-								<MinusCircleOutlined className="text-20 text-blue-15" />
+								<MinusCircleOutlined className="text-20 text-blue-15  " />
 							}
+							min={0}
 						/>
 						<Input
 							classNameLabel="text-neutral-8"
@@ -380,8 +414,9 @@ export default function FormCreateEditTask({
 								})
 							}
 							iconInput={
-								<PlusCircleOutlined className="text-20 text-blue-15" />
+								<PlusCircleOutlined className="text-20 text-blue-15  " />
 							}
+							min={0}
 						/>
 					</div>
 
@@ -395,7 +430,7 @@ export default function FormCreateEditTask({
 						<Editor
 							value={descriptionTask}
 							onTextChange={(e: any) => setDescriptionTask(e.htmlValue)}
-							className="border-[2px] border-blue-15 rounded-[10px] overflow-hidden mt-1"
+							className="border-[2px] border-blue-15  rounded-[10px] overflow-hidden mt-1 "
 							name="description"
 							placeholder="You can write description your project"
 						/>

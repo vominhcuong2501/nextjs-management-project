@@ -97,7 +97,7 @@ export default function SignUp() {
 						errorMessage={errors.name?.message}
 						register={register}
 						maxLength={255}
-						iconInput={<UserOutlined className="text-20 text-blue-15" />}
+						iconInput={<UserOutlined className="text-20 text-blue-15  " />}
 						placeholder="Enter your name"
 					/>
 					<Input
@@ -110,7 +110,7 @@ export default function SignUp() {
 						errorMessage={errors.phoneNumber?.message}
 						register={register}
 						maxLength={15}
-						iconInput={<PhoneOutlined className="text-20 text-blue-15" />}
+						iconInput={<PhoneOutlined className="text-20 text-blue-15  " />}
 						placeholder="Enter your phone"
 					/>
 
@@ -124,7 +124,7 @@ export default function SignUp() {
 						errorMessage={errors.email?.message}
 						register={register}
 						maxLength={255}
-						iconInput={<MailOutlined className="text-20 text-blue-15" />}
+						iconInput={<MailOutlined className="text-20 text-blue-15  " />}
 						placeholder="Enter your email"
 					/>
 					<Input
@@ -140,7 +140,7 @@ export default function SignUp() {
 						maxLength={20}
 						minLength={6}
 						autocomplete=""
-						iconInput={<KeyOutlined className="text-20 text-blue-15" />}
+						iconInput={<KeyOutlined className="text-20 text-blue-15  " />}
 						placeholder="Enter your password"
 					/>
 
@@ -148,9 +148,7 @@ export default function SignUp() {
 						isLoading={isLoading}
 						disabled={!isValid || isLoading}
 						onClick={(e) => handleFormSubmit(e)}
-						className={`${isValid ? "opacity-100" : "opacity-70"}  mt-4`}
 					>
-						{" "}
 						Sign Up
 					</Button>
 				</form>

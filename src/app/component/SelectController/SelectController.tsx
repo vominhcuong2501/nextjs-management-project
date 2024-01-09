@@ -53,7 +53,7 @@ export default function SelectController({
 								field.onChange(e);
 								onChange && onChange(e.target.value);
 							}}
-							className={`w-full  px-9 md:h-12 h-11 rounded-[10px]  outline-none transition-colors text-14 lg:text-16 border-[2px] border-blue-15 text-neutral-8 focus:border-blue-7 leading-1-4 ${classNameSelect}`}
+							className={`w-full  px-9 md:h-12 h-11 rounded-[10px]  outline-none transition-colors text-14 lg:text-16 border-[2px] border-blue-15  text-neutral-8 focus:border-blue-16  leading-1-4 ${classNameSelect}`}
 						>
 							<option value={0}>{placeholder}</option>
 

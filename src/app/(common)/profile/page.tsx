@@ -172,7 +172,7 @@ export default function Profile() {
 							classNameInput="text-neutral-8 cursor-no-drop"
 							disabled={true}
 							value={dataProfile?.id ? dataProfile?.id : 0}
-							iconInput={<LockOutlined className="text-20 text-blue-15" />}
+							iconInput={<LockOutlined className="text-20 text-blue-15  " />}
 						/>
 						<Input
 							classNameLabel="text-neutral-8"
@@ -188,7 +188,7 @@ export default function Profile() {
 							classNameInput="text-neutral-8"
 							value={dataProfile?.name ? dataProfile?.name : ""}
 							onChange={handleChange}
-							iconInput={<UserOutlined className="text-20 text-blue-15" />}
+							iconInput={<UserOutlined className="text-20 text-blue-15  " />}
 						/>
 						<Input
 							classNameLabel="text-neutral-8"
@@ -202,7 +202,7 @@ export default function Profile() {
 							errorMessage={errors.phoneNumber?.message}
 							register={register}
 							maxLength={15}
-							iconInput={<PhoneOutlined className="text-20 text-blue-15" />}
+							iconInput={<PhoneOutlined className="text-20 text-blue-15  " />}
 							value={dataProfile?.phoneNumber ? dataProfile?.phoneNumber : ""}
 							onChange={handleChange}
 						/>
@@ -219,7 +219,7 @@ export default function Profile() {
 							errorMessage={errors.email?.message}
 							register={register}
 							maxLength={255}
-							iconInput={<MailOutlined className="text-20 text-blue-15" />}
+							iconInput={<MailOutlined className="text-20 text-blue-15  " />}
 							value={dataProfile?.email ? dataProfile?.email : ""}
 							onChange={handleChange}
 						/>
@@ -239,7 +239,7 @@ export default function Profile() {
 							maxLength={20}
 							minLength={6}
 							autocomplete=""
-							iconInput={<KeyOutlined className="text-20 text-blue-15" />}
+							iconInput={<KeyOutlined className="text-20 text-blue-15  " />}
 							placeholder="Enter your new password"
 							value={dataProfile?.passWord ? dataProfile?.passWord : ""}
 							onChange={handleChange}
