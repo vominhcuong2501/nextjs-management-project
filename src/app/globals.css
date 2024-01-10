@@ -384,12 +384,21 @@ select::-webkit-scrollbar-thumb:hover {
 	-webkit-text-fill-color: transparent;
 }
 
-.text-not-long {
+.text-limit-1-line {
 	overflow: hidden;
 	display: -webkit-box;
 	-webkit-line-clamp: 1;
 	line-clamp: 1;
 	-webkit-box-orient: vertical;
+}
+
+
+.text-limit-3-line {
+	overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
 }
 
 @media (max-width: 991.98px) {

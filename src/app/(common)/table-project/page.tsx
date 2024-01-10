@@ -26,12 +26,11 @@ import { getUserKeywordApi } from "@/app/api/getUserKeyword";
 import { deleteMemberProjectApi } from "@/app/api/deleteMemberProject";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import useUpdateStatusModal from "@/lib/store/client/statusIsShowModal";
-import FormCreateEditTask from "@/app/component/FormCreateEditTask";
 import { useMounted } from "@/lib/hooks/useMounted";
 import Input from "@/app/component/Input";
 
 export default function TableProject() {
-	const { isCreateTask, updateIsCreateTask } = useUpdateStatusModal();
+	const { updateIsCreateTask } = useUpdateStatusModal();
 
 	const [valuePopupMember, setValuePopupMember] = useState("");
 
@@ -45,7 +44,6 @@ export default function TableProject() {
 
 	const queryClient = useQueryClient();
 
-	const isClient = useMounted();
 
 	// search project name
 	const handleInputChange = (e: any) => {
@@ -197,7 +195,7 @@ export default function TableProject() {
 				}
 			},
 			render: (text, _) => {
-				return <p className="text-neutral-8 text-not-long">{text}</p>;
+				return <p className="text-neutral-8 text-limit-1-line">{text}</p>;
 			},
 		},
 		{
@@ -448,22 +446,7 @@ export default function TableProject() {
 				loading={isLoading}
 				className="overflow-x-auto w-full scrollbar-input"
 			/>
-			{isCreateTask && isClient && (
-				<div
-					className={`w-screen h-screen fixed top-0 transition-all duration-300 bg-neutral-9 opacity-80 right-0 !z-30`}
-					onClick={() => updateIsCreateTask(false)}
-				></div>
-			)}
 
-			<div
-				className={`fixed top-0 transition-all duration-300 ${
-					isCreateTask && isClient ? "right-0 !z-50" : "-right-[150vw]"
-				}`}
-			>
-				{isCreateTask && isClient && (
-					<FormCreateEditTask projectData={projectData} />
-				)}
-			</div>
 		</section>
 	);
 }

@@ -1,37 +1,36 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
+import { createTaskApi } from "@/app/api/createTask";
+import { getPriorityTaskApi } from "@/app/api/getPriorityTask";
+import { getStatusTaskApi } from "@/app/api/getStatusTask";
+import { getTypeTaskApi } from "@/app/api/getTypeTask";
 import Button from "@/app/component/Button";
 import Input from "@/app/component/Input";
+import { MemberProject, ProjectItem } from "@/app/types/project";
+import { CreateTaskProps } from "@/app/types/task";
+import { useMounted } from "@/lib/hooks/useMounted";
+import useUpdateStatusModal from "@/lib/store/client/statusIsShowModal";
 import { createTaskSchema } from "@/lib/utils/rules";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { MouseEvent, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
 import {
-	HighlightOutlined,
 	CheckCircleTwoTone,
-	ProjectOutlined,
-	FileSearchOutlined,
-	TagsOutlined,
 	ClockCircleOutlined,
+	FileSearchOutlined,
+	HighlightOutlined,
 	MinusCircleOutlined,
 	PlusCircleOutlined,
+	ProjectOutlined,
+	TagsOutlined,
 } from "@ant-design/icons";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import useUpdateStatusModal from "@/lib/store/client/statusIsShowModal";
-import SelectController from "../SelectController";
-import { Editor } from "primereact/editor";
-import Select from "react-select";
 import { Form, Slider, notification } from "antd";
-import { CreateTaskProps } from "@/app/types/task";
-import { getStatusTaskApi } from "@/app/api/getStatusTask";
-import { useMounted } from "@/lib/hooks/useMounted";
-import { MemberProject, ProjectItem } from "@/app/types/project";
-import { getPriorityTaskApi } from "@/app/api/getPriorityTask";
-import { getTypeTaskApi } from "@/app/api/getTypeTask";
-import { createTaskApi } from "@/app/api/createTask";
-import { getMemberByProjectApi } from "@/app/api/getMemberByProjectId";
 import { getCookie } from "cookies-next";
+import { Editor } from "primereact/editor";
+import { MouseEvent, useState } from "react";
+import { useForm } from "react-hook-form";
+import Select from "react-select";
+import SelectController from "../SelectController";
 
 interface FormCreateTaskProps {
 	projectData?: ProjectItem;
@@ -153,7 +152,7 @@ export default function FormCreateEditTask({
 		shouldFocusError: false,
 	});
 
-	const updateUserMutation = useMutation({
+	const createTaskMutation = useMutation({
 		mutationFn: (data: CreateTaskProps) => createTaskApi(data, tokenUser),
 		onSuccess: (responseApi) => {
 			if (responseApi?.statusCode === 200) {
@@ -162,13 +161,13 @@ export default function FormCreateEditTask({
 				});
 
 				queryClient.invalidateQueries({
-					queryKey: ["get-project-list"],
+					queryKey: ["get-project-detail", selectProjectName],
 					exact: true,
 				});
 
 				setIsLoading(false);
 
-				updateIsCreateTask(false);
+				// updateIsCreateTask(false);
 			} else {
 				notification.error({
 					message: responseApi?.response.data.content,
@@ -182,7 +181,7 @@ export default function FormCreateEditTask({
 	const onSubmit = handleSubmit((formCreateTask) => {
 		setIsLoading(true);
 
-		updateUserMutation.mutate({
+		createTaskMutation.mutate({
 			...formCreateTask,
 			description: descriptionTask,
 			listUserAsign: arrayMemberId,

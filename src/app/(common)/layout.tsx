@@ -7,6 +7,9 @@ import Link from "next/link";
 import SidebarMobile from "../component/SidebarMobile";
 import FormCreateEditTask from "../component/FormCreateEditTask";
 import useUpdateStatusModal from "@/lib/store/client/statusIsShowModal";
+import { useMounted } from "@/lib/hooks/useMounted";
+import { useQuery } from "@tanstack/react-query";
+import { getProjectListApi } from "../api/getProjectList.ts";
 
 interface CommonLayoutProps {
 	children: ReactNode;
@@ -14,6 +17,16 @@ interface CommonLayoutProps {
 
 export default function AuthLayout({ children }: CommonLayoutProps) {
 	const [isShow, setIsShow] = useState(false);
+
+	const { isCreateTask, updateIsCreateTask } = useUpdateStatusModal();
+
+	const isClient = useMounted();
+
+	// call api get project list
+	const dataProjectList: any = useQuery({
+		queryKey: ["get-project-list"],
+		queryFn: () => getProjectListApi(),
+	});
 
 	const handleCloseSidebarMobi = () => {
 		setIsShow(false);
@@ -101,11 +114,29 @@ export default function AuthLayout({ children }: CommonLayoutProps) {
 				<div className="mt-[60px] md:mt-0">{children}</div>
 			</div>
 			<div
-				className={`fixed top-0 transition-all duration-300 ${
-					isShow ? "right-0 z-50" : "-right-[150vw]"
-				} bg-gradient-to-b from-[#7fe2f3] to-[#5f88c9]`}
+				className={`fixed top-0 transition-all duration-300 ${isShow ? "right-0 z-50" : "-right-[150vw]"
+					} bg-gradient-to-b from-[#7fe2f3] to-[#5f88c9]`}
 			>
 				<SidebarMobile handleCloseSidebarMobi={handleCloseSidebarMobi} />
+			</div>
+
+			{isCreateTask && isClient && (
+				<div
+					className={`w-screen h-screen fixed top-0 transition-all duration-300 bg-neutral-9 opacity-80 right-0 !z-30`}
+					onClick={() => updateIsCreateTask(false)}
+				></div>
+			)}
+			<div
+				className={`fixed top-0 transition-all duration-300 ${isCreateTask && isClient ? "right-0 !z-50" : "-right-[150vw]"
+					}`}
+			>
+				{isCreateTask && isClient && (
+					<FormCreateEditTask
+						projectData={
+							dataProjectList?.data?.content && dataProjectList?.data?.content
+						}
+					/>
+				)}
 			</div>
 		</section>
 	);
