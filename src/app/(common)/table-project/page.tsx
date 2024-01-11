@@ -1,33 +1,36 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
+import { addMemberProjectApi } from "@/app/api/addMemberProject";
+import { deleteMemberProjectApi } from "@/app/api/deleteMemberProject";
+import { deleteProjectApi } from "@/app/api/deleteProject";
 import { getProjectListApi } from "@/app/api/getProjectList.ts";
-import { EditOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getUserKeywordApi } from "@/app/api/getUserKeyword";
+import { getUserListApi } from "@/app/api/getUserList";
 import Button from "@/app/component/Button";
+import Input from "@/app/component/Input";
+import { AddMemberProjectProps, MemberProject } from "@/app/types/project";
+import useUpdateStatusModal from "@/lib/store/client/statusIsShowModal";
 import {
+	DeleteOutlined,
+	EditOutlined,
+	EyeOutlined,
+	PlusCircleOutlined,
+} from "@ant-design/icons";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+	AutoComplete,
 	Avatar,
+	Button as ButtonAntd,
+	Popover,
 	Space,
 	Table,
 	Tag,
-	Popover,
 	notification,
-	Button as ButtonAntd,
-	AutoComplete,
 } from "antd";
+import { getCookie } from "cookies-next";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ColumnsProps } from "../../types/table";
-import { AddMemberProjectProps, MemberProject } from "@/app/types/project";
-import { deleteProjectApi } from "@/app/api/deleteProject";
-import { getCookie } from "cookies-next";
-import { getUserListApi } from "@/app/api/getUserList";
-import { addMemberProjectApi } from "@/app/api/addMemberProject";
-import { getUserKeywordApi } from "@/app/api/getUserKeyword";
-import { deleteMemberProjectApi } from "@/app/api/deleteMemberProject";
-import { PlusCircleOutlined } from "@ant-design/icons";
-import useUpdateStatusModal from "@/lib/store/client/statusIsShowModal";
-import { useMounted } from "@/lib/hooks/useMounted";
-import Input from "@/app/component/Input";
 
 export default function TableProject() {
 	const { updateIsCreateTask } = useUpdateStatusModal();
@@ -44,7 +47,6 @@ export default function TableProject() {
 
 	const queryClient = useQueryClient();
 
-
 	// search project name
 	const handleInputChange = (e: any) => {
 		setSearchTerm(e.target.value);
@@ -55,7 +57,7 @@ export default function TableProject() {
 	};
 
 	// call api get project list
-	const { data, isLoading, status }: any = useQuery({
+	const { data, isLoading }: any = useQuery({
 		queryKey: ["get-project-list"],
 		queryFn: () => getProjectListApi(),
 	});
@@ -68,8 +70,8 @@ export default function TableProject() {
 
 	// sau khi call api set vao state render UI
 	useEffect(() => {
-		status && setProjectData(data?.content);
-		dataUser?.status && setUserData(dataUser?.data?.content);
+		setProjectData(data?.content);
+		setUserData(dataUser?.data?.content);
 	}, [data?.content]);
 
 	// delete project;
@@ -446,7 +448,6 @@ export default function TableProject() {
 				loading={isLoading}
 				className="overflow-x-auto w-full scrollbar-input"
 			/>
-
 		</section>
 	);
 }

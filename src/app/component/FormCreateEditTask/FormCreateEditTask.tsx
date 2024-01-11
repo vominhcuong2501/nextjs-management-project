@@ -10,6 +10,7 @@ import Input from "@/app/component/Input";
 import { MemberProject, ProjectItem } from "@/app/types/project";
 import { CreateTaskProps } from "@/app/types/task";
 import { useMounted } from "@/lib/hooks/useMounted";
+import useUpdateTaskDetail from "@/lib/store/client/flagUpdateTask";
 import useUpdateStatusModal from "@/lib/store/client/statusIsShowModal";
 import { createTaskSchema } from "@/lib/utils/rules";
 import {
@@ -23,7 +24,7 @@ import {
 	TagsOutlined,
 } from "@ant-design/icons";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Form, Slider, notification } from "antd";
 import { getCookie } from "cookies-next";
 import { Editor } from "primereact/editor";
@@ -57,6 +58,8 @@ export default function FormCreateEditTask({
 
 	const { updateIsCreateTask } = useUpdateStatusModal();
 
+	const { isChange, updateIsChange } = useUpdateTaskDetail();
+
 	const [descriptionTask, setDescriptionTask] = useState("");
 
 	const [isLoading, setIsLoading] = useState(false);
@@ -66,8 +69,6 @@ export default function FormCreateEditTask({
 	const [selectProjectName, setSelectProjectName] = useState(0);
 
 	const [selectedMembers, setSelectedMembers] = useState([]);
-
-	const queryClient = useQueryClient();
 
 	const [timeTracking, setTimeTracking] = useState({
 		timeTrackingSpent: 0,
@@ -160,14 +161,11 @@ export default function FormCreateEditTask({
 					message: `Create Task Successfully !`,
 				});
 
-				queryClient.invalidateQueries({
-					queryKey: ["get-project-detail", selectProjectName],
-					exact: true,
-				});
+				updateIsChange(!isChange);
 
 				setIsLoading(false);
 
-				// updateIsCreateTask(false);
+				updateIsCreateTask(false);
 			} else {
 				notification.error({
 					message: responseApi?.response.data.content,

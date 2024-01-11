@@ -2,12 +2,12 @@
 	"stylelint.validate": ["css", "scss"],
 	"css.lint.unknownAtRules": "ignore",
 	"editor.codeActionsOnSave": {
-		"source.fixAll.eslint": "explicit",
-		"source.fixAll.stylelint": "explicit",
+		"source.fixAll.eslint": true,
+		"source.fixAll.stylelint": true,
 		"source.sortImports": "never",
-		"source.organizeImports": "explicit",
-		"source.fixAll": "explicit",
-		"source.sortMembers": "explicit"
+		"source.organizeImports": true,
+		"source.fixAll": true,
+		"source.sortMembers": true
 	},
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"cSpell.words": [
@@ -63,5 +63,8 @@
 	],
 	"[html]": {
 		"editor.defaultFormatter": "vscode.html-language-features"
+	},
+	"[typescriptreact]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	}
 }

@@ -4,9 +4,8 @@ import { getUserListApi } from "@/app/api/getUserList";
 import FormEditUser from "@/app/component/FormEditUser";
 import Input from "@/app/component/Input";
 import { ColumnsProps } from "@/app/types/table";
-import useDataUser from "@/lib/store/client/infomationUser";
 import useUpdateStatusModal from "@/lib/store/client/statusIsShowModal";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Space, Table, notification } from "antd";
 import { getCookie } from "cookies-next";
@@ -23,14 +22,14 @@ export default function TableUser() {
 
 	const queryClient = useQueryClient();
 
-	const { data, isLoading, status }: any = useQuery({
+	const { data, isLoading }: any = useQuery({
 		queryKey: ["get-user-list"],
 		queryFn: () => getUserListApi(tokenUser),
 	});
 
 	useEffect(() => {
-		status && setUserData(data?.content);
-	}, [data?.content, status]);
+		setUserData(data?.content);
+	}, [data?.content]);
 
 	const [searchTerm, setSearchTerm] = useState("");
 
