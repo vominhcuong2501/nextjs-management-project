@@ -264,12 +264,12 @@
 		brightness(91%) contrast(96%);
 }
 
-aside {
+/* aside {
 	min-width: 120px !important;
 	width: 100% !important;
 	max-width: 230px !important;
 	flex: 0 0 230px !important;
-}
+} */
 
 /* Menu  */
 .ant-menu-item {
@@ -392,13 +392,12 @@ select::-webkit-scrollbar-thumb:hover {
 	-webkit-box-orient: vertical;
 }
 
-
 .text-limit-3-line {
 	overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
-  -webkit-box-orient: vertical;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	line-clamp: 3;
+	-webkit-box-orient: vertical;
 }
 
 @media (max-width: 991.98px) {
