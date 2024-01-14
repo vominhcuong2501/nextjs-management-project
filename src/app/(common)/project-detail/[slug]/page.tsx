@@ -358,7 +358,7 @@ export default function ProjectDetail() {
         ></div>
       )}
       <div
-        className={`fixed transition-all duration-300 top-[10vh] bottom-[10vh] left-[20vh] right-[20vh] overflow-y-scroll scrollbar-input rounded-xl  ${
+        className={`fixed transition-all duration-300 top-[74px] bottom-[16px] left-[16px] right-[16px] lg:top-[10vh] lg:bottom-[10vh] lg:left-[20vh] lg:right-[20vh] overflow-y-scroll scrollbar-input rounded-xl  ${
           isEditTask ? "scale-100 !z-50" : "scale-0"
         }`}
       >
