@@ -280,8 +280,8 @@ export default function FormEditTask({ dataTaskDetail }: FormEditTaskProps) {
   }
 
   return (
-    <form className='shadow-primary bg-neutral-1 p-6 rounded-xl relative'>
-      <p title='Close task' className='cursor-pointer absolute right-6 top-10'>
+    <form className='shadow-primary bg-neutral-1 p-4 md:p-6 rounded-xl relative'>
+      <p title='Close task' className='cursor-pointer absolute md:right-6 md:top-10 z-10 top-3 right-3'>
         <svg
           xmlns='http://www.w3.org/2000/svg'
           width='24'
@@ -301,7 +301,7 @@ export default function FormEditTask({ dataTaskDetail }: FormEditTaskProps) {
 
       <div className='grid grid-cols-1 md:grid-cols-2 gap-5 items-start'>
         {visibleTaskName ? (
-          <div className='relative col-span-2 pr-[40px]'>
+          <div className='relative md:col-span-2 pr-[40px]'>
             <Input
               classNameLabel='text-neutral-8'
               nameLabel=''
@@ -319,7 +319,7 @@ export default function FormEditTask({ dataTaskDetail }: FormEditTaskProps) {
               onChange={(e) => setTaskName(e.target.value)}
             />
             <button
-              className='absolute top-1 right-[40px] px-2 py-[8.5px] md:py-[10.5px] border-blue-15  hover:scale-110 bg-neutral-1 border-2 rounded-r-lg'
+              className='absolute top-1 right-[40px] px-2 py-[8.1px] md:py-[10.1px] border-blue-15  hover:scale-110 bg-neutral-1 border-2 rounded-r-lg'
               title='Save'
             >
               <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none'>
@@ -331,7 +331,7 @@ export default function FormEditTask({ dataTaskDetail }: FormEditTaskProps) {
             </button>
           </div>
         ) : (
-          <div className='flex items-end col-span-2 pr-[40px]'>
+          <div className='flex items-end md:col-span-2 pr-[40px]'>
             <h2 className='text-24 lg:text-32 text-gradient-red font-bold leading-1-4 text-left'>{taskName}</h2>
             <p title='Edit Name' onClick={() => setVisibleTaskName(true)}>
               <svg
@@ -443,7 +443,7 @@ export default function FormEditTask({ dataTaskDetail }: FormEditTaskProps) {
           <div className='grid grid-cols-3 items-center gap-5'>
             <Input
               classNameLabel='text-neutral-8'
-              nameLabel='Original estimate'
+              nameLabel='Time Estimate'
               required
               name='originalEstimate'
               type='number'
@@ -507,7 +507,7 @@ export default function FormEditTask({ dataTaskDetail }: FormEditTaskProps) {
           </Button>
         </div>
 
-        <div className='grid grid-cols-1 gap-5'>
+        <div className='grid grid-cols-1 gap-3 md:gap-5 row-start-2 md:col-start-2'>
           {dataTaskDetail?.description && (
             <div>
               <label htmlFor='' className='text-14 lg:text-16 text-neutral-8 leading-1-4 font-semibold block'>
@@ -593,6 +593,7 @@ export default function FormEditTask({ dataTaskDetail }: FormEditTaskProps) {
                       width={40}
                       height={40}
                       loading='lazy'
+                      className='scale-75 md:scale-100'
                     />
                     {visibleComment && item?.id == commentId ? (
                       <div className='relative flex-1'>
@@ -630,7 +631,7 @@ export default function FormEditTask({ dataTaskDetail }: FormEditTaskProps) {
                     ) : (
                       <div className='flex items-center justify-between gap-2 flex-1'>
                         <p className='flex-1'>{item.contentComment}</p>
-                        <div className='flex items-start gap-2'>
+                        <div className='flex items-start md:gap-2'>
                           <svg
                             xmlns='http://www.w3.org/2000/svg'
                             width='24'
@@ -642,21 +643,21 @@ export default function FormEditTask({ dataTaskDetail }: FormEditTaskProps) {
                               setCommentId(item.id)
                               setEditCommentUser(item.contentComment)
                             }}
-                            className='cursor-pointer'
+                            className='cursor-pointer scale-75 md:scale-90'
                           >
                             <path
                               fillRule='evenodd'
                               clipRule='evenodd'
                               d='M3.25 22C3.25 21.5858 3.58579 21.25 4 21.25H20C20.4142 21.25 20.75 21.5858 20.75 22C20.75 22.4142 20.4142 22.75 20 22.75H4C3.58579 22.75 3.25 22.4142 3.25 22Z'
-                              fill='#46ff3f'
+                              fill='#0030ff'
                             />
                             <path
                               d='M11.5201 14.929L11.5201 14.9289L17.4368 9.01225C16.6315 8.6771 15.6777 8.12656 14.7757 7.22455C13.8736 6.32238 13.323 5.36846 12.9879 4.56312L7.07106 10.4799L7.07101 10.48C6.60932 10.9417 6.37846 11.1725 6.17992 11.4271C5.94571 11.7273 5.74491 12.0522 5.58107 12.396C5.44219 12.6874 5.33894 12.9972 5.13245 13.6167L4.04356 16.8833C3.94194 17.1882 4.02128 17.5243 4.2485 17.7515C4.47573 17.9787 4.81182 18.0581 5.11667 17.9564L8.38334 16.8676C9.00281 16.6611 9.31256 16.5578 9.60398 16.4189C9.94775 16.2551 10.2727 16.0543 10.5729 15.8201C10.8275 15.6215 11.0584 15.3907 11.5201 14.929Z'
-                              fill='#46ff3f'
+                              fill='#0030ff'
                             />
                             <path
                               d='M19.0786 7.37044C20.3071 6.14188 20.3071 4.14999 19.0786 2.92142C17.85 1.69286 15.8581 1.69286 14.6296 2.92142L13.9199 3.63105C13.9296 3.6604 13.9397 3.69015 13.9502 3.72028C14.2103 4.47 14.701 5.45281 15.6243 6.37602C16.5475 7.29923 17.5303 7.78999 18.28 8.05009C18.31 8.0605 18.3396 8.07054 18.3688 8.08021L19.0786 7.37044Z'
-                              fill='#46ff3f'
+                              fill='#0030ff'
                             />
                           </svg>
                           <svg
@@ -666,7 +667,7 @@ export default function FormEditTask({ dataTaskDetail }: FormEditTaskProps) {
                             viewBox='0 0 18 20'
                             fill='none'
                             onClick={() => handleDeleteComment(item.id)}
-                            className='cursor-pointer'
+                            className='cursor-pointer scale-75 md:scale-90'
                           >
                             <path
                               d='M0 4.52381C0 4.12932 0.32671 3.80952 0.729726 3.80952H5.51787C5.52437 2.9683 5.61554 1.81504 6.45037 1.01668C7.10737 0.388386 8.00808 0 8.99999 0C9.99191 0 10.8926 0.388385 11.5496 1.01668C12.3844 1.81504 12.4756 2.9683 12.4821 3.80952H17.2703C17.6733 3.80952 18 4.12932 18 4.52381C18 4.9183 17.6733 5.2381 17.2703 5.2381H0.729726C0.32671 5.2381 0 4.9183 0 4.52381Z'
@@ -685,8 +686,16 @@ export default function FormEditTask({ dataTaskDetail }: FormEditTaskProps) {
                   </div>
                 )
               })}
-            <div className='flex items-center gap-5 mt-2'>
-              <Image src={'/icon-avatar-1.jfif'} alt='Avatar' title='Avatar' width={40} height={40} loading='lazy' />
+            <div className='flex items-center gap-3 md:gap-5 mt-2'>
+              <Image
+                src={'/icon-avatar-1.jfif'}
+                alt='Avatar'
+                title='Avatar'
+                width={40}
+                height={40}
+                loading='lazy'
+                className='scale-75 md:scale-100 '
+              />
               <div className='relative flex-1'>
                 <Input
                   classNameLabel='text-neutral-8'
@@ -701,7 +710,7 @@ export default function FormEditTask({ dataTaskDetail }: FormEditTaskProps) {
                   placeholder='Comment...'
                 />
                 <button
-                  className='absolute top-1 right-0 px-2 py-[8.5px] md:py-[10.5px] border-blue-15  hover:scale-110 bg-neutral-1 border-2 rounded-r-lg'
+                  className='absolute top-1 right-0 px-2 py-[8.1px] md:py-[10.1px] border-blue-15  hover:scale-110 bg-neutral-1 border-2 rounded-r-lg'
                   title='Save'
                   onClick={() => handleSubmitComment()}
                   type='button'
