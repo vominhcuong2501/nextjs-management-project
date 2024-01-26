@@ -11,14 +11,15 @@ export interface CreateTaskProps {
   originalEstimate?: number
   lstComment?: CommentListProps[]
   taskId?: number | string
+  assigness?: any
 }
 
 interface CommentListProps {
-  id: number
-  idUser: number
-  name: string
-  avatar: string
-  commentContent: string
+  id?: number
+  idUser?: number
+  name?: string
+  avatar?: string
+  commentContent?: string
 }
 
 export interface UserCommentTask {
@@ -33,4 +34,5 @@ export interface UserCommentTask {
   contentComment: string
   deleted: boolean
   alias: string
+  name: string
 }
