@@ -292,15 +292,15 @@ export default function ProjectDetail() {
 																				<path
 																					d='M7 12L14 12M14 12L11 15M14 12L11 9'
 																					stroke='#1C274C'
-																					stroke-width='1.5'
-																					stroke-linecap='round'
-																					stroke-linejoin='round'
+																					strokeWidth='1.5'
+																					strokeLinecap='round'
+																					strokeLinejoin='round'
 																				/>
 																				<path
 																					d='M17 16L17 12L17 8'
 																					stroke='#1C274C'
-																					stroke-width='1.5'
-																					stroke-linecap='round'
+																					strokeWidth='1.5'
+																					strokeLinecap='round'
 																				/>
 																				<path
 																					opacity='0.5'
@@ -412,12 +412,10 @@ export default function ProjectDetail() {
 			)}
 			<div
 				className={`fixed transition-all duration-300 top-[74px] bottom-[16px] left-[16px] right-[16px] lg:top-[10vh] lg:bottom-[10vh] lg:left-[20vh] lg:right-[20vh] overflow-y-scroll scrollbar-input rounded-xl  ${
-					isEditTask ? 'scale-100 !z-50' : 'scale-0'
+					isEditTask ? 'scale-100 !z-50' : 'scale-0 '
 				}`}
 			>
-				{isEditTask && (
-					<FormEditTask dataTaskDetail={taskDetail} listMemberProject={projectDetail?.data?.content?.members} />
-				)}
+				<FormEditTask dataTaskDetail={taskDetail} listMemberProject={projectDetail?.data?.content?.members} />
 			</div>
 		</section>
 	)

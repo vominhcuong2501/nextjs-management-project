@@ -21,10 +21,10 @@ import PATH_NAME from "@/app/constans/pathname";
 import { MailOutlined, KeyOutlined } from "@ant-design/icons";
 
 export default function SignIn() {
-	const [remember, setRemeber] = useState(false);
+	const [remember, setRemember] = useState(false);
 
 	const handleRemember = (checked: boolean) => {
-		setRemeber(checked);
+		setRemember(checked);
 	};
 
 	const [isLoading, setIsLoading] = useState(false);

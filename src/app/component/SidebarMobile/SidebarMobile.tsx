@@ -1,15 +1,15 @@
 "use client";
 
-import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import Logo from "../Logo";
-import { Layout, Menu } from "antd";
-import { deleteCookie } from "cookies-next";
-import { usePathname, useRouter } from "next/navigation";
 import PATH_NAME from "@/app/constans/pathname";
+import { useMounted } from "@/lib/hooks/useMounted";
 import useDataUser from "@/lib/store/client/infomationUser";
 import { useReverseModifyObject } from "@/lib/utils/modifyContent";
-import { useMounted } from "@/lib/hooks/useMounted";
+import { Layout, Menu } from "antd";
+import { deleteCookie } from "cookies-next";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import Logo from "../Logo";
 
 interface SidebarMobileProps {
   handleCloseSidebarMobi: () => void;
@@ -44,6 +44,12 @@ export default function SidebarMobile({
   const currentPath = dataPathname.find((item) => item.path === pathname);
 
   const activePath = currentPath ? currentPath.key : "0";
+
+  const [isActive, setIsActive] = useState(activePath)
+
+	useEffect(() => {
+		activePath && setIsActive(activePath)
+	}, [pathname])
 
   const handleLogOut = () => {
     deleteCookie("__token");
@@ -310,7 +316,7 @@ export default function SidebarMobile({
       </div>
 
       <Menu
-        defaultSelectedKeys={[activePath]}
+        defaultSelectedKeys={[isActive]}
         mode="inline"
         items={items}
         style={{

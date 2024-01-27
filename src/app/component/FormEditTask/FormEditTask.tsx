@@ -12,7 +12,6 @@ import { updateDescriptionApi } from '@/app/api/updateDescription'
 import { updateEstimateTimeApi } from '@/app/api/updateEstimateTime'
 import { updatePriorityApi } from '@/app/api/updatePriority'
 import { updateStatusApi } from '@/app/api/updateStatus'
-import Button from '@/app/component/Button'
 import Input from '@/app/component/Input'
 import { MemberProject } from '@/app/types/project'
 import { CreateTaskProps, UserCommentTask } from '@/app/types/task'
@@ -520,8 +519,8 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 						</Form.Item>
 					</div>
 
-					<div className='grid grid-cols-2 md:grid-cols-3 items-center gap-5'>
-						<div className='col-span-2 md:col-span-1'>
+					<div className='grid grid-cols-2 items-center gap-5'>
+						<div className='col-span-2 '>
 							<Input
 								classNameLabel='text-neutral-8'
 								nameLabel='Original Estimate'
@@ -535,7 +534,7 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 								classNameInput='!bg-neutral-1 text-neutral-8'
 								iconInput={<ClockCircleOutlined className='text-20 text-blue-15  ' />}
 								min={0}
-								onChange={(e) => handleUpdateEstimate(Number(e))}
+								onChange={(e) => handleUpdateEstimate(Number(e.target.value))}
 							/>
 						</div>
 						<Input
@@ -580,21 +579,21 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 						/>
 					</div>
 
-					<Button
+					{/* <Button
 						isLoading={isLoading}
 						onClick={(e) => handleFormSubmit(e)}
 						// disabled={!isValid}
 						className={`border-0 max-w-[170px] lg:max-w-[300px] mx-auto`}
 					>
 						Update Task
-					</Button>
+					</Button> */}
 				</div>
 
 				<div className='grid grid-cols-1 gap-3 md:gap-5 row-start-2 md:col-start-2'>
 					{/* DESCRIPTION  */}
 					{dataTaskDetail?.description && (
 						<div className={`${!visibleDescription && 'flex items-start gap-2'}`}>
-							<h3 className='text-20 text-gradient-blue leading-1-4 font-semibold'>* Desciption:</h3>
+							<h3 className='text-16 text-gradient-blue leading-1-4 font-semibold'>* Desciption:</h3>
 
 							{visibleDescription ? (
 								<div className='relative'>
@@ -666,7 +665,7 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 
 					{/* COMMENT */}
 					<div>
-						<h3 className='text-20 text-gradient-blue leading-1-4 font-semibold'>* Comment:</h3>
+						<h3 className='text-16 text-gradient-blue leading-1-4 font-semibold'>* Comment:</h3>
 						{responseCommentList?.data?.content &&
 							responseCommentList?.data?.content?.length > 0 &&
 							responseCommentList?.data?.content?.map((item: UserCommentTask) => {
