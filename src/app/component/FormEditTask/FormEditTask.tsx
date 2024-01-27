@@ -9,6 +9,7 @@ import { getPriorityTaskApi } from '@/app/api/getPriorityTask'
 import { getStatusTaskApi } from '@/app/api/getStatusTask'
 import { getTypeTaskApi } from '@/app/api/getTypeTask'
 import { updateDescriptionApi } from '@/app/api/updateDescription'
+import { updateEstimateTimeApi } from '@/app/api/updateEstimateTime'
 import { updatePriorityApi } from '@/app/api/updatePriority'
 import { updateStatusApi } from '@/app/api/updateStatus'
 import Button from '@/app/component/Button'
@@ -320,6 +321,31 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 		})
 	}
 
+	// update estimate time
+	const updateEstimateMutation = useMutation({
+		mutationFn: (data: { taskId: number | string; originalEstimate: number | undefined }) =>
+			updateEstimateTimeApi(data, tokenUser),
+		onSuccess: (responseApi) => {
+			if (responseApi?.statusCode === 200) {
+				queryClient.invalidateQueries({
+					queryKey: ['get-project-detail', dataTaskDetail?.projectId, isChange],
+					exact: true
+				})
+				updateIsChange(!isChange)
+			} else {
+				notification.error({
+					message: responseApi?.response.data.content
+				})
+			}
+		}
+	})
+	const handleUpdateEstimate = (originalEstimate: number) => {
+		updateEstimateMutation.mutate({
+			taskId: taskId || 0,
+			originalEstimate: originalEstimate
+		})
+	}
+
 	const onSubmit = handleSubmit((formCreateTask) => {
 		setIsLoading(true)
 		console.log('12345879', formCreateTask.statusId)
@@ -509,6 +535,7 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 								classNameInput='!bg-neutral-1 text-neutral-8'
 								iconInput={<ClockCircleOutlined className='text-20 text-blue-15  ' />}
 								min={0}
+								onChange={(e) => handleUpdateEstimate(Number(e))}
 							/>
 						</div>
 						<Input

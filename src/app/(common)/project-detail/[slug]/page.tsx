@@ -245,7 +245,7 @@ export default function ProjectDetail() {
 
 																	<div className='flex items-center justify-between'>
 																		<p
-																			className={`${ele.statusId == 1 && 'cursor-no-drop'} `}
+																			className={`${ele.statusId == 1 && 'cursor-no-drop'} rotate-90 md:rotate-0`}
 																			title='Prev'
 																			onClick={() => handleUpdateStatus(ele.taskId, Number(ele?.statusId) - 1)}
 																		>
@@ -278,7 +278,7 @@ export default function ProjectDetail() {
 																			</svg>
 																		</p>
 																		<p
-																			className={`${ele.statusId == 4 && 'cursor-no-drop'} `}
+																			className={`${ele.statusId == 4 && 'cursor-no-drop'}  rotate-90 md:rotate-0`}
 																			title='Next'
 																			onClick={() => handleUpdateStatus(ele.taskId, Number(ele?.statusId) + 1)}
 																		>
