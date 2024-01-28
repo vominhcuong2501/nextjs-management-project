@@ -1,5 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
-
 import PATH_NAME from '@/app/constans/pathname'
 import { useMounted } from '@/lib/hooks/useMounted'
 import useDataUser from '@/lib/store/client/infomationUser'
@@ -7,7 +7,7 @@ import { useReverseModifyObject } from '@/lib/utils/modifyContent'
 import { Layout, Menu } from 'antd'
 import { deleteCookie } from 'cookies-next'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { useParams, usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Logo from '../Logo'
 
@@ -29,6 +29,8 @@ export default function Sidebar() {
 
 	const pathname = usePathname()
 
+	const params = useParams()
+
 	const { userInfo, updateUser } = useDataUser()
 
 	const convertUserInfo: any = useReverseModifyObject(userInfo, false)
@@ -41,15 +43,19 @@ export default function Sidebar() {
 		{ path: PATH_NAME.PROFILE, key: '5' }
 	]
 
-	const currentPath = dataPathname.find((item) => item.path === pathname)
+	let currentPath = dataPathname.find((item) => item.path === pathname)
 
 	const activePath = currentPath ? currentPath.key : '0'
 
 	const [isActive, setIsActive] = useState(activePath)
 
 	useEffect(() => {
-		activePath && setIsActive(activePath)
-	}, [pathname])
+		if (params.slug !== 'undefined' && Number(params.slug)) {
+			setIsActive(activePath)
+			return router.push(`${PATH_NAME.PROJECT_DETAIL}/${params.slug}`)
+		}
+		setIsActive(activePath)
+	}, [activePath])
 
 	const handleLogOut = () => {
 		deleteCookie('__token')

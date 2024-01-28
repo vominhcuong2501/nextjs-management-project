@@ -147,7 +147,7 @@ export default function ProjectDetail() {
 			<DragDropContext onDragEnd={handleDragEnd}>
 				{projectDetail?.data?.content?.lstTask?.map((task: any) => {
 					return (
-						<Droppable droppableId={task.statusId && task.statusId} key={task.statusId}>
+						<Droppable droppableId={task.statusId} key={task.statusId}>
 							{(provided: any) => {
 								return (
 									<div className='card p-3 rounded-lg bg-white bg-opacity-50 xl:min-h-[50vh]'>
@@ -381,12 +381,13 @@ export default function ProjectDetail() {
 				<h3 className='flex items-center text-16 md:text-18 leading-1-4 font-bold text-gradient-red'>
 					<span className='mr-2'>Members:</span> {listMember}
 				</h3>
-				<div className='flex items-center gap-2'>
+				<div className='flex items-start gap-2'>
 					<h3 className='text-16 md:text-18 leading-1-4 font-bold text-gradient-red'>Description:</h3>
 					<div
 						dangerouslySetInnerHTML={{
 							__html: projectDetail?.data?.content?.description
 						}}
+						className='break-all'
 					></div>
 				</div>
 				<h3 className='flex items-center gap-2 text-16 md:text-18 leading-1-4'>

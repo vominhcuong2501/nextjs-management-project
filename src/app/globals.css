@@ -402,7 +402,6 @@ select::-webkit-scrollbar-thumb:hover {
 }
 
 .ql-editor {
-	/* min-height: 100px !important; */
 	padding-right: 50px !important;
 }
 
