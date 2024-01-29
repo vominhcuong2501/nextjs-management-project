@@ -30,14 +30,13 @@ import {
 } from '@ant-design/icons'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Form, Slider, notification } from 'antd'
+import { Avatar, Form, Slider, notification } from 'antd'
 import { getCookie } from 'cookies-next'
 import Image from 'next/image'
 import { Editor } from 'primereact/editor'
 import { MouseEvent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import Select from 'react-select'
-import Button from '../Button'
 import SelectController from '../SelectController'
 
 interface FormEditTaskProps {
@@ -61,8 +60,6 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 
 	// check render UI server -> client
 	const isClient = useMounted()
-
-	const [isLoading, setIsLoading] = useState(false)
 
 	const tokenUser = getCookie('__token') as string
 
@@ -152,7 +149,6 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 		})
 
 	const {
-		handleSubmit,
 		register,
 		control,
 		formState: { errors }
@@ -200,7 +196,8 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 			}
 		}
 	})
-	const handleSubmitComment = () => {
+	const handleSubmitComment = (e: MouseEvent<HTMLButtonElement>) => {
+		e.preventDefault()
 		createCommentMutation.mutate({
 			taskId: taskId || 0,
 			contentComment: commentUser
@@ -251,7 +248,8 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 			}
 		}
 	})
-	const handleEditComment = () => {
+	const handleEditComment = (e: MouseEvent<HTMLButtonElement>) => {
+		e.preventDefault()
 		editCommentMutation.mutate({
 			id: commentId,
 			contentComment: editCommentUser
@@ -281,7 +279,8 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 			}
 		}
 	})
-	const handleUpdateDescription = () => {
+	const handleUpdateDescription = (e: MouseEvent<HTMLButtonElement>) => {
+		e.preventDefault()
 		updateDescriptionMutation.mutate({
 			taskId: taskId || 0,
 			description: descriptionTask
@@ -372,7 +371,7 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 		})
 	}
 
-	// update timetracking
+	// update time tracking
 	const updateTimeTrackingMutation = useMutation({
 		mutationFn: (data: { taskId: number | string; timeTrackingSpent: number; timeTrackingRemaining: number }) =>
 			updateTimeTrackingApi(data, tokenUser),
@@ -405,89 +404,170 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 		})
 	}
 
-	const onSubmit = handleSubmit((formEditTask) => {
-		setIsLoading(true)
-		// updateTaskMutation.mutate({
-		// 	...formEditTask,
-		// 	description: descriptionTask,
-		// 	listUserAsign: arrayMemberId
-		// })
-	})
+	const RenderIconClose = () => {
+		return (
+			<p title='Close task' className='cursor-pointer absolute md:right-6 md:top-10 z-10 top-3 right-3'>
+				<svg
+					xmlns='http://www.w3.org/2000/svg'
+					width='24'
+					height='24'
+					viewBox='0 0 24 24'
+					fill='none'
+					onClick={() => updateIsEditTask(false)}
+				>
+					<path
+						fillRule='evenodd'
+						clipRule='evenodd'
+						d='M11.9426 1.25C9.63423 1.24999 7.82519 1.24998 6.41371 1.43975C4.96897 1.63399 3.82895 2.03933 2.93414 2.93414C2.03933 3.82895 1.63399 4.96897 1.43975 6.41371C1.24998 7.82519 1.24999 9.63423 1.25 11.9426V12.0574C1.24999 14.3658 1.24998 16.1748 1.43975 17.5863C1.63399 19.031 2.03933 20.1711 2.93414 21.0659C3.82895 21.9607 4.96897 22.366 6.41371 22.5603C7.82519 22.75 9.63423 22.75 11.9426 22.75H12.0574C14.3658 22.75 16.1748 22.75 17.5863 22.5603C19.031 22.366 20.1711 21.9607 21.0659 21.0659C21.9607 20.1711 22.366 19.031 22.5603 17.5863C22.75 16.1748 22.75 14.3658 22.75 12.0574V11.9426C22.75 9.63423 22.75 7.82519 22.5603 6.41371C22.366 4.96897 21.9607 3.82895 21.0659 2.93414C20.1711 2.03933 19.031 1.63399 17.5863 1.43975C16.1748 1.24998 14.3658 1.24999 12.0574 1.25H11.9426ZM3.9948 3.9948C4.56445 3.42514 5.33517 3.09825 6.61358 2.92637C7.91356 2.75159 9.62178 2.75 12 2.75C14.3782 2.75 16.0864 2.75159 17.3864 2.92637C18.268 3.0449 18.9082 3.23714 19.4075 3.53188L14.75 8.18934V6.25C14.75 5.83579 14.4142 5.5 14 5.5C13.5858 5.5 13.25 5.83579 13.25 6.25V10C13.25 10.4142 13.5858 10.75 14 10.75H17.75C18.1642 10.75 18.5 10.4142 18.5 10C18.5 9.58579 18.1642 9.25 17.75 9.25H15.8107L20.4681 4.59254C20.7629 5.09183 20.9551 5.73199 21.0736 6.61358C21.2484 7.91356 21.25 9.62178 21.25 12C21.25 14.3782 21.2484 16.0864 21.0736 17.3864C20.9018 18.6648 20.5749 19.4355 20.0052 20.0052C19.4355 20.5749 18.6648 20.9018 17.3864 21.0736C16.0864 21.2484 14.3782 21.25 12 21.25C9.62178 21.25 7.91356 21.2484 6.61358 21.0736C5.73199 20.9551 5.09183 20.7629 4.59254 20.4681L9.25 15.8107V17.75C9.25 18.1642 9.58579 18.5 10 18.5C10.4142 18.5 10.75 18.1642 10.75 17.75V14C10.75 13.5858 10.4142 13.25 10 13.25H6.25C5.83579 13.25 5.5 13.5858 5.5 14C5.5 14.4142 5.83579 14.75 6.25 14.75H8.18934L3.53188 19.4075C3.23714 18.9082 3.0449 18.268 2.92637 17.3864C2.75159 16.0864 2.75 14.3782 2.75 12C2.75 9.62178 2.75159 7.91356 2.92637 6.61358C3.09825 5.33517 3.42514 4.56445 3.9948 3.9948Z'
+						fill='#1C274C'
+					/>
+				</svg>
+			</p>
+		)
+	}
 
-	const handleFormSubmit = (e: MouseEvent<HTMLButtonElement>) => {
-		e.preventDefault()
-		onSubmit()
+	const RenderTaskName = () => {
+		return (
+			<>
+				{visibleTaskName ? (
+					<div className='relative md:col-span-2 pr-[40px]'>
+						<Input
+							classNameLabel='text-neutral-8'
+							nameLabel=''
+							isRequired={false}
+							required
+							name='taskName'
+							type='text'
+							id='taskName'
+							className='relative group  text-neutral-8'
+							errorMessage={errors.taskName?.message}
+							register={register}
+							maxLength={255}
+							value={taskName}
+							classNameInput='!bg-neutral-1 text-neutral-8 pl-4'
+							onChange={(e) => setTaskName(e.target.value)}
+						/>
+						<button
+							className='absolute top-1 right-[40px] px-2 py-[8.1px] md:py-[10.1px] border-blue-15  hover:scale-110 bg-neutral-1 border-2 rounded-r-lg'
+							title='Save'
+						>
+							<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none'>
+								<path
+									d='M4.49746 20.835L21.0072 13.4725C22.3309 12.8822 22.3309 11.1178 21.0072 10.5275L4.49746 3.16496C3.00163 2.49789 1.45006 3.97914 2.19099 5.36689L5.34302 11.2706C5.58817 11.7298 5.58818 12.2702 5.34302 12.7294L2.19099 18.6331C1.45007 20.0209 3.00163 21.5021 4.49746 20.835Z'
+									fill='#22c1c3'
+								/>
+							</svg>
+						</button>
+					</div>
+				) : (
+					<>
+						{isClient && (
+							<h2
+								className='md:col-span-2 text-24 lg:text-32 text-gradient-red font-bold leading-1-4 text-left'
+								onClick={() => setVisibleTaskName(true)}
+							>
+								{taskName}
+							</h2>
+						)}
+					</>
+				)}
+			</>
+		)
+	}
+
+	const RenderTimeTracking = () => {
+		return (
+			<>
+				<div>
+					<label htmlFor='' className='text-14 lg:text-16 text-neutral-8 leading-1-4 font-semibold mb-1 block'>
+						Time Checking <span className='text-red-1'>*</span>
+					</label>
+					<Form.Item validateTrigger={['onChange']} className='m-0'>
+						<Slider
+							value={timeTracking.timeTrackingSpent}
+							max={Number(timeTracking.timeTrackingSpent) + Number(timeTracking.timeTrackingRemaining)}
+						/>
+						<div className='flex justify-between items-center'>
+							<p>{timeTracking.timeTrackingSpent}h logged</p>
+							<p>{timeTracking.timeTrackingRemaining}h remaining</p>
+						</div>
+					</Form.Item>
+				</div>
+				{isClient && (
+					<div className='grid grid-cols-2 items-center gap-5'>
+						<div className='col-span-2 '>
+							<Input
+								classNameLabel='text-neutral-8'
+								nameLabel='Original Estimate'
+								required
+								name='originalEstimate'
+								type='number'
+								id='originalEstimate'
+								className='relative group '
+								errorMessage={errors.originalEstimate?.message}
+								register={register}
+								classNameInput='!bg-neutral-1 text-neutral-8'
+								iconInput={<ClockCircleOutlined className='text-20 text-blue-15  ' />}
+								min={0}
+								onBlur={(e) => handleUpdateEstimate(Number(e.target.value))}
+								defaultValue={dataTaskDetail?.originalEstimate ? dataTaskDetail?.originalEstimate : 0}
+							/>
+						</div>
+						<Input
+							classNameLabel='text-neutral-8'
+							nameLabel='Time Spent'
+							required
+							name='timeTrackingSpent'
+							type='number'
+							id='timeTrackingSpent'
+							className='relative group '
+							errorMessage={errors.timeTrackingSpent?.message}
+							register={register}
+							classNameInput='!bg-neutral-1 text-neutral-8'
+							onBlur={(e) =>
+								handleTimeTracking({
+									timeTrackingSpent: +e.target.value,
+									timeTrackingRemaining: timeTracking.timeTrackingRemaining
+								})
+							}
+							iconInput={<MinusCircleOutlined className='text-20 text-blue-15  ' />}
+							min={0}
+							defaultValue={timeTracking?.timeTrackingSpent && timeTracking?.timeTrackingSpent}
+						/>
+						<Input
+							classNameLabel='text-neutral-8'
+							nameLabel='Time Remaining'
+							required
+							name='timeTrackingRemaining'
+							type='number'
+							id='timeTrackingRemaining'
+							className='relative group '
+							errorMessage={errors.timeTrackingRemaining?.message}
+							register={register}
+							classNameInput='!bg-neutral-1 text-neutral-8'
+							onBlur={(e) =>
+								handleTimeTracking({
+									timeTrackingSpent: timeTracking.timeTrackingSpent,
+									timeTrackingRemaining: +e.target.value
+								})
+							}
+							iconInput={<PlusCircleOutlined className='text-20 text-blue-15  ' />}
+							min={0}
+							defaultValue={dataTaskDetail?.timeTrackingRemaining && dataTaskDetail?.timeTrackingRemaining}
+						/>
+					</div>
+				)}
+			</>
+		)
 	}
 
 	return (
 		<>
 			{dataTaskDetail && (
 				<form className='shadow-primary bg-neutral-1 p-4 md:p-6 rounded-xl relative'>
-					{/* icon close modal  */}
-					<p title='Close task' className='cursor-pointer absolute md:right-6 md:top-10 z-10 top-3 right-3'>
-						<svg
-							xmlns='http://www.w3.org/2000/svg'
-							width='24'
-							height='24'
-							viewBox='0 0 24 24'
-							fill='none'
-							onClick={() => updateIsEditTask(false)}
-						>
-							<path
-								fillRule='evenodd'
-								clipRule='evenodd'
-								d='M11.9426 1.25C9.63423 1.24999 7.82519 1.24998 6.41371 1.43975C4.96897 1.63399 3.82895 2.03933 2.93414 2.93414C2.03933 3.82895 1.63399 4.96897 1.43975 6.41371C1.24998 7.82519 1.24999 9.63423 1.25 11.9426V12.0574C1.24999 14.3658 1.24998 16.1748 1.43975 17.5863C1.63399 19.031 2.03933 20.1711 2.93414 21.0659C3.82895 21.9607 4.96897 22.366 6.41371 22.5603C7.82519 22.75 9.63423 22.75 11.9426 22.75H12.0574C14.3658 22.75 16.1748 22.75 17.5863 22.5603C19.031 22.366 20.1711 21.9607 21.0659 21.0659C21.9607 20.1711 22.366 19.031 22.5603 17.5863C22.75 16.1748 22.75 14.3658 22.75 12.0574V11.9426C22.75 9.63423 22.75 7.82519 22.5603 6.41371C22.366 4.96897 21.9607 3.82895 21.0659 2.93414C20.1711 2.03933 19.031 1.63399 17.5863 1.43975C16.1748 1.24998 14.3658 1.24999 12.0574 1.25H11.9426ZM3.9948 3.9948C4.56445 3.42514 5.33517 3.09825 6.61358 2.92637C7.91356 2.75159 9.62178 2.75 12 2.75C14.3782 2.75 16.0864 2.75159 17.3864 2.92637C18.268 3.0449 18.9082 3.23714 19.4075 3.53188L14.75 8.18934V6.25C14.75 5.83579 14.4142 5.5 14 5.5C13.5858 5.5 13.25 5.83579 13.25 6.25V10C13.25 10.4142 13.5858 10.75 14 10.75H17.75C18.1642 10.75 18.5 10.4142 18.5 10C18.5 9.58579 18.1642 9.25 17.75 9.25H15.8107L20.4681 4.59254C20.7629 5.09183 20.9551 5.73199 21.0736 6.61358C21.2484 7.91356 21.25 9.62178 21.25 12C21.25 14.3782 21.2484 16.0864 21.0736 17.3864C20.9018 18.6648 20.5749 19.4355 20.0052 20.0052C19.4355 20.5749 18.6648 20.9018 17.3864 21.0736C16.0864 21.2484 14.3782 21.25 12 21.25C9.62178 21.25 7.91356 21.2484 6.61358 21.0736C5.73199 20.9551 5.09183 20.7629 4.59254 20.4681L9.25 15.8107V17.75C9.25 18.1642 9.58579 18.5 10 18.5C10.4142 18.5 10.75 18.1642 10.75 17.75V14C10.75 13.5858 10.4142 13.25 10 13.25H6.25C5.83579 13.25 5.5 13.5858 5.5 14C5.5 14.4142 5.83579 14.75 6.25 14.75H8.18934L3.53188 19.4075C3.23714 18.9082 3.0449 18.268 2.92637 17.3864C2.75159 16.0864 2.75 14.3782 2.75 12C2.75 9.62178 2.75159 7.91356 2.92637 6.61358C3.09825 5.33517 3.42514 4.56445 3.9948 3.9948Z'
-								fill='#1C274C'
-							/>
-						</svg>
-					</p>
-
+					<RenderIconClose />
 					<div className='grid grid-cols-1 md:grid-cols-2 gap-5 items-start'>
-						{/* TASK NAME  */}
-						{visibleTaskName ? (
-							<div className='relative md:col-span-2 pr-[40px]'>
-								<Input
-									classNameLabel='text-neutral-8'
-									nameLabel=''
-									isRequired={false}
-									required
-									name='taskName'
-									type='text'
-									id='taskName'
-									className='relative group  text-neutral-8'
-									errorMessage={errors.taskName?.message}
-									register={register}
-									maxLength={255}
-									value={taskName}
-									classNameInput='!bg-neutral-1 text-neutral-8 pl-4'
-									onChange={(e) => setTaskName(e.target.value)}
-								/>
-								<button
-									className='absolute top-1 right-[40px] px-2 py-[8.1px] md:py-[10.1px] border-blue-15  hover:scale-110 bg-neutral-1 border-2 rounded-r-lg'
-									title='Save'
-								>
-									<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none'>
-										<path
-											d='M4.49746 20.835L21.0072 13.4725C22.3309 12.8822 22.3309 11.1178 21.0072 10.5275L4.49746 3.16496C3.00163 2.49789 1.45006 3.97914 2.19099 5.36689L5.34302 11.2706C5.58817 11.7298 5.58818 12.2702 5.34302 12.7294L2.19099 18.6331C1.45007 20.0209 3.00163 21.5021 4.49746 20.835Z'
-											fill='#22c1c3'
-										/>
-									</svg>
-								</button>
-							</div>
-						) : (
-							<>
-								{isClient && (
-									<h2
-										className='md:col-span-2 text-24 lg:text-32 text-gradient-red font-bold leading-1-4 text-left'
-										onClick={() => setVisibleTaskName(true)}
-									>
-										{taskName}
-									</h2>
-								)}
-							</>
-						)}
-
-						{/* STATUS, PRIORITY, ASSIGNMEMBER, TYPE, TIME  */}
+						<RenderTaskName />
 						<div className='grid grid-cols-1 gap-5'>
 							{/* STATUS  */}
 							<div>
@@ -558,99 +638,9 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 								)}
 							</div>
 
-							{/* PROCESS BAR TIME  */}
-							<div>
-								<label htmlFor='' className='text-14 lg:text-16 text-neutral-8 leading-1-4 font-semibold mb-1 block'>
-									Time Checking <span className='text-red-1'>*</span>
-								</label>
-								<Form.Item validateTrigger={['onChange']} className='m-0'>
-									<Slider
-										value={timeTracking.timeTrackingSpent}
-										max={Number(timeTracking.timeTrackingSpent) + Number(timeTracking.timeTrackingRemaining)}
-									/>
-									<div className='flex justify-between items-center'>
-										<p>{timeTracking.timeTrackingSpent}h logged</p>
-										<p>{timeTracking.timeTrackingRemaining}h remaining</p>
-									</div>
-								</Form.Item>
-							</div>
-
 							{/* TIME TRACKING  */}
-							{isClient && (
-								<div className='grid grid-cols-2 items-center gap-5'>
-									<div className='col-span-2 '>
-										<Input
-											classNameLabel='text-neutral-8'
-											nameLabel='Original Estimate'
-											required
-											name='originalEstimate'
-											type='number'
-											id='originalEstimate'
-											className='relative group '
-											errorMessage={errors.originalEstimate?.message}
-											register={register}
-											classNameInput='!bg-neutral-1 text-neutral-8'
-											iconInput={<ClockCircleOutlined className='text-20 text-blue-15  ' />}
-											min={0}
-											onBlur={(e) => handleUpdateEstimate(Number(e.target.value))}
-											defaultValue={dataTaskDetail?.originalEstimate}
-										/>
-									</div>
-									<Input
-										classNameLabel='text-neutral-8'
-										nameLabel='Time Spent'
-										required
-										name='timeTrackingSpent'
-										type='number'
-										id='timeTrackingSpent'
-										className='relative group '
-										errorMessage={errors.timeTrackingSpent?.message}
-										register={register}
-										classNameInput='!bg-neutral-1 text-neutral-8'
-										onBlur={(e) =>
-											handleTimeTracking({
-												timeTrackingSpent: +e.target.value,
-												timeTrackingRemaining: timeTracking.timeTrackingRemaining
-											})
-										}
-										iconInput={<MinusCircleOutlined className='text-20 text-blue-15  ' />}
-										min={0}
-										defaultValue={timeTracking?.timeTrackingSpent && timeTracking?.timeTrackingSpent}
-									/>
-									<Input
-										classNameLabel='text-neutral-8'
-										nameLabel='Time Remaining'
-										required
-										name='timeTrackingRemaining'
-										type='number'
-										id='timeTrackingRemaining'
-										className='relative group '
-										errorMessage={errors.timeTrackingRemaining?.message}
-										register={register}
-										classNameInput='!bg-neutral-1 text-neutral-8'
-										onBlur={(e) =>
-											handleTimeTracking({
-												timeTrackingSpent: timeTracking.timeTrackingSpent,
-												timeTrackingRemaining: +e.target.value
-											})
-										}
-										iconInput={<PlusCircleOutlined className='text-20 text-blue-15  ' />}
-										min={0}
-										defaultValue={dataTaskDetail?.timeTrackingRemaining && dataTaskDetail?.timeTrackingRemaining}
-									/>
-								</div>
-							)}
-
-							<Button
-								// isLoading={isLoading}
-								onClick={(e) => handleFormSubmit(e)}
-								// disabled={!isValid}
-								className={`border-0 max-w-[170px] lg:max-w-[300px] mx-auto`}
-							>
-								Update Task
-							</Button>
+							<RenderTimeTracking />
 						</div>
-
 						<div className='grid grid-cols-1 gap-3 md:gap-5 row-start-2 md:col-start-2'>
 							{/* DESCRIPTION  */}
 							{dataTaskDetail?.description && (
@@ -669,7 +659,7 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 												className='border-t-2 border-l-2 border-blue-15 p-1.5 rounded-tl-lg rounded-br-lg group bg-neutral-1 absolute right-0.5 bottom-0.5'
 												title='Save'
 												type='button'
-												onClick={() => handleUpdateDescription()}
+												onClick={(e) => handleUpdateDescription(e)}
 											>
 												<svg
 													xmlns='http://www.w3.org/2000/svg'
@@ -698,32 +688,49 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 								</div>
 							)}
 
-							{/* COMMENT */}
+							{/* COMMENT  */}
 							<div>
 								<h3 className='text-16 text-gradient-blue leading-1-4 font-semibold'>* Comment:</h3>
-								{responseCommentList?.data?.content &&
-									responseCommentList?.data?.content?.length > 0 &&
+								{responseCommentList?.data?.content?.length > 0 &&
 									responseCommentList?.data?.content?.map((item: UserCommentTask, index: number) => {
 										return (
 											<div key={index} className='relative flex items-center gap-2'>
-												<Image
-													src={'/icon-avatar-3.jfif'}
-													alt={item?.user?.name}
-													title={item.user.name}
-													width={40}
-													height={40}
-													loading='lazy'
-													className='scale-75 md:scale-100'
-												/>
+												<p title={item?.user?.name ? item?.user?.name : 'Name'}>
+													<Avatar
+														src={`${item?.user?.avatar}`}
+														alt={item?.user?.name ? item?.user?.name : 'Name'}
+														className='h-8 w-8'
+													/>
+												</p>
 												{visibleComment && item?.id == commentId ? (
-													<div className='relative mt-2'>
+													<div className='relative'>
 														<Editor
 															value={editCommentUser}
 															onTextChange={(e: any) => setEditCommentUser(e.htmlValue)}
 															className='border-[2px] border-blue-15  rounded-[10px] overflow-hidden mt-1 '
-															placeholder='You can edit your comment'
-															onBlur={() => handleEditComment()}
+															name='description'
+															placeholder='You can write description your project'
 														/>
+														<button
+															className='border-t-2 border-l-2 border-blue-15 p-1.5 rounded-tl-lg rounded-br-lg group bg-neutral-1 absolute right-0.5 bottom-0.5'
+															title='Save'
+															type='button'
+															onClick={(e) => handleEditComment(e)}
+														>
+															<svg
+																xmlns='http://www.w3.org/2000/svg'
+																width='24'
+																height='24'
+																viewBox='0 0 24 24'
+																fill='none'
+																className='group-hover:scale-110'
+															>
+																<path
+																	d='M4.49746 20.835L21.0072 13.4725C22.3309 12.8822 22.3309 11.1178 21.0072 10.5275L4.49746 3.16496C3.00163 2.49789 1.45006 3.97914 2.19099 5.36689L5.34302 11.2706C5.58817 11.7298 5.58818 12.2702 5.34302 12.7294L2.19099 18.6331C1.45007 20.0209 3.00163 21.5021 4.49746 20.835Z'
+																	fill='#22c1c3'
+																/>
+															</svg>
+														</button>
 													</div>
 												) : (
 													<div className='flex items-center justify-between gap-2 flex-1'>
@@ -801,14 +808,33 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 											loading='lazy'
 											className='scale-75 md:scale-100 '
 										/>
-										<div className='mt-2'>
+										<div className='relative'>
 											<Editor
 												value={commentUser}
 												onTextChange={(e: any) => setCommentUser(e.htmlValue)}
 												className='border-[2px] border-blue-15  rounded-[10px] overflow-hidden mt-1 '
 												placeholder='You can write comment task'
-												onBlur={() => handleSubmitComment()}
 											/>
+											<button
+												className='border-t-2 border-l-2 border-blue-15 p-1.5 rounded-tl-lg rounded-br-lg group bg-neutral-1 absolute right-0.5 bottom-0.5'
+												title='Save'
+												type='button'
+												onClick={(e) => handleSubmitComment(e)}
+											>
+												<svg
+													xmlns='http://www.w3.org/2000/svg'
+													width='24'
+													height='24'
+													viewBox='0 0 24 24'
+													fill='none'
+													className='group-hover:scale-110'
+												>
+													<path
+														d='M4.49746 20.835L21.0072 13.4725C22.3309 12.8822 22.3309 11.1178 21.0072 10.5275L4.49746 3.16496C3.00163 2.49789 1.45006 3.97914 2.19099 5.36689L5.34302 11.2706C5.58817 11.7298 5.58818 12.2702 5.34302 12.7294L2.19099 18.6331C1.45007 20.0209 3.00163 21.5021 4.49746 20.835Z'
+														fill='#22c1c3'
+													/>
+												</svg>
+											</button>
 										</div>
 									</div>
 								)}

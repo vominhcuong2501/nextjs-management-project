@@ -46,7 +46,7 @@ const BaseComponent = () => {
 
 		if (!_isEmpty(userInfo) && getCookie('__token')) {
 			updateStatusAuth(true)
-			return router.push(PATH_NAME.PROFILE)
+			return router.push(pathname)
 		}
 	}, [tokenUser, userInfo])
 
