@@ -48,7 +48,7 @@ export default function SidebarMobile({ handleCloseSidebarMobi }: SidebarMobileP
 	const [isActive, setIsActive] = useState(activePath)
 
 	useEffect(() => {
-		if (params.slug !== 'undefined' && Number(params.slug)) {
+		if (params.slug !== 'undefined' && pathname.indexOf('project-detail') > -1) {
 			setIsActive(activePath)
 			return router.push(`${PATH_NAME.PROJECT_DETAIL}/${params.slug}`)
 		}

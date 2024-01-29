@@ -8,6 +8,7 @@ import { getCommentListApi } from '@/app/api/getCommentList'
 import { getPriorityTaskApi } from '@/app/api/getPriorityTask'
 import { getStatusTaskApi } from '@/app/api/getStatusTask'
 import { getTypeTaskApi } from '@/app/api/getTypeTask'
+import { updateTaskApi } from '@/app/api/udpateTask'
 import { updateDescriptionApi } from '@/app/api/updateDescription'
 import { updateEstimateTimeApi } from '@/app/api/updateEstimateTime'
 import { updatePriorityApi } from '@/app/api/updatePriority'
@@ -34,7 +35,7 @@ import { Avatar, Form, Slider, notification } from 'antd'
 import { getCookie } from 'cookies-next'
 import Image from 'next/image'
 import { Editor } from 'primereact/editor'
-import { MouseEvent, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import Select from 'react-select'
 import SelectController from '../SelectController'
@@ -51,7 +52,7 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 		statusId: dataTaskDetail?.statusId,
 		priorityId: dataTaskDetail?.priorityId,
 		typeId: dataTaskDetail?.typeId,
-		listUserAsign: [],
+		listUserAsign: dataTaskDetail?.listUserAsign,
 		timeTrackingSpent: dataTaskDetail?.timeTrackingSpent,
 		timeTrackingRemaining: dataTaskDetail?.timeTrackingRemaining,
 		originalEstimate: dataTaskDetail?.originalEstimate,
@@ -86,6 +87,8 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 	const [commentUser, setCommentUser] = useState('')
 
 	const [editCommentUser, setEditCommentUser] = useState('')
+
+	const [selectType, setSelectType] = useState(dataTaskDetail?.typeId)
 
 	const queryClient = useQueryClient()
 
@@ -142,12 +145,6 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 			return { value: item.userId, label: item.name }
 		})
 
-	const arrayMemberId =
-		selectedMembers &&
-		selectedMembers?.map((member: { value: number; name: string }) => {
-			return member.value
-		})
-
 	const {
 		register,
 		control,
@@ -173,6 +170,7 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 				timeTrackingRemaining: dataTaskDetail?.timeTrackingRemaining,
 				timeTrackingSpent: dataTaskDetail?.timeTrackingSpent
 			})
+			setSelectType(dataTaskDetail?.typeId)
 		}
 	}, [dataTaskDetail])
 
@@ -186,7 +184,7 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 					exact: true
 				})
 				notification.success({
-					message: responseApi?.content
+					message: 'Successfully '
 				})
 				setCommentUser('')
 			} else {
@@ -196,13 +194,12 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 			}
 		}
 	})
-	const handleSubmitComment = (e: MouseEvent<HTMLButtonElement>) => {
-		e.preventDefault()
-		createCommentMutation.mutate({
-			taskId: taskId || 0,
-			contentComment: commentUser
-		})
-		setCommentUser('')
+	const handleSubmitComment = () => {
+		commentUser &&
+			createCommentMutation.mutate({
+				taskId: taskId || 0,
+				contentComment: commentUser
+			})
 	}
 
 	// delete comment
@@ -215,7 +212,7 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 					exact: true
 				})
 				notification.success({
-					message: responseApi?.content
+					message: 'Successfully!!!'
 				})
 			} else {
 				notification.error({
@@ -238,7 +235,7 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 					exact: true
 				})
 				notification.success({
-					message: responseApi?.content
+					message: 'Successfully!!!'
 				})
 				setVisibleComment(false)
 			} else {
@@ -248,13 +245,12 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 			}
 		}
 	})
-	const handleEditComment = (e: MouseEvent<HTMLButtonElement>) => {
-		e.preventDefault()
-		editCommentMutation.mutate({
-			id: commentId,
-			contentComment: editCommentUser
-		})
-
+	const handleEditComment = () => {
+		editCommentUser &&
+			editCommentMutation.mutate({
+				id: commentId,
+				contentComment: editCommentUser
+			})
 		if (!editCommentUser) handleDeleteComment(commentId)
 	}
 
@@ -269,8 +265,9 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 					exact: true
 				})
 				notification.success({
-					message: responseApi?.content
+					message: 'Successfully!!!'
 				})
+				setVisibleDescription(false)
 				updateIsChange(!isChange)
 			} else {
 				notification.error({
@@ -279,13 +276,12 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 			}
 		}
 	})
-	const handleUpdateDescription = (e: MouseEvent<HTMLButtonElement>) => {
-		e.preventDefault()
-		updateDescriptionMutation.mutate({
-			taskId: taskId || 0,
-			description: descriptionTask
-		})
-		setVisibleDescription(false)
+	const handleUpdateDescription = () => {
+		descriptionTask &&
+			updateDescriptionMutation.mutate({
+				taskId: taskId || 0,
+				description: descriptionTask
+			})
 	}
 
 	// update priority
@@ -299,7 +295,7 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 					exact: true
 				})
 				notification.success({
-					message: responseApi?.content
+					message: 'Successfully!!!'
 				})
 				updateIsChange(!isChange)
 			} else {
@@ -326,7 +322,7 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 					exact: true
 				})
 				notification.success({
-					message: responseApi?.content
+					message: 'Successfully!!!'
 				})
 				updateIsChange(!isChange)
 			} else {
@@ -354,7 +350,7 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 					exact: true
 				})
 				notification.success({
-					message: responseApi?.content
+					message: 'Successfully!!!'
 				})
 				updateIsChange(!isChange)
 			} else {
@@ -365,10 +361,11 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 		}
 	})
 	const handleUpdateEstimate = (originalEstimate: number) => {
-		updateEstimateMutation.mutate({
-			taskId: taskId || 0,
-			originalEstimate: originalEstimate
-		})
+		originalEstimate &&
+			updateEstimateMutation.mutate({
+				taskId: taskId || 0,
+				originalEstimate: originalEstimate
+			})
 	}
 
 	// update time tracking
@@ -382,7 +379,7 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 					exact: true
 				})
 				notification.success({
-					message: responseApi?.content
+					message: 'Successfully!!!'
 				})
 				updateIsChange(!isChange)
 			} else {
@@ -393,14 +390,53 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 		}
 	})
 	const handleTimeTracking = (data: any) => {
-		updateTimeTrackingMutation.mutate({
-			taskId: taskId || 0,
-			timeTrackingSpent: data.timeTrackingSpent,
-			timeTrackingRemaining: data.timeTrackingRemaining
+		if (data.timeTrackingRemaining || data.timeTrackingSpent) {
+			updateTimeTrackingMutation.mutate({
+				taskId: taskId || 0,
+				timeTrackingSpent: data.timeTrackingSpent,
+				timeTrackingRemaining: data.timeTrackingRemaining
+			})
+			setTimeTracking({
+				timeTrackingSpent: data.timeTrackingSpent,
+				timeTrackingRemaining: data.timeTrackingRemaining
+			})
+		}
+	}
+
+	// update all
+	const updateTaskMutation = useMutation({
+		mutationFn: (data: CreateTaskProps) => updateTaskApi(data, tokenUser),
+		onSuccess: (responseApi) => {
+			if (responseApi?.statusCode === 200) {
+				notification.success({
+					message: `Successfully !`
+				})
+				updateIsChange(!isChange)
+			} else {
+				notification.error({
+					message: responseApi?.response.data.content
+				})
+			}
+		}
+	})
+
+	const updateTypeTask = (e: number) => {
+		updateTaskMutation.mutate({
+			...dataTaskDetail,
+			typeId: e
 		})
-		setTimeTracking({
-			timeTrackingSpent: data.timeTrackingSpent,
-			timeTrackingRemaining: data.timeTrackingRemaining
+	}
+	const dataDemo = selectedMembers?.map((member: { value: number; name: string }) => {
+		return member.value
+	})
+	console.log('dataDemo', dataDemo)
+
+	const updateMemberTask = () => {
+		updateTaskMutation.mutate({
+			...dataTaskDetail,
+			listUserAsign: selectedMembers?.map((member: { value: number; name: string }) => {
+				return member.value
+			})
 		})
 	}
 
@@ -413,7 +449,9 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 					height='24'
 					viewBox='0 0 24 24'
 					fill='none'
-					onClick={() => updateIsEditTask(false)}
+					onClick={() => {
+						updateIsEditTask(false), setVisibleDescription(false), setVisibleComment(false), setVisibleTaskName(false)
+					}}
 				>
 					<path
 						fillRule='evenodd'
@@ -475,89 +513,38 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 		)
 	}
 
-	const RenderTimeTracking = () => {
+	const handleSliderChange = (value: number) => {
+		const newSpent = value
+		const newRemaining = Number(timeTracking.timeTrackingRemaining) + (Number(timeTracking.timeTrackingSpent) - value)
+		setTimeTracking({
+			timeTrackingSpent: newSpent,
+			timeTrackingRemaining: newRemaining
+		})
+		handleTimeTracking({
+			taskId: taskId || 0,
+			timeTrackingSpent: newSpent,
+			timeTrackingRemaining: newRemaining
+		})
+	}
+
+	const RenderSlider = () => {
 		return (
-			<>
-				<div>
-					<label htmlFor='' className='text-14 lg:text-16 text-neutral-8 leading-1-4 font-semibold mb-1 block'>
-						Time Checking <span className='text-red-1'>*</span>
-					</label>
-					<Form.Item validateTrigger={['onChange']} className='m-0'>
-						<Slider
-							value={timeTracking.timeTrackingSpent}
-							max={Number(timeTracking.timeTrackingSpent) + Number(timeTracking.timeTrackingRemaining)}
-						/>
-						<div className='flex justify-between items-center'>
-							<p>{timeTracking.timeTrackingSpent}h logged</p>
-							<p>{timeTracking.timeTrackingRemaining}h remaining</p>
-						</div>
-					</Form.Item>
-				</div>
-				{isClient && (
-					<div className='grid grid-cols-2 items-center gap-5'>
-						<div className='col-span-2 '>
-							<Input
-								classNameLabel='text-neutral-8'
-								nameLabel='Original Estimate'
-								required
-								name='originalEstimate'
-								type='number'
-								id='originalEstimate'
-								className='relative group '
-								errorMessage={errors.originalEstimate?.message}
-								register={register}
-								classNameInput='!bg-neutral-1 text-neutral-8'
-								iconInput={<ClockCircleOutlined className='text-20 text-blue-15  ' />}
-								min={0}
-								onBlur={(e) => handleUpdateEstimate(Number(e.target.value))}
-								defaultValue={dataTaskDetail?.originalEstimate ? dataTaskDetail?.originalEstimate : 0}
-							/>
-						</div>
-						<Input
-							classNameLabel='text-neutral-8'
-							nameLabel='Time Spent'
-							required
-							name='timeTrackingSpent'
-							type='number'
-							id='timeTrackingSpent'
-							className='relative group '
-							errorMessage={errors.timeTrackingSpent?.message}
-							register={register}
-							classNameInput='!bg-neutral-1 text-neutral-8'
-							onBlur={(e) =>
-								handleTimeTracking({
-									timeTrackingSpent: +e.target.value,
-									timeTrackingRemaining: timeTracking.timeTrackingRemaining
-								})
-							}
-							iconInput={<MinusCircleOutlined className='text-20 text-blue-15  ' />}
-							min={0}
-							defaultValue={timeTracking?.timeTrackingSpent && timeTracking?.timeTrackingSpent}
-						/>
-						<Input
-							classNameLabel='text-neutral-8'
-							nameLabel='Time Remaining'
-							required
-							name='timeTrackingRemaining'
-							type='number'
-							id='timeTrackingRemaining'
-							className='relative group '
-							errorMessage={errors.timeTrackingRemaining?.message}
-							register={register}
-							classNameInput='!bg-neutral-1 text-neutral-8'
-							onBlur={(e) =>
-								handleTimeTracking({
-									timeTrackingSpent: timeTracking.timeTrackingSpent,
-									timeTrackingRemaining: +e.target.value
-								})
-							}
-							iconInput={<PlusCircleOutlined className='text-20 text-blue-15  ' />}
-							min={0}
-							defaultValue={dataTaskDetail?.timeTrackingRemaining && dataTaskDetail?.timeTrackingRemaining}
-						/>
+			<div>
+				<label htmlFor='' className='text-14 lg:text-16 text-neutral-8 leading-1-4 font-semibold mb-1 block'>
+					Time Checking <span className='text-red-1'>*</span>
+				</label>
+				<Form.Item validateTrigger={['onChange']} className='m-0'>
+					<Slider
+						defaultValue={timeTracking.timeTrackingSpent}
+						max={Number(timeTracking.timeTrackingSpent) + Number(timeTracking.timeTrackingRemaining)}
+						onChange={handleSliderChange}
+					/>
+					<div className='flex justify-between items-center'>
+						<p>{timeTracking.timeTrackingSpent}h logged</p>
+						<p>{timeTracking.timeTrackingRemaining}h remaining</p>
 					</div>
-				)}
-			</>
+				</Form.Item>
+			</div>
 		)
 	}
 
@@ -616,6 +603,7 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 									placeholder='Choose a type task'
 									iconSelect={<TagsOutlined className='text-20 text-blue-15  ' />}
 									defaultValue={dataTaskDetail?.typeId}
+									onChange={(e) => updateTypeTask(Number(e))}
 								/>
 							</div>
 
@@ -633,13 +621,80 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 										className='basic-multi-select '
 										classNamePrefix='select'
 										value={selectedMembers}
-										onChange={handleMemberSelectChange}
+										onChange={(e) => {
+											handleMemberSelectChange(e)
+											updateMemberTask()
+										}}
 									/>
 								)}
 							</div>
 
 							{/* TIME TRACKING  */}
-							<RenderTimeTracking />
+							<RenderSlider />
+							{isClient && (
+								<div className='grid grid-cols-2 items-center gap-5'>
+									<div className='col-span-2 '>
+										<Input
+											classNameLabel='text-neutral-8'
+											nameLabel='Original Estimate'
+											required
+											name='originalEstimate'
+											type='number'
+											id='originalEstimate'
+											className='relative group '
+											errorMessage={errors.originalEstimate?.message}
+											register={register}
+											classNameInput='!bg-neutral-1 text-neutral-8'
+											iconInput={<ClockCircleOutlined className='text-20 text-blue-15  ' />}
+											min={0}
+											onBlur={(e) => handleUpdateEstimate(Number(e.target.value))}
+											defaultValue={dataTaskDetail?.originalEstimate ? dataTaskDetail?.originalEstimate : 0}
+										/>
+									</div>
+									<Input
+										classNameLabel='text-neutral-8'
+										nameLabel='Time Spent'
+										required
+										name='timeTrackingSpent'
+										type='number'
+										id='timeTrackingSpent'
+										className='relative group '
+										errorMessage={errors.timeTrackingSpent?.message}
+										register={register}
+										classNameInput='!bg-neutral-1 text-neutral-8'
+										onBlur={(e) =>
+											handleTimeTracking({
+												timeTrackingSpent: +e.target.value,
+												timeTrackingRemaining: timeTracking.timeTrackingRemaining
+											})
+										}
+										iconInput={<MinusCircleOutlined className='text-20 text-blue-15  ' />}
+										min={0}
+										defaultValue={timeTracking.timeTrackingSpent}
+									/>
+									<Input
+										classNameLabel='text-neutral-8'
+										nameLabel='Time Remaining'
+										required
+										name='timeTrackingRemaining'
+										type='number'
+										id='timeTrackingRemaining'
+										className='relative group '
+										errorMessage={errors.timeTrackingRemaining?.message}
+										register={register}
+										classNameInput='!bg-neutral-1 text-neutral-8'
+										onBlur={(e) =>
+											handleTimeTracking({
+												timeTrackingSpent: timeTracking.timeTrackingSpent,
+												timeTrackingRemaining: +e.target.value
+											})
+										}
+										iconInput={<PlusCircleOutlined className='text-20 text-blue-15  ' />}
+										min={0}
+										defaultValue={timeTracking.timeTrackingRemaining}
+									/>
+								</div>
+							)}
 						</div>
 						<div className='grid grid-cols-1 gap-3 md:gap-5 row-start-2 md:col-start-2'>
 							{/* DESCRIPTION  */}
@@ -659,7 +714,7 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 												className='border-t-2 border-l-2 border-blue-15 p-1.5 rounded-tl-lg rounded-br-lg group bg-neutral-1 absolute right-0.5 bottom-0.5'
 												title='Save'
 												type='button'
-												onClick={(e) => handleUpdateDescription(e)}
+												onClick={() => handleUpdateDescription()}
 											>
 												<svg
 													xmlns='http://www.w3.org/2000/svg'
@@ -695,12 +750,8 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 									responseCommentList?.data?.content?.map((item: UserCommentTask, index: number) => {
 										return (
 											<div key={index} className='relative flex items-center gap-2'>
-												<p title={item?.user?.name ? item?.user?.name : 'Name'}>
-													<Avatar
-														src={`${item?.user?.avatar}`}
-														alt={item?.user?.name ? item?.user?.name : 'Name'}
-														className='h-8 w-8'
-													/>
+												<p title={item.user.name}>
+													<Avatar src={`${item.user.avatar}`} alt={item.user.name} className='h-8 w-8' />
 												</p>
 												{visibleComment && item?.id == commentId ? (
 													<div className='relative'>
@@ -715,7 +766,7 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 															className='border-t-2 border-l-2 border-blue-15 p-1.5 rounded-tl-lg rounded-br-lg group bg-neutral-1 absolute right-0.5 bottom-0.5'
 															title='Save'
 															type='button'
-															onClick={(e) => handleEditComment(e)}
+															onClick={() => handleEditComment()}
 														>
 															<svg
 																xmlns='http://www.w3.org/2000/svg'
@@ -736,7 +787,7 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 													<div className='flex items-center justify-between gap-2 flex-1'>
 														<div
 															className='flex-1'
-															dangerouslySetInnerHTML={{ __html: item?.contentComment as string }}
+															dangerouslySetInnerHTML={{ __html: item.contentComment as string }}
 														></div>
 														<div className='flex items-start md:gap-2'>
 															<p title='Edit comment'>
@@ -819,7 +870,7 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 												className='border-t-2 border-l-2 border-blue-15 p-1.5 rounded-tl-lg rounded-br-lg group bg-neutral-1 absolute right-0.5 bottom-0.5'
 												title='Save'
 												type='button'
-												onClick={(e) => handleSubmitComment(e)}
+												onClick={() => handleSubmitComment()}
 											>
 												<svg
 													xmlns='http://www.w3.org/2000/svg'
