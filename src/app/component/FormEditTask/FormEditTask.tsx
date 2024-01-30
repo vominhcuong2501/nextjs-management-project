@@ -138,6 +138,10 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 		setSelectedMembers(selectedOptions)
 	}
 
+	const listMemberAssign = selectedMembers?.map((member: { value: number; name: string }) => {
+		return member.value
+	})
+
 	// data option user asign project
 	const dataAssignMemberOption: any =
 		listMemberProject &&
@@ -412,6 +416,7 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 					message: `Successfully !`
 				})
 				updateIsChange(!isChange)
+				setVisibleTaskName(false)
 			} else {
 				notification.error({
 					message: responseApi?.response.data.content
@@ -423,20 +428,23 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 	const updateTypeTask = (e: number) => {
 		updateTaskMutation.mutate({
 			...dataTaskDetail,
+			listUserAsign: listMemberAssign,
 			typeId: e
 		})
 	}
-	const dataDemo = selectedMembers?.map((member: { value: number; name: string }) => {
-		return member.value
-	})
-	console.log('dataDemo', dataDemo)
+
+	const updateNameTask = () => {
+		updateTaskMutation.mutate({
+			...dataTaskDetail,
+			taskName: taskName,
+			listUserAsign: listMemberAssign
+		})
+	}
 
 	const updateMemberTask = () => {
 		updateTaskMutation.mutate({
 			...dataTaskDetail,
-			listUserAsign: selectedMembers?.map((member: { value: number; name: string }) => {
-				return member.value
-			})
+			listUserAsign: listMemberAssign
 		})
 	}
 
@@ -461,55 +469,6 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 					/>
 				</svg>
 			</p>
-		)
-	}
-
-	const RenderTaskName = () => {
-		return (
-			<>
-				{visibleTaskName ? (
-					<div className='relative md:col-span-2 pr-[40px]'>
-						<Input
-							classNameLabel='text-neutral-8'
-							nameLabel=''
-							isRequired={false}
-							required
-							name='taskName'
-							type='text'
-							id='taskName'
-							className='relative group  text-neutral-8'
-							errorMessage={errors.taskName?.message}
-							register={register}
-							maxLength={255}
-							value={taskName}
-							classNameInput='!bg-neutral-1 text-neutral-8 pl-4'
-							onChange={(e) => setTaskName(e.target.value)}
-						/>
-						<button
-							className='absolute top-1 right-[40px] px-2 py-[8.1px] md:py-[10.1px] border-blue-15  hover:scale-110 bg-neutral-1 border-2 rounded-r-lg'
-							title='Save'
-						>
-							<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none'>
-								<path
-									d='M4.49746 20.835L21.0072 13.4725C22.3309 12.8822 22.3309 11.1178 21.0072 10.5275L4.49746 3.16496C3.00163 2.49789 1.45006 3.97914 2.19099 5.36689L5.34302 11.2706C5.58817 11.7298 5.58818 12.2702 5.34302 12.7294L2.19099 18.6331C1.45007 20.0209 3.00163 21.5021 4.49746 20.835Z'
-									fill='#22c1c3'
-								/>
-							</svg>
-						</button>
-					</div>
-				) : (
-					<>
-						{isClient && (
-							<h2
-								className='md:col-span-2 text-24 lg:text-32 text-gradient-red font-bold leading-1-4 text-left'
-								onClick={() => setVisibleTaskName(true)}
-							>
-								{taskName}
-							</h2>
-						)}
-					</>
-				)}
-			</>
 		)
 	}
 
@@ -554,7 +513,51 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 				<form className='shadow-primary bg-neutral-1 p-4 md:p-6 rounded-xl relative'>
 					<RenderIconClose />
 					<div className='grid grid-cols-1 md:grid-cols-2 gap-5 items-start'>
-						<RenderTaskName />
+						{/* TASK NAME  */}
+						{visibleTaskName ? (
+							<div className='relative md:col-span-2 pr-[40px]'>
+								<Input
+									classNameLabel='text-neutral-8'
+									nameLabel=''
+									isRequired={false}
+									required
+									name='taskName'
+									type='text'
+									id='taskName'
+									className='relative group  text-neutral-8'
+									errorMessage={errors.taskName?.message}
+									register={register}
+									maxLength={255}
+									value={taskName}
+									classNameInput='!bg-neutral-1 text-neutral-8 pl-4'
+									onChange={(e) => setTaskName(e.target.value)}
+								/>
+								<button
+									className='absolute top-1 right-[40px] px-2 py-[8.1px] md:py-[10.1px] border-blue-15  hover:scale-110 bg-neutral-1 border-2 rounded-r-lg'
+									title='Save'
+									type='button'
+									onClick={() => updateNameTask()}
+								>
+									<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none'>
+										<path
+											d='M4.49746 20.835L21.0072 13.4725C22.3309 12.8822 22.3309 11.1178 21.0072 10.5275L4.49746 3.16496C3.00163 2.49789 1.45006 3.97914 2.19099 5.36689L5.34302 11.2706C5.58817 11.7298 5.58818 12.2702 5.34302 12.7294L2.19099 18.6331C1.45007 20.0209 3.00163 21.5021 4.49746 20.835Z'
+											fill='#22c1c3'
+										/>
+									</svg>
+								</button>
+							</div>
+						) : (
+							<>
+								{isClient && (
+									<h2
+										className='md:col-span-2 text-24 lg:text-32 text-gradient-red font-bold leading-1-4 text-left'
+										onClick={() => setVisibleTaskName(true)}
+									>
+										{taskName}
+									</h2>
+								)}
+							</>
+						)}
 						<div className='grid grid-cols-1 gap-5'>
 							{/* STATUS  */}
 							<div>
@@ -613,19 +616,33 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 									Assignees <span className='text-red-1'>*</span>
 								</label>
 								{isClient && (
-									<Select
-										defaultValue={selectedMembers}
-										isMulti
-										name='listUserAsign'
-										options={dataAssignMemberOption}
-										className='basic-multi-select '
-										classNamePrefix='select'
-										value={selectedMembers}
-										onChange={(e) => {
-											handleMemberSelectChange(e)
-											updateMemberTask()
-										}}
-									/>
+									<div className='relative'>
+										<Select
+											defaultValue={selectedMembers}
+											isMulti
+											name='listUserAsign'
+											options={dataAssignMemberOption}
+											className='basic-multi-select '
+											classNamePrefix='select'
+											value={selectedMembers}
+											onChange={(e) => {
+												handleMemberSelectChange(e)
+											}}
+										/>
+										<button
+											className='absolute top-0 right-0 px-2 py-[8.1px] md:py-[10.1px] border-blue-15  hover:scale-110 bg-neutral-1 border-2 rounded-r-lg'
+											title='Save'
+											type='button'
+											onClick={updateMemberTask}
+										>
+											<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none'>
+												<path
+													d='M4.49746 20.835L21.0072 13.4725C22.3309 12.8822 22.3309 11.1178 21.0072 10.5275L4.49746 3.16496C3.00163 2.49789 1.45006 3.97914 2.19099 5.36689L5.34302 11.2706C5.58817 11.7298 5.58818 12.2702 5.34302 12.7294L2.19099 18.6331C1.45007 20.0209 3.00163 21.5021 4.49746 20.835Z'
+													fill='#22c1c3'
+												/>
+											</svg>
+										</button>
+									</div>
 								)}
 							</div>
 
