@@ -14,7 +14,7 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tansta
 import { Avatar, notification } from 'antd'
 import { getCookie } from 'cookies-next'
 import { useParams } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 
 export default function ProjectDetail() {
@@ -26,6 +26,8 @@ export default function ProjectDetail() {
 
 	const { isChange, updateIsChange } = useUpdateTaskDetail()
 
+	const [dataSearchTask, setDataSearchTask] = useState<any>()
+
 	const params = useParams()
 
 	const [taskDetail, setTaskDetail] = useState()
@@ -36,6 +38,11 @@ export default function ProjectDetail() {
 		placeholderData: keepPreviousData
 	})
 
+	useEffect(() => {
+		setDataSearchTask(projectDetail?.data?.content?.lstTask)
+	}, [projectDetail])
+
+	// render member
 	const listMember = projectDetail?.data?.content?.members.map((mem: MemberProject) => {
 		return (
 			<div key={mem.userId}>
@@ -44,6 +51,87 @@ export default function ProjectDetail() {
 		)
 	})
 
+	// delete task
+	const deleteTaskMutation = useMutation({
+		mutationFn: (taskId: number | string) => deleteTaskApi(taskId, tokenUser),
+		onSuccess: (responseApi) => {
+			confirm()
+
+			if (responseApi?.statusCode === 200) {
+				notification.success({
+					message: `Delete Task Successfully!`
+				})
+
+				queryClient.invalidateQueries({
+					queryKey: ['get-project-detail', params?.slug],
+					exact: true
+				})
+
+				updateIsChange(!isChange)
+			} else {
+				notification.error({
+					message: responseApi?.response.data.content
+				})
+			}
+		}
+	})
+	const handleDeleteTask = (taskId: number | string) => {
+		deleteTaskMutation.mutate(taskId)
+	}
+
+	// update status
+	const updateStatusMutation = useMutation({
+		mutationFn: (data: { taskId: number | string; statusId: number | undefined }) => updateStatusApi(data, tokenUser),
+		onSuccess: (responseApi) => {
+			if (responseApi?.statusCode === 200) {
+				queryClient.invalidateQueries({
+					queryKey: ['get-project-detail', params?.slug],
+					exact: true
+				})
+				updateIsChange(!isChange)
+			} else {
+				notification.error({
+					message: responseApi?.response.data.content
+				})
+			}
+		}
+	})
+	const handleUpdateStatus = (taskId: number, statusId: number) => {
+		updateStatusMutation.mutate({
+			taskId: taskId || 0,
+			statusId: statusId
+		})
+	}
+
+	// get task detail
+	const getTaskDetailMutation = useMutation({
+		mutationFn: (taskId: number | string) => getTaskDetailApi(taskId, tokenUser),
+		onSuccess: (responseApi) => {
+			if (responseApi?.statusCode === 200) {
+				setTaskDetail(responseApi?.content)
+				updateIsEditTask(true)
+			} else {
+				notification.error({
+					message: responseApi?.response.data.content
+				})
+			}
+		}
+	})
+	const handleGetTaskDetail = (taskId: number | string) => {
+		getTaskDetailMutation.mutate(taskId)
+	}
+
+	// search task
+	const onSearchTask = (value: string) => {
+		let dataSearch = dataSearchTask?.map((ele: any) => {
+			return ele.lstTaskDeTail?.filter((ele: any) => {
+				return ele.taskName.toLowerCase().trim().indexOf(value.toLowerCase().trim()) !== -1
+			})
+		})
+		setDataSearchTask(dataSearch)
+	}
+
+	// drag drop card
 	const handleDragEnd = async (result: any) => {
 		const { source, destination, draggableId } = result
 		if (!destination) {
@@ -70,82 +158,10 @@ export default function ProjectDetail() {
 			updateIsChange(!isChange)
 		}
 	}
-
-	const deleteTaskMutation = useMutation({
-		mutationFn: (taskId: number | string) => deleteTaskApi(taskId, tokenUser),
-		onSuccess: (responseApi) => {
-			confirm()
-
-			if (responseApi?.statusCode === 200) {
-				notification.success({
-					message: `Delete Task Successfully!`
-				})
-
-				queryClient.invalidateQueries({
-					queryKey: ['get-project-detail', params?.slug],
-					exact: true
-				})
-
-				updateIsChange(!isChange)
-			} else {
-				notification.error({
-					message: responseApi?.response.data.content
-				})
-			}
-		}
-	})
-
-	const handleDeleteTask = (taskId: number | string) => {
-		deleteTaskMutation.mutate(taskId)
-	}
-
-	const getTaskDetailMutation = useMutation({
-		mutationFn: (taskId: number | string) => getTaskDetailApi(taskId, tokenUser),
-		onSuccess: (responseApi) => {
-			if (responseApi?.statusCode === 200) {
-				setTaskDetail(responseApi?.content)
-				updateIsEditTask(true)
-			} else {
-				notification.error({
-					message: responseApi?.response.data.content
-				})
-			}
-		}
-	})
-
-	// update status
-	const updateStatusMutation = useMutation({
-		mutationFn: (data: { taskId: number | string; statusId: number | undefined }) => updateStatusApi(data, tokenUser),
-		onSuccess: (responseApi) => {
-			if (responseApi?.statusCode === 200) {
-				queryClient.invalidateQueries({
-					queryKey: ['get-project-detail', params?.slug],
-					exact: true
-				})
-				updateIsChange(!isChange)
-			} else {
-				notification.error({
-					message: responseApi?.response.data.content
-				})
-			}
-		}
-	})
-
-	const handleUpdateStatus = (taskId: number, statusId: number) => {
-		updateStatusMutation.mutate({
-			taskId: taskId || 0,
-			statusId: statusId
-		})
-	}
-
-	const handleGetTaskDetail = (taskId: number | string) => {
-		getTaskDetailMutation.mutate(taskId)
-	}
-
 	const renderCardTaskList = () => {
 		return (
 			<DragDropContext onDragEnd={handleDragEnd}>
-				{projectDetail?.data?.content?.lstTask?.map((task: any) => {
+				{dataSearchTask?.map((task: any) => {
 					return (
 						<Droppable droppableId={task.statusId} key={task.statusId}>
 							{(provided: any) => {
@@ -155,7 +171,7 @@ export default function ProjectDetail() {
 											{task.statusName}
 										</h4>
 										<div className=' mt-4 h-full' ref={provided.innerRef} {...provided.droppableProps}>
-											{task.lstTaskDeTail.map((ele: any, index: number) => {
+											{task.lstTaskDeTail?.map((ele: any, index: number) => {
 												return (
 													<Draggable key={ele.taskName} draggableId={ele.taskId.toString()} index={index}>
 														{(provided: any) => {
@@ -344,6 +360,7 @@ export default function ProjectDetail() {
 						maxLength={255}
 						placeholder='Search task...'
 						isRequired={false}
+						onChange={(e) => onSearchTask(e.target.value)}
 					/>
 					<svg
 						width='44'

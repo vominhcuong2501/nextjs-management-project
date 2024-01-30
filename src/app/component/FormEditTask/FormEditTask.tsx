@@ -630,7 +630,7 @@ export default function FormEditTask({ dataTaskDetail, listMemberProject }: Form
 											}}
 										/>
 										<button
-											className='absolute top-0 right-0 px-2 py-[8.1px] md:py-[10.1px] border-blue-15  hover:scale-110 bg-neutral-1 border-2 rounded-r-lg'
+											className='absolute bottom-0 right-0 px-2 py-[8.1px] md:py-[10.1px] border-blue-15  hover:scale-110 bg-neutral-1 border-2 rounded-r-lg'
 											title='Save'
 											type='button'
 											onClick={updateMemberTask}
