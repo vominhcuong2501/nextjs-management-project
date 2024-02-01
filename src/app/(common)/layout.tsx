@@ -21,7 +21,7 @@ export default function AuthLayout({ children }: CommonLayoutProps) {
 
 	const isMobile = useDisplay(992)
 
-	const { isCreateTask, updateIsCreateTask } = useUpdateStatusModal()
+	const { isCreateTask, updateIsCreateTask, isSearchProject, updateIsSearchProject } = useUpdateStatusModal()
 
 	const isClient = useMounted()
 
@@ -125,6 +125,22 @@ export default function AuthLayout({ children }: CommonLayoutProps) {
 				}`}
 			>
 				{isCreateTask && isClient && (
+					<FormCreateTask projectData={dataProjectList?.data?.content && dataProjectList?.data?.content} />
+				)}
+			</div>
+
+			{isSearchProject && isClient && (
+				<div
+					className={`w-screen h-screen fixed top-0 transition-all duration-300 bg-neutral-9 opacity-80 right-0 !z-30`}
+					onClick={() => updateIsSearchProject(false)}
+				></div>
+			)}
+			<div
+				className={`fixed top-0 transition-all duration-300 ${
+					isSearchProject && isClient ? 'right-0 !z-50' : '-right-[150vw]'
+				}`}
+			>
+				{isSearchProject && isClient && (
 					<FormCreateTask projectData={dataProjectList?.data?.content && dataProjectList?.data?.content} />
 				)}
 			</div>

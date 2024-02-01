@@ -342,6 +342,14 @@ select::-webkit-scrollbar-thumb:hover {
 	border-inline-end: none !important;
 }
 
+:where(.css-dkbvqv).ant-menu-light.ant-menu-root.ant-menu-inline,
+:where(.css-dkbvqv).ant-menu-light > .ant-menu.ant-menu-root.ant-menu-inline,
+:where(.css-dkbvqv).ant-menu-light.ant-menu-root.ant-menu-vertical,
+:where(.css-dkbvqv).ant-menu-light > .ant-menu.ant-menu-root.ant-menu-vertical {
+	-webkit-border-end: none !important;
+	border-inline-end: none !important;
+}
+
 .text-gradient-blue {
 	background: linear-gradient(0deg, rgba(34, 193, 195, 1) 25%, rgba(45, 122, 253, 1) 100%);
 	-webkit-background-clip: text;
