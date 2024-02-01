@@ -1,27 +1,27 @@
-"use client";
-import React, { ReactNode } from "react";
-import { Controller } from "react-hook-form";
-import { UnorderedListOutlined } from "@ant-design/icons";
+'use client'
+import { ReactNode } from 'react'
+import { Controller } from 'react-hook-form'
 
 export interface Option {
-	value: number;
-	label: string;
+	value: number
+	label: string
 }
 
 interface SelectControllerProps {
-	name: string;
-	control?: any;
-	rules?: Record<string, any>;
-	options: Option[];
-	errors?: Record<string, any>;
-	optionDefault?: string;
-	classNameError?: string;
-	errorMessage?: any;
-	classNameSelect?: string;
-	defaultValue?: number;
-	onChange?: (selectedValue: string) => void;
-	iconSelect?: ReactNode;
-	placeholder?: string;
+	name: string
+	control?: any
+	rules?: Record<string, any>
+	options: Option[]
+	errors?: Record<string, any>
+	optionDefault?: string
+	classNameError?: string
+	errorMessage?: any
+	classNameSelect?: string
+	classNameIcon?: string
+	defaultValue?: number
+	onChange?: (selectedValue: string) => void
+	iconSelect?: ReactNode
+	placeholder?: string
 }
 
 export default function SelectController({
@@ -32,15 +32,16 @@ export default function SelectController({
 	optionDefault,
 	defaultValue,
 	errorMessage,
-	classNameSelect = "",
+	classNameSelect = '',
 	iconSelect,
+	classNameIcon = '',
 	placeholder,
-	classNameError = "mt-1 lg:min-h-[1.25rem] text-12 lg:text-14 text-red-1 ",
-	onChange,
+	classNameError = 'mt-1 lg:min-h-[1.25rem] text-12 lg:text-14 text-red-1 ',
+	onChange
 }: SelectControllerProps) {
 	return (
 		<div>
-			<div className="relative">
+			<div className='relative'>
 				<Controller
 					name={name}
 					control={control}
@@ -50,8 +51,8 @@ export default function SelectController({
 						<select
 							{...field}
 							onChange={(e) => {
-								field.onChange(e);
-								onChange && onChange(e.target.value);
+								field.onChange(e)
+								onChange && onChange(e.target.value)
 							}}
 							className={`w-full  px-9 md:h-12 h-11 rounded-[10px]  outline-none transition-colors text-14 lg:text-16 border-[2px] border-blue-15  text-neutral-8 focus:border-blue-16  leading-1-4 ${classNameSelect}`}
 						>
@@ -61,7 +62,7 @@ export default function SelectController({
 								<option
 									key={option.value}
 									value={option.value}
-									className="text-14 lg:text-16 text-neutral-8 font-medium leading-1-4 "
+									className='text-14 lg:text-16 text-neutral-8 font-medium leading-1-4 '
 								>
 									{option.label}
 								</option>
@@ -69,11 +70,9 @@ export default function SelectController({
 						</select>
 					)}
 				/>
-				<div className="absolute left-3 top-[52.5%] -translate-y-1/2">
-					{iconSelect}
-				</div>
+				<div className={`absolute left-3 top-[52.5%] -translate-y-1/2 ${classNameIcon}`}>{iconSelect}</div>
 			</div>
 			{errorMessage && <div className={classNameError}>{errorMessage}</div>}
 		</div>
-	);
+	)
 }
